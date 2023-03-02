@@ -13,18 +13,19 @@ class TitleAndAll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+    return Container(
+      // color: Colors.red,
+      padding: const EdgeInsets.only(top: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(child: Text(title, style: AppConst.sectionTitleStyle)),
           TextButton(
               onPressed: () => onPressAll(),
-              child: const Text(
-                "view All",
-                style: TextStyle(color: AppConst.burnedOrange),
-              ))
+              child: Text("View All",
+                  style: AppConst.chipTextStyle.copyWith(
+                    color: AppConst.burnedOrange,
+                  )))
         ],
       ),
     );

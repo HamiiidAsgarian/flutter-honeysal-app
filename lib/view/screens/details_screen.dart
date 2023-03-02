@@ -1,8 +1,11 @@
 import 'package:bakery/consts.dart';
+import 'package:bakery/main.dart';
 import 'package:bakery/view/widgets/category_card.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';
 import 'package:flutter/material.dart';
+
+import 'cart_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
   const DetailsScreen({super.key});
@@ -118,7 +121,8 @@ class ProductDetailHeaderSliver extends StatelessWidget {
 
     return SliverAppBar(
       stretch: true,
-
+      // centerTitle: true,
+      // title: const Text("Details", style: AppConst.normalDescriptionStyle),
       expandedHeight: 250,
       collapsedHeight: bottomsWithHeight,
       toolbarHeight: bottomsWithHeight,
@@ -136,9 +140,15 @@ class ProductDetailHeaderSliver extends StatelessWidget {
           alignment: Alignment.centerRight,
           widthFactor: 1,
           child: MyRoundButton(
+            type: CutomRoundedButtonType.pusher,
             icon: Icons.arrow_back_ios_outlined,
             fillColor: AppConst.mainWhite,
-            onTap: (bool isSelected) {},
+            onTap: (bool isSelected) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: ((context) => const CartScreen())));
+            },
             selectionStatus: false,
           ),
         ),

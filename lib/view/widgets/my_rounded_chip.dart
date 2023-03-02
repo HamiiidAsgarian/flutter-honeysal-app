@@ -43,7 +43,7 @@ class MyRoundedChip extends StatelessWidget {
               },
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                 child: Center(child: child),
               )),
         ),

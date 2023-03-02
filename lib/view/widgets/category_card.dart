@@ -1,3 +1,5 @@
+import 'package:bakery/view/widgets/horizontal_card.dart';
+import 'package:bakery/view/widgets/heart_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../consts.dart';
@@ -10,8 +12,8 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 150,
-      height: 300,
+      width: 170,
+      // height: 320,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
           color: Colors.white,
@@ -27,7 +29,7 @@ class CategoryCard extends StatelessWidget {
       child: Stack(
         children: [
           Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AspectRatio(
@@ -35,45 +37,50 @@ class CategoryCard extends StatelessWidget {
                 aspectRatio: 1,
                 child: Container(color: Colors.green),
               ),
-              const SizedBox(width: 5),
-              const Text("name of the chocolate",
-                  style: AppConst.productTitleStyle),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text("45 left", style: AppConst.productSubtitleStyle),
-                  const Text("  |  ", style: AppConst.productSubtitleStyle),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Icon(
-                        Icons.star_rounded,
-                        color: AppConst.mainOrange,
-                        size: 20,
-                      ),
-                      Text("5.0", style: AppConst.productSubtitleStyle)
-                    ],
-                  )
-                ],
-              ),
-              RichText(
-                text: const TextSpan(
-                  text: '\$${0.99} ',
-                  style: AppConst.productTitleStyle,
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: '/a piece',
-                      style: AppConst.productSubtitleStyle,
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Toast Bread",
+                        style: AppConst.productTitleStyle),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("45 left",
+                            style: AppConst.productSubtitleStyle),
+                        const Text("  |  ",
+                            style: AppConst.productSubtitleStyle),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Icon(
+                              Icons.star_rounded,
+                              color: AppConst.mainOrange,
+                              size: 20,
+                            ),
+                            Text("5.0", style: AppConst.productSubtitleStyle)
+                          ],
+                        )
+                      ],
                     ),
+                    RichText(
+                      text: const TextSpan(
+                        text: '\$${0.99} ',
+                        style: AppConst.productTitleStyle,
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: '/a piece',
+                            style: AppConst.productSubtitleStyle,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 35, child: MainButton(onPress: () {}))
                   ],
                 ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  MainButton(onPress: () {}),
-                ],
               )
+              // const SizedBox(width: 5),
             ],
           ),
           Align(
@@ -92,9 +99,11 @@ class CategoryCard extends StatelessWidget {
 
 class MainButton extends StatelessWidget {
   final Function onPress;
+  final String title;
   const MainButton({
     Key? key,
     required this.onPress,
+    this.title = "Add to Cart",
   }) : super(key: key);
 
   @override
@@ -110,61 +119,60 @@ class MainButton extends StatelessWidget {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
             onPressed: () => onPress(),
-            child: const Text("Add to Cart",
-                style: AppConst.normalDescriptionStyle)));
+            child: Text(title, style: AppConst.normalDescriptionStyle)));
   }
 }
 
-class HeartButton extends StatefulWidget {
-  final bool isActive;
-  final Function(bool isActive) onTap;
+// class HeartButton extends StatefulWidget {
+//   final bool isActive;
+//   final Function(bool isActive) onTap;
 
-  const HeartButton({
-    Key? key,
-    this.isActive = false,
-    required this.onTap,
-  }) : super(key: key);
+//   const HeartButton({
+//     Key? key,
+//     this.isActive = false,
+//     required this.onTap,
+//   }) : super(key: key);
 
-  @override
-  State<HeartButton> createState() => _HeartButtonState();
-}
+//   @override
+//   State<HeartButton> createState() => _HeartButtonState();
+// }
 
-class _HeartButtonState extends State<HeartButton> {
-  late bool _isActive;
+// class _HeartButtonState extends State<HeartButton> {
+//   late bool _isActive;
 
-  @override
-  void initState() {
-    _isActive = widget.isActive;
+//   @override
+//   void initState() {
+//     _isActive = widget.isActive;
 
-    super.initState();
-  }
+//     super.initState();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return TweenAnimationBuilder(
-      key: UniqueKey(),
-      duration: const Duration(milliseconds: 400),
-      tween: Tween(begin: 5.0, end: 20.0),
-      curve: Curves.easeInOutBack,
-      builder: (context, value, child) => GestureDetector(
-        onTap: () {
-          widget.onTap(!_isActive);
-          setState(() {
-            _isActive = !_isActive;
-          });
-        },
-        child: SizedBox(
-          width: 20,
-          height: 20,
-          child: Center(
-            child: Icon(
-              Icons.favorite,
-              color: _isActive ? Colors.red : AppConst.borderGrey,
-              size: value,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return TweenAnimationBuilder(
+//       key: UniqueKey(),
+//       duration: const Duration(milliseconds: 400),
+//       tween: Tween(begin: 5.0, end: 35.0),
+//       curve: Curves.easeInOutBack,
+//       builder: (context, value, child) => GestureDetector(
+//         onTap: () {
+//           widget.onTap(!_isActive);
+//           setState(() {
+//             _isActive = !_isActive;
+//           });
+//         },
+//         child: SizedBox(
+//           width: 35,
+//           height: 35,
+//           child: Center(
+//             child: Icon(
+//               Icons.favorite,
+//               color: _isActive ? Colors.black : AppConst.borderGrey,
+//               size: value,
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

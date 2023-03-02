@@ -1,16 +1,26 @@
+import 'package:bakery/view/screens/details_screen.dart';
+import 'package:bakery/view/widgets/heart_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../consts.dart';
 import 'my_rounded_button.dart';
 
-class FavoriteCard extends StatelessWidget {
-  const FavoriteCard({
+class HorizontalCard extends StatelessWidget {
+  final HorizontalCardStyle? style;
+  const HorizontalCard({
     Key? key,
+    this.style = HorizontalCardStyle.show,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 150, // NOTE may cause problem
+      // margin: const EdgeInsets.only(
+      //     right: 15, bottom: 5, top: 5), //Margin to show shadow
+      width: style == HorizontalCardStyle.show
+          ? MediaQuery.of(context).size.width - 50
+          : double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
           color: Colors.white,
@@ -22,14 +32,26 @@ class FavoriteCard extends StatelessWidget {
                 color: Color.fromARGB(110, 180, 180, 180),
                 spreadRadius: 2)
           ]),
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      width: MediaQuery.of(context).size.width - 100,
       child: Row(
         children: [
-          AspectRatio(
-            // widthFactor: 1,
-            aspectRatio: 1,
-            child: Container(color: Colors.green),
+          Expanded(
+            child: Container(
+              // color: Colors.red,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: AspectRatio(
+                      // widthFactor: 1,
+                      aspectRatio: 1,
+                      child: Container(color: Colors.green),
+                    ),
+                  ),
+                  style == HorizontalCardStyle.counter
+                      ? SizedBox(height: 40, child: RoundConter())
+                      : SizedBox()
+                ],
+              ),
+            ),
           ),
           const SizedBox(width: 5),
           Expanded(
@@ -74,21 +96,29 @@ class FavoriteCard extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              HeartButton(
-                onTap: (isActive) {
-                  print(isActive);
-                },
-              ),
-              SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: MyRoundButton(
-                      icon: Icons.shopping_bag_outlined,
-                      iconSize: 20,
-                      onTap: (isSelected) {
-                        print(isSelected);
+              style == HorizontalCardStyle.show
+                  ? HeartButton(
+                      onTap: (isActive) {
+                        print(isActive);
                       },
-                      selectionStatus: false)),
+                    )
+                  : MyRoundButton(
+                      onTap: (e) {},
+                      type: CutomRoundedButtonType.pusher,
+                      icon: Icons.delete_outline,
+                    ),
+              style == HorizontalCardStyle.show
+                  ? SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: MyRoundButton(
+                          icon: Icons.shopping_bag_outlined,
+                          iconSize: 20,
+                          onTap: (isSelected) {
+                            print(isSelected);
+                          },
+                          selectionStatus: false))
+                  : const SizedBox(),
             ],
           )
         ],
@@ -97,56 +127,4 @@ class FavoriteCard extends StatelessWidget {
   }
 }
 
-class HeartButton extends StatefulWidget {
-  final bool isActive;
-  final Function(bool isActive) onTap;
-
-  const HeartButton({
-    Key? key,
-    this.isActive = false,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  State<HeartButton> createState() => _HeartButtonState();
-}
-
-class _HeartButtonState extends State<HeartButton> {
-  late bool _isActive;
-
-  @override
-  void initState() {
-    _isActive = widget.isActive;
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TweenAnimationBuilder(
-      key: UniqueKey(),
-      duration: const Duration(milliseconds: 400),
-      tween: Tween(begin: 5.0, end: 20.0),
-      curve: Curves.easeInOutBack,
-      builder: (context, value, child) => GestureDetector(
-        onTap: () {
-          widget.onTap(!_isActive);
-          setState(() {
-            _isActive = !_isActive;
-          });
-        },
-        child: SizedBox(
-          width: 20,
-          height: 20,
-          child: Center(
-            child: Icon(
-              Icons.favorite,
-              color: _isActive ? Colors.red : AppConst.borderGrey,
-              size: value,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+enum HorizontalCardStyle { counter, show }

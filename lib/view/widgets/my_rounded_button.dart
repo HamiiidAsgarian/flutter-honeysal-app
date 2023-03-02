@@ -10,10 +10,12 @@ class MyRoundButton extends StatefulWidget {
   final double? width;
   final double? height;
   final Color? fillColor;
+  final CutomRoundedButtonType? type;
 
   const MyRoundButton(
       {super.key,
       required this.onTap,
+      this.type = CutomRoundedButtonType.switcher,
       this.selectionStatus = false,
       this.iconSize = 20,
       this.icon,
@@ -47,7 +49,8 @@ class _MyRoundButtonState extends State<MyRoundButton> {
             color: widget.fillColor,
             // color: searchMode == true ? AppConst.mainColor : null,
             border: Border.all(
-                color: _selectionStatus == true
+                color: (_selectionStatus == true &&
+                        widget.type == CutomRoundedButtonType.switcher)
                     ? AppConst.mainOrange
                     : AppConst.borderGrey,
                 width: 2),
@@ -65,7 +68,8 @@ class _MyRoundButtonState extends State<MyRoundButton> {
             },
             child: Icon(
               widget.icon,
-              color: _selectionStatus == true
+              color: (_selectionStatus == true &&
+                      widget.type == CutomRoundedButtonType.switcher)
                   ? AppConst.mainOrange
                   : AppConst.iconGrey,
               size: widget.iconSize,
@@ -76,3 +80,5 @@ class _MyRoundButtonState extends State<MyRoundButton> {
     );
   }
 }
+
+enum CutomRoundedButtonType { switcher, pusher }

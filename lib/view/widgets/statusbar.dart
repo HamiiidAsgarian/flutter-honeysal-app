@@ -16,46 +16,50 @@ class _StatusbarState extends State<Statusbar> {
   bool searchMode = false;
   @override
   Widget build(BuildContext context) {
-    return ClipPath(
-      clipper: const ShapeBorderClipper(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)))),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppConst.borderGrey.withOpacity(.1),
-          border: const Border(
-              bottom: BorderSide(width: 5, color: AppConst.mainOrange)),
-          // color: Colors.red,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Container(
-                // color: Colors.red,
-                child: titleGenerator(searchMode),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                MyRoundButton(
-                  icon: Icons.search,
-                  onTap: (isSelected) {
-                    setState(() {
-                      searchMode = isSelected;
-                    });
-                    print(searchMode);
-                  },
-                  selectionStatus: searchMode,
+    return Padding(
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppConst.appHorizontalPadding),
+      child: ClipPath(
+        clipper: const ShapeBorderClipper(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)))),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppConst.borderGrey.withOpacity(.1),
+            border: const Border(
+                bottom: BorderSide(width: 5, color: AppConst.mainOrange)),
+            // color: Colors.red,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Container(
+                  // color: Colors.red,
+                  child: titleGenerator(searchMode),
                 ),
-                const SizedBox(width: 10),
-                const CircleAvatar(
-                  backgroundColor: AppConst.mainOrange,
-                )
-              ],
-            )
-          ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MyRoundButton(
+                    icon: Icons.search,
+                    onTap: (isSelected) {
+                      setState(() {
+                        searchMode = isSelected;
+                      });
+                      print(searchMode);
+                    },
+                    selectionStatus: searchMode,
+                  ),
+                  const SizedBox(width: 10),
+                  const CircleAvatar(
+                    backgroundColor: AppConst.mainOrange,
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

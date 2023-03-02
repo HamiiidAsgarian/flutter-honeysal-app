@@ -2,8 +2,9 @@ import 'package:bakery/view/widgets/my_rounded_chip.dart';
 import 'package:bakery/view/widgets/title_and_all.dart';
 import 'package:flutter/material.dart';
 
+import '../../consts.dart';
 import '../widgets/category_card.dart';
-import '../widgets/favorite_card.dart';
+import '../widgets/horizontal_card.dart';
 import '../widgets/nav_bar.dart';
 import '../widgets/statusbar.dart';
 
@@ -15,12 +16,11 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
         bottomNavigationBar: const MyNav(),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
           child: ListView(
             // crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
               Statusbar(),
-              SizedBox(height: 25),
               FavoritesSection(),
               OrderSection(),
               OrderSection(),
@@ -44,10 +44,15 @@ class _OrderSectionState extends State<OrderSection> {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      TitleAndAll(title: "Order", onPressAll: () {}),
+      Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: AppConst.appHorizontalPadding),
+          child: TitleAndAll(title: "Order", onPressAll: () {})),
       SizedBox(
-        height: 30,
+        height: 40,
         child: ListView.builder(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppConst.appHorizontalPadding),
             itemCount: 6,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
@@ -62,13 +67,13 @@ class _OrderSectionState extends State<OrderSection> {
                   selectionStatus: _selected == index ? true : false,
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Icon(
+                      children: const [
+                        Icon(
                           Icons.cookie,
-                          size: 10,
+                          size: 20,
                         ),
-                        const SizedBox(width: 7),
-                        Text("${index * 77}"),
+                        SizedBox(width: 7),
+                        Text("Cackes", style: AppConst.chipTextStyle),
                       ]),
                 ),
               );
@@ -76,8 +81,10 @@ class _OrderSectionState extends State<OrderSection> {
       ),
       const SizedBox(height: 15),
       SizedBox(
-          height: 300,
+          height: 330,
           child: ListView.builder(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppConst.appHorizontalPadding),
               itemCount: 15,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) => const CategoryCard()))
@@ -93,16 +100,22 @@ class FavoritesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 150,
+      height: 220,
       child: Column(
         children: [
-          TitleAndAll(title: ' Your favorite product', onPressAll: () {}),
+          Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppConst.appHorizontalPadding),
+              child: TitleAndAll(
+                  title: 'Your favorite product', onPressAll: () {})),
           Expanded(
               child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppConst.appHorizontalPadding),
                   scrollDirection: Axis.horizontal,
                   itemCount: 20,
                   itemBuilder: ((context, index) {
-                    return const FavoriteCard();
+                    return const HorizontalCard();
                   })))
         ],
       ),

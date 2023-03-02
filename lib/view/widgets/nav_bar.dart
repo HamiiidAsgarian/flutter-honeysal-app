@@ -8,7 +8,9 @@ class MyNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+      height: 70,
+      decoration: const BoxDecoration(color: AppConst.mainWhite, boxShadow: [
         BoxShadow(
           color: Color.fromARGB(36, 0, 0, 0),
           offset: Offset(0, -1),
@@ -16,8 +18,6 @@ class MyNav extends StatelessWidget {
           spreadRadius: 1,
         )
       ]),
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-      height: 60,
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: const [
@@ -55,8 +55,8 @@ class NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-        onPressed: () {
+    return GestureDetector(
+        onTap: () {
           onPress != null ? onPress!() : null;
         },
         child: Column(
