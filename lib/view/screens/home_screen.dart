@@ -1,9 +1,10 @@
-import 'package:bakery/consts.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';
+import 'package:bakery/view/widgets/title_and_all.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/category_card.dart';
 import '../widgets/favorite_card.dart';
+import '../widgets/nav_bar.dart';
 import '../widgets/statusbar.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -12,19 +13,20 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        bottomNavigationBar: const MyNav(),
         body: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-      child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Statusbar(),
-          SizedBox(height: 25),
-          FavoritesSection(),
-          OrderSection(),
-          OrderSection(),
-        ],
-      ),
-    ));
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+          child: ListView(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Statusbar(),
+              SizedBox(height: 25),
+              FavoritesSection(),
+              OrderSection(),
+              OrderSection(),
+            ],
+          ),
+        ));
   }
 }
 
@@ -80,32 +82,6 @@ class _OrderSectionState extends State<OrderSection> {
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) => const CategoryCard()))
     ]);
-  }
-}
-
-class TitleAndAll extends StatelessWidget {
-  final String title;
-  final Function onPressAll;
-  const TitleAndAll({
-    Key? key,
-    required this.title,
-    required this.onPressAll,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(child: Text(title, style: AppConst.sectionTitleStyle)),
-        TextButton(
-            onPressed: () => onPressAll(),
-            child: const Text(
-              "view All",
-              style: TextStyle(color: AppConst.mainOrange),
-            ))
-      ],
-    );
   }
 }
 

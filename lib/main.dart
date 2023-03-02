@@ -1,10 +1,9 @@
-import 'package:bakery/view/screens/home_screen.dart';
+import 'package:bakery/view/screens/details_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
   runApp(const MyApp());
 }
 
@@ -14,10 +13,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         scrollBehavior: MyScrollBehavior(),
         theme: ThemeData(
             fontFamily: "Poppins", scaffoldBackgroundColor: Colors.white),
-        home: const HomeScreen());
+        home: const DetailsScreen());
   }
 }
 

@@ -58,7 +58,7 @@ class CategoryCard extends StatelessWidget {
               ),
               RichText(
                 text: const TextSpan(
-                  text: '${0.99} ',
+                  text: '\$${0.99} ',
                   style: AppConst.productTitleStyle,
                   children: <TextSpan>[
                     TextSpan(
@@ -71,17 +71,7 @@ class CategoryCard extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                      width: double.infinity,
-                      child: MaterialButton(
-                          highlightColor: Colors.red,
-                          elevation: 0,
-                          splashColor: AppConst.mainOrange,
-                          color: AppConst.mainOrange,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0)),
-                          onPressed: () {},
-                          child: const Text("Add to Cart"))),
+                  MainButton(onPress: () {}),
                 ],
               )
             ],
@@ -97,6 +87,31 @@ class CategoryCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class MainButton extends StatelessWidget {
+  final Function onPress;
+  const MainButton({
+    Key? key,
+    required this.onPress,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        width: double.infinity,
+        height: 50,
+        child: MaterialButton(
+            highlightColor: AppConst.lightOrange,
+            elevation: 0,
+            splashColor: AppConst.lightOrange,
+            color: AppConst.mainOrange,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+            onPressed: () => onPress(),
+            child: const Text("Add to Cart",
+                style: AppConst.normalDescriptionStyle)));
   }
 }
 

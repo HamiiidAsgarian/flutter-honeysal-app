@@ -27,14 +27,14 @@ class MyRoundedChip extends StatelessWidget {
           // width: 60,
           // height: 10,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(25),
             color: selectionStatus == true
                 ? AppConst.lightOrange
                 : AppConst.whiteOrange,
             shape: BoxShape.rectangle,
           ),
           child: InkWell(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(25),
               onTap: () {
                 onTap(selectionStatus ?? false);
 
@@ -42,7 +42,8 @@ class MyRoundedChip extends StatelessWidget {
                 // selectionStatus = !selectionStatus;
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 7),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: Center(child: child),
               )),
         ),
