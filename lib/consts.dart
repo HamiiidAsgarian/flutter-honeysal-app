@@ -15,6 +15,9 @@ class AppConst {
   static const Color mainGrey = Color(0xFFb3b4b4);
   static const Color mainWhite = Color(0xFFFFFFFF);
 
+  static const Color mainGreen = Color.fromARGB(255, 81, 255, 0);
+  static const Color mainBlue = Color.fromARGB(255, 0, 162, 255);
+
   static const TextStyle normalDescriptionStyle = TextStyle(
       fontFamily: "Poppins",
       fontSize: 17,
@@ -52,6 +55,11 @@ class AppConst {
   static const TextStyle productSubtitleStyle = TextStyle(
       fontFamily: "Poppins",
       fontSize: 15,
+      color: Colors.grey,
+      fontWeight: FontWeight.w500);
+  static const TextStyle smallTextStyle = TextStyle(
+      fontFamily: "Poppins",
+      fontSize: 13,
       color: Colors.grey,
       fontWeight: FontWeight.w500);
 }

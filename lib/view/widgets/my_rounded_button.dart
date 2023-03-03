@@ -10,6 +10,8 @@ class MyRoundButton extends StatefulWidget {
   final double? width;
   final double? height;
   final Color? fillColor;
+  final Color selectedColor;
+
   final CutomRoundedButtonType? type;
 
   const MyRoundButton(
@@ -21,7 +23,8 @@ class MyRoundButton extends StatefulWidget {
       this.icon,
       this.width = 40,
       this.height = 40,
-      this.fillColor = Colors.transparent});
+      this.fillColor = Colors.transparent,
+      this.selectedColor = AppConst.mainOrange});
 
   @override
   State<MyRoundButton> createState() => _MyRoundButtonState();
@@ -51,7 +54,7 @@ class _MyRoundButtonState extends State<MyRoundButton> {
             border: Border.all(
                 color: (_selectionStatus == true &&
                         widget.type == CutomRoundedButtonType.switcher)
-                    ? AppConst.mainOrange
+                    ? widget.selectedColor
                     : AppConst.borderGrey,
                 width: 2),
             // color: Colors.grey,
@@ -70,7 +73,7 @@ class _MyRoundButtonState extends State<MyRoundButton> {
               widget.icon,
               color: (_selectionStatus == true &&
                       widget.type == CutomRoundedButtonType.switcher)
-                  ? AppConst.mainOrange
+                  ? widget.selectedColor
                   : AppConst.iconGrey,
               size: widget.iconSize,
             ),
