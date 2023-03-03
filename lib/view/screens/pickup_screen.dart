@@ -4,6 +4,8 @@ import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:bakery/view/widgets/nav_bar.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/time_and_date.dart';
+
 class PickupScreen extends StatelessWidget {
   const PickupScreen({super.key});
 
@@ -157,35 +159,7 @@ class OrderStage extends StatelessWidget {
             children: [
               Text(title, style: AppConst.normalDescriptionStyle),
               const SizedBox(height: 5),
-              Row(
-                children: [
-                  Container(
-                    // color: Colors.red,
-                    child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Icon(
-                          Icons.timer_outlined,
-                          color: AppConst.iconGrey,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(time, style: AppConst.smallTextStyle)
-                      ],
-                    ),
-                  ),
-                  // SizedBox(height: 5),
-                  Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      height: 20,
-                      child: const VerticalDivider(
-                        thickness: 2,
-                        width: 2,
-                        color: AppConst.borderGrey,
-                      )),
-                  Text(date, style: AppConst.smallTextStyle)
-                ],
-              )
+              TimeAndDate(time: time, date: date)
             ],
           ),
         )

@@ -1,5 +1,4 @@
-import 'package:bakery/view/screens/checkout_screen.dart';
-import 'package:bakery/view/screens/pickup_screen.dart';
+import 'package:bakery/view/screens/orders_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
         scrollBehavior: MyScrollBehavior(),
         theme: ThemeData(
             fontFamily: "Poppins", scaffoldBackgroundColor: Colors.white),
-        home: const PickupScreen());
+        home: const OrderScreen());
   }
 }
 
