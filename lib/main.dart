@@ -1,7 +1,6 @@
-import 'package:bakery/view/screens/details_screen.dart';
+import 'package:bakery/view/screens/checkout_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
         scrollBehavior: MyScrollBehavior(),
         theme: ThemeData(
             fontFamily: "Poppins", scaffoldBackgroundColor: Colors.white),
-        home: const DetailsScreen());
+        home: const CheckoutScreen());
   }
 }
 

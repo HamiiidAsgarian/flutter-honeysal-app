@@ -1,4 +1,3 @@
-import 'package:bakery/view/widgets/horizontal_card.dart';
 import 'package:bakery/view/widgets/heart_button.dart';
 import 'package:flutter/material.dart';
 
@@ -86,9 +85,7 @@ class CategoryCard extends StatelessWidget {
           Align(
             alignment: Alignment.topRight,
             child: HeartButton(
-              onTap: (isActive) {
-                print(isActive);
-              },
+              onTap: (isActive) {},
             ),
           ),
         ],

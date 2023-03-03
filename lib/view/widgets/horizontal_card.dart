@@ -35,22 +35,19 @@ class HorizontalCard extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Container(
-              // color: Colors.red,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: AspectRatio(
-                      // widthFactor: 1,
-                      aspectRatio: 1,
-                      child: Container(color: Colors.green),
-                    ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: AspectRatio(
+                    // widthFactor: 1,
+                    aspectRatio: 1,
+                    child: Container(color: Colors.green),
                   ),
-                  style == HorizontalCardStyle.counter
-                      ? SizedBox(height: 40, child: RoundConter())
-                      : SizedBox()
-                ],
-              ),
+                ),
+                style == HorizontalCardStyle.counter
+                    ? const SizedBox(height: 40, child: RoundConter())
+                    : const SizedBox()
+              ],
             ),
           ),
           const SizedBox(width: 5),
@@ -98,9 +95,7 @@ class HorizontalCard extends StatelessWidget {
             children: [
               style == HorizontalCardStyle.show
                   ? HeartButton(
-                      onTap: (isActive) {
-                        print(isActive);
-                      },
+                      onTap: (isActive) {},
                     )
                   : MyRoundButton(
                       onTap: (e) {},
@@ -114,9 +109,7 @@ class HorizontalCard extends StatelessWidget {
                       child: MyRoundButton(
                           icon: Icons.shopping_bag_outlined,
                           iconSize: 20,
-                          onTap: (isSelected) {
-                            print(isSelected);
-                          },
+                          onTap: (isSelected) {},
                           selectionStatus: false))
                   : const SizedBox(),
             ],

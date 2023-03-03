@@ -18,19 +18,16 @@ class CartScreen extends StatelessWidget {
             const SizedBox(height: 15),
             Expanded(
               flex: 2,
-              child: Container(
-                // color: Colors.red,
-                child: ListView.builder(
-                    itemBuilder: (context, index) => Container(
-                          padding: const EdgeInsets.only(
-                              top: 20,
-                              right: AppConst.appHorizontalPadding,
-                              left: AppConst.appHorizontalPadding),
-                          child: const HorizontalCard(
-                            style: HorizontalCardStyle.counter,
-                          ),
-                        )),
-              ),
+              child: ListView.builder(
+                  itemBuilder: (context, index) => Container(
+                        padding: const EdgeInsets.only(
+                            top: 20,
+                            right: AppConst.appHorizontalPadding,
+                            left: AppConst.appHorizontalPadding),
+                        child: const HorizontalCard(
+                          style: HorizontalCardStyle.counter,
+                        ),
+                      )),
             ),
             Expanded(
                 child: Container(

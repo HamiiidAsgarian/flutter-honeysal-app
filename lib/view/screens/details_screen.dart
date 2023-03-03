@@ -1,5 +1,4 @@
 import 'package:bakery/consts.dart';
-import 'package:bakery/main.dart';
 import 'package:bakery/view/widgets/category_card.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';

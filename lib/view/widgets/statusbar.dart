@@ -48,7 +48,6 @@ class _StatusbarState extends State<Statusbar> {
                       setState(() {
                         searchMode = isSelected;
                       });
-                      print(searchMode);
                     },
                     selectionStatus: searchMode,
                   ),
