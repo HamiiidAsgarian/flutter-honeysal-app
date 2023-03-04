@@ -1,4 +1,5 @@
 import 'package:bakery/view/screens/login_screen.dart';
+import 'package:bakery/view/screens/profile_screen.dart';
 import 'package:bakery/view/screens/signup_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         scrollBehavior: MyScrollBehavior(),
         theme: ThemeData(
             fontFamily: "Poppins", scaffoldBackgroundColor: Colors.white),
-        home: const SignUpScreen());
+        home: const ProfileScreen());
   }
 }
 

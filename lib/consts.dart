@@ -27,7 +27,7 @@ class AppConst {
 
   static const TextStyle normalDescriptionStyle = TextStyle(
       fontFamily: "Poppins",
-      fontSize: 17,
+      fontSize: 16,
       color: Colors.black,
       fontWeight: FontWeight.w500);
   static const TextStyle chipTextStyle = TextStyle(
