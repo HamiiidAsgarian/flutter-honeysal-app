@@ -248,10 +248,10 @@ class CustomTextInput extends StatelessWidget {
 
   const CustomTextInput(
       {super.key,
-      required this.mask,
+      this.mask,
       this.title = 'title',
-      required this.hint,
-      required this.suffix,
+      this.hint,
+      this.suffix,
       // required this.onPressIcon,
       this.fillColor,
       this.prefix,

@@ -1,3 +1,4 @@
+import 'package:bakery/view/screens/login_screen.dart';
 import 'package:bakery/view/screens/orders_screen.dart';
 import 'package:bakery/view/screens/start_screen.dart';
 import 'package:flutter/gestures.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         scrollBehavior: MyScrollBehavior(),
         theme: ThemeData(
             fontFamily: "Poppins", scaffoldBackgroundColor: Colors.white),
-        home: const StartScreen());
+        home: const LoginScreen());
   }
 }
 
