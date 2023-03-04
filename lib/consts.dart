@@ -18,6 +18,12 @@ class AppConst {
   static const Color mainGreen = Color.fromARGB(255, 81, 255, 0);
   static const Color mainBlue = Color.fromARGB(255, 0, 162, 255);
 
+  static const TextStyle barandTextStyle = TextStyle(
+      fontFamily: "Rooster",
+      fontSize: 50,
+      color: mainWhite,
+      fontWeight: FontWeight.w500);
+
   static const TextStyle normalDescriptionStyle = TextStyle(
       fontFamily: "Poppins",
       fontSize: 17,

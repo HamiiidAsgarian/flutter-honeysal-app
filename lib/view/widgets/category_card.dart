@@ -97,26 +97,42 @@ class CategoryCard extends StatelessWidget {
 class MainButton extends StatelessWidget {
   final Function onPress;
   final String title;
+  final Color fillColor;
+  final Color titleColor;
+
   const MainButton({
     Key? key,
     required this.onPress,
     this.title = "Add to Cart",
+    this.fillColor = AppConst.mainOrange,
+    this.titleColor = Colors.black,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+              color: fillColor.withOpacity(.3),
+              spreadRadius: .1,
+              blurRadius: 30)
+        ]),
         width: double.infinity,
         height: 50,
         child: MaterialButton(
             highlightColor: AppConst.lightOrange,
             elevation: 0,
             splashColor: AppConst.lightOrange,
-            color: AppConst.mainOrange,
+            color: fillColor,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
             onPressed: () => onPress(),
-            child: Text(title, style: AppConst.normalDescriptionStyle)));
+            child: Text(title,
+                style: TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 17,
+                    color: titleColor,
+                    fontWeight: FontWeight.w500))));
   }
 }
 
