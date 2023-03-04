@@ -5,21 +5,30 @@ import 'package:bakery/view/widgets/category_card.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+import '../widgets/mobile_text_input.dart';
+
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  String selectedPhoneCode = "+98";
+  final TextEditingController _phoneInputController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppbar(),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-            vertical: 20, horizontal: AppConst.appHorizontalPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Wellcome back!", style: AppConst.detailPriceStyle),
-            const Text("Log in to continue",
+          padding: const EdgeInsets.symmetric(
+              vertical: 20, horizontal: AppConst.appHorizontalPadding),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Text("Create account", style: AppConst.detailPriceStyle),
+            const Text("Sign up to continue",
                 style: AppConst.productSubtitleStyle),
             const SizedBox(height: 10),
             const CustomTextInput(
@@ -28,42 +37,40 @@ class LoginScreen extends StatelessWidget {
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 20),
+            MobileTextInput(
+              selectedPhoneCode: selectedPhoneCode,
+              onSelected: (String selected) {
+                setState(() {
+                  selectedPhoneCode = selected;
+                });
+              },
+              phoneInputController: _phoneInputController,
+            ),
+            const SizedBox(height: 20),
+
             const CustomTextInput(
               title: 'Password',
               hint: "Enter your password",
               keyboardType: TextInputType.visiblePassword,
             ),
-            const SizedBox(height: 10),
-            Container(
-              // color: Colors.red,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(children: [
-                    SizedBox(
-                      width: 18 * 1.2,
-                      child: Transform.scale(
-                        scale: 1.2,
-                        child: Checkbox(
-                            visualDensity: VisualDensity.compact,
-                            value: false,
-                            onChanged: (e) {}),
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    Text("Remember me",
-                        style: AppConst.productSubtitleStyle
-                            .copyWith(color: AppConst.mainBlack))
-                  ]),
-                  TextButton(
-                      onPressed: () {},
-                      child: Text("Forget password?",
-                          style: AppConst.productSubtitleStyle
-                              .copyWith(color: AppConst.burnedOrange)))
-                ],
-              ),
+            SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "• At least 8 characters",
+                  style: AppConst.smallTextStyle
+                      .copyWith(color: AppConst.mainGreen),
+                ),
+                Text(
+                  "• Include special characters",
+                  style: AppConst.smallTextStyle
+                      .copyWith(color: AppConst.mainGreen),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 50),
+
             Text.rich(TextSpan(children: [
               const TextSpan(
                   text: "By Continuing you agree to our ",
@@ -88,24 +95,9 @@ class LoginScreen extends StatelessWidget {
             ])),
 
             const SizedBox(height: 20),
-            MainButton(onPress: () {}, title: "Log in"),
-            // const SizedBox(height: 20),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 20),
-              width: double.infinity,
-              height: 5,
-              child: const Divider(
-                thickness: 2,
-                height: 1,
-                color: AppConst.borderGrey,
-              ),
-            ),
-            MainButton(
-              onPress: () {},
-              title: "Login with google",
-              fillColor: const Color.fromARGB(255, 255, 60, 0),
-            ),
+            MainButton(onPress: () {}, title: "Create account"),
             const SizedBox(height: 20),
+
             Center(
               child: Text.rich(TextSpan(children: [
                 const TextSpan(
@@ -121,9 +113,8 @@ class LoginScreen extends StatelessWidget {
                       }),
               ])),
             ),
-          ],
-        ),
-      ),
+            // const SizedBox(height: 20),
+          ])),
     );
   }
 }

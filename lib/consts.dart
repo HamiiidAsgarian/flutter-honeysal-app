@@ -16,7 +16,7 @@ class AppConst {
   static const Color mainWhite = Color(0xFFFFFFFF);
   static const Color mainBlack = Color(0xFF141414);
 
-  static const Color mainGreen = Color.fromARGB(255, 81, 255, 0);
+  static const Color mainGreen = Color(0xFF198155);
   static const Color mainBlue = Color.fromARGB(255, 0, 162, 255);
 
   static const TextStyle barandTextStyle = TextStyle(
