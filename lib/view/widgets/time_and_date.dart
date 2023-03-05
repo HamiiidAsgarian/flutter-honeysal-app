@@ -17,20 +17,17 @@ class TimeAndDate extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Container(
-          // color: Colors.red,
-          child: Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Icon(
-                Icons.timer_outlined,
-                color: AppConst.iconGrey,
-                size: 20,
-              ),
-              const SizedBox(width: 5),
-              Text(time, style: AppConst.smallTextStyle)
-            ],
-          ),
+        Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Icon(
+              Icons.timer_outlined,
+              color: AppConst.iconGrey,
+              size: 20,
+            ),
+            const SizedBox(width: 5),
+            Text(time, style: AppConst.smallTextStyle)
+          ],
         ),
         // SizedBox(height: 5),
         Container(

@@ -1,6 +1,5 @@
 import 'package:bakery/consts.dart';
 import 'package:bakery/view/screens/checkout_screen.dart';
-import 'package:bakery/view/screens/pickup_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:bakery/view/widgets/horizontal_card.dart';

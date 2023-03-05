@@ -1,15 +1,17 @@
-import 'package:bakery/view/screens/cart_screen.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:bakery/view/screens/checkout_screen.dart';
 import 'package:bakery/view/screens/details_screen.dart';
-import 'package:bakery/view/screens/home_screen.dart';
 import 'package:bakery/view/screens/login_screen.dart';
 import 'package:bakery/view/screens/orders_screen.dart';
-import 'package:bakery/view/screens/pickup_screen.dart';
 import 'package:bakery/view/screens/profile_screen.dart';
-import 'package:bakery/view/screens/signup_screen.dart';
 import 'package:bakery/view/screens/start_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
+import 'view/screens/cart_screen.dart';
+import 'view/screens/home_screen.dart';
+import 'view/screens/pickup_screen.dart';
+import 'view/screens/signup_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
         SignUpScreen.route: (context) => const SignUpScreen(),
         ProfileScreen.route: (context) => const ProfileScreen(),
       },
+      // home: Home(),
       debugShowCheckedModeBanner: false,
       scrollBehavior: MyScrollBehavior(),
       theme: ThemeData(

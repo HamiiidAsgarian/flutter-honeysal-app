@@ -36,34 +36,31 @@ class LoginScreen extends StatelessWidget {
               keyboardType: TextInputType.visiblePassword,
             ),
             const SizedBox(height: 10),
-            Container(
-              // color: Colors.red,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(children: [
-                    SizedBox(
-                      width: 18 * 1.2,
-                      child: Transform.scale(
-                        scale: 1.2,
-                        child: Checkbox(
-                            visualDensity: VisualDensity.compact,
-                            value: false,
-                            onChanged: (e) {}),
-                      ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(children: [
+                  SizedBox(
+                    width: 18 * 1.2,
+                    child: Transform.scale(
+                      scale: 1.2,
+                      child: Checkbox(
+                          visualDensity: VisualDensity.compact,
+                          value: false,
+                          onChanged: (e) {}),
                     ),
-                    const SizedBox(width: 5),
-                    Text("Remember me",
+                  ),
+                  const SizedBox(width: 5),
+                  Text("Remember me",
+                      style: AppConst.productSubtitleStyle
+                          .copyWith(color: AppConst.mainBlack))
+                ]),
+                TextButton(
+                    onPressed: () {},
+                    child: Text("Forget password?",
                         style: AppConst.productSubtitleStyle
-                            .copyWith(color: AppConst.mainBlack))
-                  ]),
-                  TextButton(
-                      onPressed: () {},
-                      child: Text("Forget password?",
-                          style: AppConst.productSubtitleStyle
-                              .copyWith(color: AppConst.burnedOrange)))
-                ],
-              ),
+                            .copyWith(color: AppConst.burnedOrange)))
+              ],
             ),
             const SizedBox(height: 20),
             Text.rich(TextSpan(children: [

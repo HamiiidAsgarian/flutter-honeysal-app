@@ -77,7 +77,7 @@ class DeliveryStage extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Track Order",
                   style: AppConst.normalDescriptionStyle,
                 ),
@@ -154,16 +154,13 @@ class OrderStage extends StatelessWidget {
       children: [
         leading != null ? leading! : const SizedBox(),
         const SizedBox(width: 10),
-        Container(
-          // color: Colors.blue,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: AppConst.normalDescriptionStyle),
-              const SizedBox(height: 5),
-              TimeAndDate(time: time, date: date)
-            ],
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: AppConst.normalDescriptionStyle),
+            const SizedBox(height: 5),
+            TimeAndDate(time: time, date: date)
+          ],
         )
       ],
     );
@@ -177,33 +174,31 @@ class DeliveryTimeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Text("Estimated DElivery",
-              style: AppConst.normalDescriptionStyle),
-          const SizedBox(height: 15),
-          SizedBox(
-            height: 40,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text("1 jan 2022", style: AppConst.detailPriceStyle),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: VerticalDivider(
-                    width: 3,
-                    thickness: 2,
-                    color: AppConst.borderGrey,
-                  ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Text("Estimated DElivery",
+            style: AppConst.normalDescriptionStyle),
+        const SizedBox(height: 15),
+        SizedBox(
+          height: 40,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Text("1 jan 2022", style: AppConst.detailPriceStyle),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25),
+                child: VerticalDivider(
+                  width: 3,
+                  thickness: 2,
+                  color: AppConst.borderGrey,
                 ),
-                Text("05:00 Am", style: AppConst.detailPriceStyle)
-              ],
-            ),
-          )
-        ],
-      ),
+              ),
+              Text("05:00 Am", style: AppConst.detailPriceStyle)
+            ],
+          ),
+        )
+      ],
     );
   }
 }

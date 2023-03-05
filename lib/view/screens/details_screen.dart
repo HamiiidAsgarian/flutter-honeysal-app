@@ -4,6 +4,7 @@ import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/nav_bar.dart';
 import 'cart_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      bottomNavigationBar: MyNav(),
       // bottomNavigationBar: const MyNav(),
       body: CustomScrollView(
         physics:

@@ -55,7 +55,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               hint: "Enter your password",
               keyboardType: TextInputType.visiblePassword,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
