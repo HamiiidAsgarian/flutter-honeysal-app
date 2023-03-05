@@ -1,6 +1,13 @@
+import 'package:bakery/view/screens/cart_screen.dart';
+import 'package:bakery/view/screens/checkout_screen.dart';
+import 'package:bakery/view/screens/details_screen.dart';
+import 'package:bakery/view/screens/home_screen.dart';
 import 'package:bakery/view/screens/login_screen.dart';
+import 'package:bakery/view/screens/orders_screen.dart';
+import 'package:bakery/view/screens/pickup_screen.dart';
 import 'package:bakery/view/screens/profile_screen.dart';
 import 'package:bakery/view/screens/signup_screen.dart';
+import 'package:bakery/view/screens/start_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -17,11 +24,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        scrollBehavior: MyScrollBehavior(),
-        theme: ThemeData(
-            fontFamily: "Poppins", scaffoldBackgroundColor: Colors.white),
-        home: const ProfileScreen());
+      routes: {
+        HomeScreen.route: (context) => const HomeScreen(),
+        DetailsScreen.route: (context) => const DetailsScreen(),
+        CartScreen.route: (context) => const CartScreen(),
+        CheckoutScreen.route: (context) => const CheckoutScreen(),
+        PickupScreen.route: (context) => const PickupScreen(),
+        OrderScreen.route: (context) => const OrderScreen(),
+        StartScreen.route: (context) => const StartScreen(),
+        LoginScreen.route: (context) => const LoginScreen(),
+        SignUpScreen.route: (context) => const SignUpScreen(),
+        ProfileScreen.route: (context) => const ProfileScreen(),
+      },
+      debugShowCheckedModeBanner: false,
+      scrollBehavior: MyScrollBehavior(),
+      theme: ThemeData(
+          fontFamily: "Poppins", scaffoldBackgroundColor: Colors.white),
+      // home: const ProfileScreen()
+    );
   }
 }
 

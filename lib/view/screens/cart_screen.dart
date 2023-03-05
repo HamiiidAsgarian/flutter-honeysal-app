@@ -1,17 +1,23 @@
 import 'package:bakery/consts.dart';
+import 'package:bakery/view/screens/checkout_screen.dart';
+import 'package:bakery/view/screens/pickup_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
-import 'package:bakery/view/widgets/category_card.dart';
+import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:bakery/view/widgets/horizontal_card.dart';
 import 'package:bakery/view/widgets/nav_bar.dart';
 import 'package:flutter/material.dart';
 
 class CartScreen extends StatelessWidget {
+  static String route = "/CartScreen";
+
   const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const CustomAppbar(),
+        appBar: const CustomAppbar(
+          title: "Cart",
+        ),
         bottomNavigationBar: const MyNav(),
         body: Column(
           children: [
@@ -55,7 +61,12 @@ class CartScreen extends StatelessWidget {
                           price: "\$${29.8}",
                           style: RecieptRowStyle.bold,
                         ),
-                        MainButton(onPress: () {}, title: "Checkout")
+                        MainButton(
+                            onPress: () {
+                              Navigator.pushNamed(
+                                  context, CheckoutScreen.route);
+                            },
+                            title: "Checkout")
                       ],
                     )))
           ],

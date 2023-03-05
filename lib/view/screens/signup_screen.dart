@@ -1,13 +1,15 @@
 import 'package:bakery/consts.dart';
 import 'package:bakery/view/screens/checkout_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
-import 'package:bakery/view/widgets/category_card.dart';
+import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/mobile_text_input.dart';
 
 class SignUpScreen extends StatefulWidget {
+  static String route = "/SignUpScreen";
+
   const SignUpScreen({super.key});
 
   @override

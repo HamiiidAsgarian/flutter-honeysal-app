@@ -7,6 +7,8 @@ import '../widgets/nav_bar.dart';
 import '../widgets/time_and_date.dart';
 
 class OrderScreen extends StatelessWidget {
+  static String route = "/OrderScreen";
+
   const OrderScreen({super.key});
 
   @override

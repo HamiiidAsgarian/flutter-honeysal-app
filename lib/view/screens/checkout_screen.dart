@@ -1,15 +1,18 @@
 import 'package:bakery/consts.dart';
+import 'package:bakery/view/screens/pickup_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-import '../widgets/category_card.dart';
+import '../widgets/vertical_card.dart';
 import '../widgets/mobile_text_input.dart';
 import 'cart_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
+  static String route = "/CheckoutScreen";
+
   const CheckoutScreen({super.key});
 
   @override
@@ -189,7 +192,11 @@ class CostsSection extends StatelessWidget {
               price: "\$${29.8}",
               style: RecieptRowStyle.bold,
             ),
-            MainButton(onPress: () {}, title: "Checkout")
+            MainButton(
+                onPress: () {
+                  Navigator.pushNamed(context, PickupScreen.route);
+                },
+                title: "Checkout")
           ],
         ));
   }

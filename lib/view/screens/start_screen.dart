@@ -1,8 +1,10 @@
 import 'package:bakery/consts.dart';
-import 'package:bakery/view/widgets/category_card.dart';
+import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:flutter/material.dart';
 
 class StartScreen extends StatelessWidget {
+  static String route = "/StartScreen";
+
   const StartScreen({super.key});
 
   @override

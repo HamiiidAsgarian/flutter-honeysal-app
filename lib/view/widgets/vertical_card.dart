@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../consts.dart';
 
-class CategoryCard extends StatelessWidget {
-  const CategoryCard({
+class VertivalCard extends StatelessWidget {
+  const VertivalCard({
     Key? key,
   }) : super(key: key);
 
@@ -14,6 +14,7 @@ class CategoryCard extends StatelessWidget {
       width: 170,
       // height: 320,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      // margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(5),
@@ -24,7 +25,6 @@ class CategoryCard extends StatelessWidget {
                 color: Color.fromARGB(110, 180, 180, 180),
                 spreadRadius: 2)
           ]),
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       child: Stack(
         children: [
           Column(

@@ -1,11 +1,13 @@
 import 'package:bakery/consts.dart';
 import 'package:bakery/view/screens/checkout_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
-import 'package:bakery/view/widgets/category_card.dart';
+import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
+  static String route = "/LoginScreen";
+
   const LoginScreen({super.key});
 
   @override

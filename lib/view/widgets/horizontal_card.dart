@@ -22,6 +22,7 @@ class HorizontalCard extends StatelessWidget {
           ? MediaQuery.of(context).size.width - 50
           : double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      // margin: EdgeInsets.all(7),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(5),

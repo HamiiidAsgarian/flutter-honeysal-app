@@ -1,5 +1,5 @@
 import 'package:bakery/consts.dart';
-import 'package:bakery/view/widgets/category_card.dart';
+import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'cart_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
+  static String route = "/DetailsScreen";
+
   const DetailsScreen({super.key});
 
   @override
@@ -21,7 +23,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       body: CustomScrollView(
         physics:
             BouncingScrollPhysics(), //This sliver just provides appbar navigation and product image and background
-        slivers: [ProductDetailHeaderSliver(), ProductDetailDataSliver()],
+        slivers: [ProductDetailAppbarSliver(), ProductDetailDataSliver()],
       ),
     );
   }
@@ -42,61 +44,20 @@ class ProductDetailDataSliver extends StatelessWidget {
           child: Column(
             children: [
               const DetailsTitle(),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               const DetailsInfo(),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               const DetailsCounter(),
-              const SizedBox(
-                height: 20,
-              ),
-              MainButton(onPress: () {
-                showDialog(
-                    context: context,
-                    builder: ((context) => AlertDialog(
-                          actionsPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 20),
-                          backgroundColor: AppConst.mainWhite,
-                          title: Stack(children: [
-                            const Center(
-                                child: Text("Success!",
-                                    style: AppConst.detailPriceStyle)),
-                            Align(
-                                alignment: Alignment.centerRight,
-                                child: GestureDetector(
-                                    child: const Icon(Icons.close, size: 25),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    }))
-                          ]),
-                          content: const Text(
-                            "You successfully added the item to cart!",
-                            style: AppConst.normalDescriptionStyle,
-                            textAlign: TextAlign.center,
-                          ),
-                          actions: [
-                            MainButton(onPress: () {}),
-                            Center(
-                              child: TextButton(
-                                  onPressed: () {},
-                                  child: Text("Continue Shopping",
-                                      style: AppConst.normalDescriptionStyle
-                                          .copyWith(
-                                              color: AppConst.burnedOrange))),
-                            )
-                          ],
-                        )));
+              const SizedBox(height: 20),
+              MainButton(onPress: () async {
+                await onpressAddtoCart(context);
+                // print("$a ************");
+                // if (a == true) {
+                // }
               }),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               const Text(desc, style: AppConst.normalDescriptionStyle),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               const CustomExpansionTile(title: 'Ingredients'),
               const CustomExpansionTile(title: 'Allergens'),
             ],
@@ -106,10 +67,55 @@ class ProductDetailDataSliver extends StatelessWidget {
 
   static const String desc =
       'read, baked food product made of flour or meal that is moistened, kneaded, and sometimes fermented. A major food since prehistoric times, it has been made in various forms using a variety of ingredients and methods throughout the world.';
+
+  onpressAddtoCart(context) {
+    showDialog(
+      context: context,
+      builder: ((dialogContext) => AlertDialog(
+            actionsPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            backgroundColor: AppConst.mainWhite,
+            title: Stack(children: [
+              const Center(
+                  child: Text("Success!", style: AppConst.detailPriceStyle)),
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                      child: const Icon(Icons.close, size: 25),
+                      onTap: () {
+                        Navigator.pop(context);
+                      }))
+            ]),
+            content: const Text(
+              "You successfully added the item to cart!",
+              style: AppConst.normalDescriptionStyle,
+              textAlign: TextAlign.center,
+            ),
+            actions: [
+              MainButton(
+                  title: "Go to cart",
+                  onPress: () {
+                    Navigator.pushReplacementNamed(
+                        dialogContext, CartScreen.route);
+                    // Navigator.pop(dialogContext, true);
+                  }),
+              Center(
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+                    },
+                    child: Text("Continue Shopping",
+                        style: AppConst.normalDescriptionStyle
+                            .copyWith(color: AppConst.burnedOrange))),
+              )
+            ],
+          )),
+    );
+  }
 }
 
-class ProductDetailHeaderSliver extends StatelessWidget {
-  const ProductDetailHeaderSliver({
+class ProductDetailAppbarSliver extends StatelessWidget {
+  const ProductDetailAppbarSliver({
     Key? key,
   }) : super(key: key);
 
@@ -143,10 +149,7 @@ class ProductDetailHeaderSliver extends StatelessWidget {
             icon: Icons.arrow_back_ios_outlined,
             fillColor: AppConst.mainWhite,
             onTap: (bool isSelected) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: ((context) => const CartScreen())));
+              Navigator.pop(context);
             },
             selectionStatus: false,
           ),

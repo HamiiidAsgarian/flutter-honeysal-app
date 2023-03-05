@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import '../widgets/time_and_date.dart';
 
 class PickupScreen extends StatelessWidget {
+  static String route = "/PickupScreen";
+
   const PickupScreen({super.key});
 
   @override

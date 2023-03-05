@@ -6,6 +6,8 @@ import '../widgets/app_bar.dart';
 import '../widgets/nav_bar.dart';
 
 class ProfileScreen extends StatelessWidget {
+  static String route = "/ProfileScreen";
+
   const ProfileScreen({super.key});
 
   @override

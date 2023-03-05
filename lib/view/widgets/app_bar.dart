@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import '../../consts.dart';
 
 class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
+  final double bottomsWithHeight;
+  final double bottomsPaddings;
+  final String? title;
+
   const CustomAppbar({
     Key? key,
     this.bottomsWithHeight = 75,
     this.bottomsPaddings = 25,
+    this.title,
   }) : super(key: key);
-  final double bottomsWithHeight;
-  final double bottomsPaddings;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,12 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: AppConst.mainWhite,
       toolbarHeight: bottomsWithHeight,
       centerTitle: true,
-      title: const Text("Cart", style: AppConst.normalDescriptionStyle),
+      title: title != null
+          ? Padding(
+              padding: const EdgeInsets.only(top: 25),
+              child: Text(title!, style: AppConst.normalDescriptionStyle),
+            )
+          : null,
       leadingWidth: bottomsWithHeight,
       leading: Container(
         // color: Colors.red,
