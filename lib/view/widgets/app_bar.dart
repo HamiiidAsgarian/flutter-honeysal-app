@@ -7,12 +7,14 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   final double bottomsWithHeight;
   final double bottomsPaddings;
   final String? title;
+  final Widget? action;
 
   const CustomAppbar({
     Key? key,
     this.bottomsWithHeight = 75,
     this.bottomsPaddings = 25,
     this.title,
+    this.action,
   }) : super(key: key);
 
   @override
@@ -45,20 +47,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      actions: [
-        Container(
-          width: bottomsWithHeight,
-          padding:
-              EdgeInsets.only(right: bottomsPaddings, top: bottomsPaddings),
-          // color: Colors.red,
-          child: MyRoundButton(
-            icon: Icons.filter_alt_outlined,
-            fillColor: AppConst.mainWhite,
-            onTap: (bool isSelected) {},
-            selectionStatus: false,
-          ),
-        ),
-      ],
+      actions: [action ?? const SizedBox()],
     );
   }
 

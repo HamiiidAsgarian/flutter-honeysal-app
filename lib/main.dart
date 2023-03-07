@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:bakery/view/screens/all_products_screen.dart';
 import 'package:bakery/view/screens/checkout_screen.dart';
 import 'package:bakery/view/screens/details_screen.dart';
 import 'package:bakery/view/screens/login_screen.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        NavScreen.route: (context) => const NavScreen(),
+        // NavScreen.route: (context) => const NavScreen(),
         HomeScreen.route: (context) => const HomeScreen(),
         DetailsScreen.route: (context) => const DetailsScreen(),
         CartScreen.route: (context) => const CartScreen(),
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         SignUpScreen.route: (context) => const SignUpScreen(),
         ProfileScreen.route: (context) => const ProfileScreen(),
       },
+      home: AllProductsScreen(),
       debugShowCheckedModeBanner: false,
       scrollBehavior: MyScrollBehavior(),
       theme: ThemeData(
