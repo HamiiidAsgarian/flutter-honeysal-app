@@ -8,12 +8,14 @@ import 'package:bakery/view/screens/profile_screen.dart';
 import 'package:bakery/view/screens/start_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'view/screens/cart_screen.dart';
 import 'view/screens/home_screen.dart';
 import 'view/screens/navigation_container_screen.dart';
 import 'view/screens/pickup_screen.dart';
 import 'view/screens/signup_screen.dart';
+import 'view_model/products_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,27 +29,36 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        NavScreen.route: (context) => const NavScreen(),
-        HomeScreen.route: (context) => const HomeScreen(),
-        AllProductsScreen.route: (context) => const AllProductsScreen(),
-        DetailsScreen.route: (context) => const DetailsScreen(),
-        CartScreen.route: (context) => const CartScreen(),
-        CheckoutScreen.route: (context) => const CheckoutScreen(),
-        PickupScreen.route: (context) => const PickupScreen(),
-        OrderScreen.route: (context) => const OrderScreen(),
-        StartScreen.route: (context) => const StartScreen(),
-        LoginScreen.route: (context) => const LoginScreen(),
-        SignUpScreen.route: (context) => const SignUpScreen(),
-        ProfileScreen.route: (context) => const ProfileScreen(),
-      },
-      // home: AllProductsScreen(),
-      debugShowCheckedModeBanner: false,
-      scrollBehavior: MyScrollBehavior(),
-      theme: ThemeData(
-          fontFamily: "Poppins", scaffoldBackgroundColor: Colors.white),
-    );
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => ProductBloc(),
+          ),
+          // BlocProvider(
+          //   create: (context) => SubjectBloc(),
+          // ),
+        ],
+        child: MaterialApp(
+          routes: {
+            NavScreen.route: (context) => const NavScreen(),
+            HomeScreen.route: (context) => const HomeScreen(),
+            AllProductsScreen.route: (context) => const AllProductsScreen(),
+            DetailsScreen.route: (context) => const DetailsScreen(),
+            CartScreen.route: (context) => const CartScreen(),
+            CheckoutScreen.route: (context) => const CheckoutScreen(),
+            PickupScreen.route: (context) => const PickupScreen(),
+            OrderScreen.route: (context) => const OrderScreen(),
+            StartScreen.route: (context) => const StartScreen(),
+            LoginScreen.route: (context) => const LoginScreen(),
+            SignUpScreen.route: (context) => const SignUpScreen(),
+            ProfileScreen.route: (context) => const ProfileScreen(),
+          },
+          // home: AllProductsScreen(),
+          debugShowCheckedModeBanner: false,
+          scrollBehavior: MyScrollBehavior(),
+          theme: ThemeData(
+              fontFamily: "Poppins", scaffoldBackgroundColor: Colors.white),
+        ));
   }
 }
 
