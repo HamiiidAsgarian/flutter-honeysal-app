@@ -3,7 +3,6 @@ import 'package:bakery/view/screens/checkout_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:bakery/view/widgets/horizontal_card.dart';
-import 'package:bakery/view/widgets/nav_bar.dart';
 import 'package:flutter/material.dart';
 
 class CartScreen extends StatelessWidget {
@@ -17,7 +16,6 @@ class CartScreen extends StatelessWidget {
         appBar: const CustomAppbar(
           title: "Cart",
         ),
-        bottomNavigationBar: const MyNav(),
         body: Column(
           children: [
             const SizedBox(height: 15),
@@ -38,7 +36,6 @@ class CartScreen extends StatelessWidget {
                 child: Container(
                     width: double.infinity,
                     decoration: const BoxDecoration(
-                        // color: Colors.red,
                         border: Border(
                             top: BorderSide(color: AppConst.borderGrey))),
                     padding: const EdgeInsets.symmetric(

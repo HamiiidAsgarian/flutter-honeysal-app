@@ -3,7 +3,6 @@ import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/app_bar.dart';
-import '../widgets/nav_bar.dart';
 import '../widgets/time_and_date.dart';
 
 class OrderScreen extends StatelessWidget {
@@ -15,7 +14,7 @@ class OrderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppbar(),
-      bottomNavigationBar: const MyNav(),
+      // bottomNavigationBar: const MyNav(),
       body: ListView.builder(
           padding: const EdgeInsets.symmetric(
               horizontal: AppConst.appHorizontalPadding, vertical: 10),

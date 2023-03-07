@@ -2,68 +2,27 @@ import 'package:flutter/material.dart';
 
 import '../../consts.dart';
 
-class MyNav extends StatefulWidget {
-  const MyNav({super.key});
+class Nav extends StatelessWidget {
+  final int index;
 
-  @override
-  State<MyNav> createState() => _MyNavState();
-}
-
-class _MyNavState extends State<MyNav> {
-  @override
-  Widget build(BuildContext context) {
-    return const Nav(
-      inputs: [
-        NavItem(
-          icon: Icons.home,
-          tite: "Home",
-        ),
-        NavItem(
-          icon: Icons.card_travel_outlined,
-          tite: "Cart",
-        ),
-        NavItem(
-          icon: Icons.receipt_long_outlined,
-          tite: "Orders",
-        ),
-      ],
-    );
-  }
-}
-
-class Nav extends StatefulWidget {
+  final Function(int index) onTap;
   final List<Widget> inputs;
   const Nav({
     Key? key,
     required this.inputs,
+    required this.onTap,
+    required this.index,
   }) : super(key: key);
 
   @override
-  State<Nav> createState() => _NavState();
-}
-
-class _NavState extends State<Nav> {
-  int initIndex = 0;
-  late List<Widget> inputs;
-  // because there is [-1,0,1] in alighment gap
-  late double gapPerItems;
-
-  //list of calculated alignments based on gaps for Dynamic Selector to move to
-  List<double> alignVals = [];
-  //list of aligned inputs to place in the nav
-  List<Widget> options = [];
-
-  @override
-  void initState() {
-    inputs = widget.inputs;
-    gapPerItems = (2 / (inputs.length - 1));
-
-    alignAndOptionsPositionCreator();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    //list of calculated alignments based on gaps for Dynamic Selector to move to
+    double gapPerItems = (2 / (inputs.length - 1));
+    //list of aligned inputs to place in the nav
+    List alignAndPositions = alignAndOptionsPositionCreator(gapPerItems);
+    List<double> selectorStopPositions = alignAndPositions[0];
+    List<Widget> items = alignAndPositions[1];
+
     return Container(
       // padding: EdgeInsets.symmetric(horizontal: 0),
       decoration: const BoxDecoration(color: AppConst.mainWhite, boxShadow: [
@@ -79,7 +38,7 @@ class _NavState extends State<Nav> {
         children: [
           AnimatedContainer(
               curve: Curves.linearToEaseOut,
-              alignment: Alignment(alignVals[initIndex], 0),
+              alignment: Alignment(selectorStopPositions[index], 0),
               duration: const Duration(milliseconds: 300),
               child: Padding(
                 padding: const EdgeInsets.all(5),
@@ -88,7 +47,7 @@ class _NavState extends State<Nav> {
                   width: 75,
                   decoration: BoxDecoration(
                       borderRadius:
-                          borderRadiusDenerator(initIndex, inputs.length - 1),
+                          borderRadiusDenerator(index, inputs.length - 1),
                       color: AppConst.mainOrange),
                 ),
               )),
@@ -96,32 +55,29 @@ class _NavState extends State<Nav> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: options),
+                children: items),
           )
         ],
       ),
     );
   }
 
-  alignAndOptionsPositionCreator() {
+  alignAndOptionsPositionCreator(gapPerItems) {
     double temp = -1.0;
+    List<Widget> items = [];
+    List<double> alignVals = [];
+
     for (var i = 0; i < inputs.length; i++) {
-      //adding options
-      options.add(Align(
-        alignment: Alignment(temp, 0),
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              initIndex = i;
-            });
-          },
+      items.add(GestureDetector(
+        onTap: () {
+          onTap(i);
+        },
+        child: Align(
+          alignment: Alignment(temp, 0),
           child: SizedBox(
             width: 50,
             height: 50,
-            // color: Colors.red,
-            child: GestureDetector(
-              child: FittedBox(child: inputs[i]),
-            ),
+            child: FittedBox(child: inputs[i]),
           ),
         ),
       ));
@@ -129,6 +85,7 @@ class _NavState extends State<Nav> {
       alignVals.add(temp);
       temp = temp + gapPerItems;
     }
+    return [alignVals, items];
   }
 
   borderRadiusDenerator(int index, int itemsLength) {

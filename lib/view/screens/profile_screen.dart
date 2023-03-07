@@ -3,7 +3,6 @@ import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/app_bar.dart';
-import '../widgets/nav_bar.dart';
 
 class ProfileScreen extends StatelessWidget {
   static String route = "/ProfileScreen";
@@ -14,7 +13,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppbar(),
-      bottomNavigationBar: const MyNav(),
+      // bottomNavigationBar: const MyNav(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),

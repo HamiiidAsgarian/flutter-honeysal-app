@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 
 import 'view/screens/cart_screen.dart';
 import 'view/screens/home_screen.dart';
+import 'view/screens/navigation_container_screen.dart';
 import 'view/screens/pickup_screen.dart';
 import 'view/screens/signup_screen.dart';
 
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
+        NavScreen.route: (context) => const NavScreen(),
         HomeScreen.route: (context) => const HomeScreen(),
         DetailsScreen.route: (context) => const DetailsScreen(),
         CartScreen.route: (context) => const CartScreen(),
@@ -38,12 +40,10 @@ class MyApp extends StatelessWidget {
         SignUpScreen.route: (context) => const SignUpScreen(),
         ProfileScreen.route: (context) => const ProfileScreen(),
       },
-      // home: Home(),
       debugShowCheckedModeBanner: false,
       scrollBehavior: MyScrollBehavior(),
       theme: ThemeData(
           fontFamily: "Poppins", scaffoldBackgroundColor: Colors.white),
-      // home: const ProfileScreen()
     );
   }
 }

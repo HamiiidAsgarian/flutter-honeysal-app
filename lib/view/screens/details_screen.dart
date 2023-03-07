@@ -4,7 +4,6 @@ import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/nav_bar.dart';
 import 'cart_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
@@ -20,8 +19,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      bottomNavigationBar: MyNav(),
-      // bottomNavigationBar: const MyNav(),
       body: CustomScrollView(
         physics:
             BouncingScrollPhysics(), //This sliver just provides appbar navigation and product image and background
@@ -41,7 +38,6 @@ class ProductDetailDataSliver extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-          // height: 500,
           color: AppConst.mainWhite,
           child: Column(
             children: [
@@ -53,9 +49,6 @@ class ProductDetailDataSliver extends StatelessWidget {
               const SizedBox(height: 20),
               MainButton(onPress: () async {
                 await onpressAddtoCart(context);
-                // print("$a ************");
-                // if (a == true) {
-                // }
               }),
               const SizedBox(height: 20),
               const Text(desc, style: AppConst.normalDescriptionStyle),
@@ -99,7 +92,6 @@ class ProductDetailDataSliver extends StatelessWidget {
                   onPress: () {
                     Navigator.pushReplacementNamed(
                         dialogContext, CartScreen.route);
-                    // Navigator.pop(dialogContext, true);
                   }),
               Center(
                 child: TextButton(

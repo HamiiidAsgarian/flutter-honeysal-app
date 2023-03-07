@@ -1,7 +1,6 @@
 import 'package:bakery/consts.dart';
 import 'package:bakery/view/screens/pickup_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
-import 'package:bakery/view/widgets/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -31,7 +30,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: const CustomAppbar(),
-        bottomNavigationBar: const MyNav(),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(

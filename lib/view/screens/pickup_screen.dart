@@ -1,7 +1,6 @@
 import 'package:bakery/consts.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
-import 'package:bakery/view/widgets/nav_bar.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/time_and_date.dart';
@@ -15,7 +14,7 @@ class PickupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppbar(),
-      bottomNavigationBar: const MyNav(),
+      // bottomNavigationBar: const MyNav(),
       body: Padding(
         padding: const EdgeInsets.symmetric(
             horizontal: AppConst.appHorizontalPadding),

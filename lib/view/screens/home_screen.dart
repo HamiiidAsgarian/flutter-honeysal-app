@@ -8,29 +8,28 @@ import '../../consts.dart';
 import '../widgets/vertical_card.dart';
 import '../widgets/horizontal_card.dart';
 import '../widgets/my_rounded_button.dart';
-import '../widgets/nav_bar.dart';
 
 class HomeScreen extends StatelessWidget {
-  static String route = "/";
+  static String route = "/home";
 
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: const MyNav(),
+        // bottomNavigationBar: const MyNav(),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-          child: ListView(
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Statusbar(),
-              FavoritesSection(),
-              OrderSection(),
-              OrderSection(),
-            ],
-          ),
-        ));
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+      child: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Statusbar(),
+          FavoritesSection(),
+          OrderSection(),
+          OrderSection(),
+        ],
+      ),
+    ));
   }
 }
 
