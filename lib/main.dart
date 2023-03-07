@@ -29,8 +29,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        // NavScreen.route: (context) => const NavScreen(),
+        NavScreen.route: (context) => const NavScreen(),
         HomeScreen.route: (context) => const HomeScreen(),
+        AllProductsScreen.route: (context) => const AllProductsScreen(),
         DetailsScreen.route: (context) => const DetailsScreen(),
         CartScreen.route: (context) => const CartScreen(),
         CheckoutScreen.route: (context) => const CheckoutScreen(),
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
         SignUpScreen.route: (context) => const SignUpScreen(),
         ProfileScreen.route: (context) => const ProfileScreen(),
       },
-      home: AllProductsScreen(),
+      // home: AllProductsScreen(),
       debugShowCheckedModeBanner: false,
       scrollBehavior: MyScrollBehavior(),
       theme: ThemeData(

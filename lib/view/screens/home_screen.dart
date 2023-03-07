@@ -1,3 +1,4 @@
+import 'package:bakery/view/screens/all_products_screen.dart';
 import 'package:bakery/view/screens/details_screen.dart';
 import 'package:bakery/view/screens/profile_screen.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';
@@ -203,7 +204,11 @@ class _OrderSectionState extends State<OrderSection> {
       Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: AppConst.appHorizontalPadding),
-          child: TitleAndAll(title: "Order", onPressAll: () {})),
+          child: TitleAndAll(
+              title: "Order",
+              onPressAll: () {
+                Navigator.pushNamed(context, AllProductsScreen.route);
+              })),
       SizedBox(
         height: 40,
         child: ListView.builder(
