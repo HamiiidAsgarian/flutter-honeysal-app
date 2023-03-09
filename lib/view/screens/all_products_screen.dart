@@ -1,14 +1,27 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/material.dart';
+
 import 'package:bakery/view/screens/details_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/vertical_card.dart';
-import 'package:flutter/material.dart';
+
+import '../../model/core_models/product_model.dart';
 
 class AllProductsScreen extends StatelessWidget {
   static String route = '/AllProducts';
+
   const AllProductsScreen({super.key});
+
+  // final List<Product> items;
+  // const AllProductsScreen({
+  //   Key? key,
+  //   this.items = const [],
+  // }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final List<Product> items =
+        ModalRoute.of(context)!.settings.arguments as List<Product>;
     return Scaffold(
         appBar: const CustomAppbar(
           title: "All Procusts",
@@ -19,6 +32,7 @@ class AllProductsScreen extends StatelessWidget {
             Row(children: const []),
             Expanded(
                 child: GridView.builder(
+                    itemCount: items.length,
                     // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                     gridDelegate:
                         const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -28,13 +42,24 @@ class AllProductsScreen extends StatelessWidget {
                             childAspectRatio: 1 / 2),
                     // crossAxisCount: 2,
 
-                    itemBuilder: (context, index) => Container(
-                        padding: const EdgeInsets.all(5),
-                        child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, DetailsScreen.route);
-                            },
-                            child: const VertivalCard()))))
+                    itemBuilder: (context, index) {
+                      return Container(
+                          padding: const EdgeInsets.all(5),
+                          child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            DetailsScreen(item: items[index])));
+                                // Navigator.pushNamed(
+                                //     context, DetailsScreen.route,
+                                //     arguments: items[index]);
+                              },
+                              child: VertivalCard(
+                                data: items[index],
+                              )));
+                    }))
           ]),
         ));
   }

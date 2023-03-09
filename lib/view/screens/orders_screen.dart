@@ -2,13 +2,15 @@ import 'package:bakery/consts.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:flutter/material.dart';
 
+import '../../model/core_models/order_model.dart';
+import '../../model/core_models/product_model.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/time_and_date.dart';
 
 class OrderScreen extends StatelessWidget {
   static String route = "/OrderScreen";
-
-  const OrderScreen({super.key});
+  final List<Order> data;
+  const OrderScreen({super.key, this.data = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -16,21 +18,24 @@ class OrderScreen extends StatelessWidget {
       appBar: const CustomAppbar(),
       // bottomNavigationBar: const MyNav(),
       body: ListView.builder(
+          itemCount: data.length,
           padding: const EdgeInsets.symmetric(
               horizontal: AppConst.appHorizontalPadding, vertical: 10),
-          itemCount: 5,
-          itemBuilder: (context, index) => const Padding(
-              padding: EdgeInsets.only(bottom: 20), child: OrderCard())),
+          itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: OrderCard(data: data[index]))),
     );
   }
 }
 
 class OrderCard extends StatelessWidget {
+  final Order data;
   // final String orderNumber;
   // final String price;
   // final List
   const OrderCard({
     Key? key,
+    required this.data,
   }) : super(key: key);
 
   @override
@@ -39,9 +44,7 @@ class OrderCard extends StatelessWidget {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: const [
-            Text("Ongoing", style: AppConst.normalDescriptionStyle)
-          ],
+          children: [Text(data.stage, style: AppConst.normalDescriptionStyle)],
         ),
         const SizedBox(height: 15),
         Container(
@@ -58,17 +61,19 @@ class OrderCard extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text("Order#: 18889899", style: AppConst.sectionTitleStyle),
-                    Text("\$${3.28}", style: AppConst.sectionTitleStyle)
+                  children: [
+                    Text("Order#: ${data.id}",
+                        style: AppConst.sectionTitleStyle),
+                    Text("\$${data.totalCost}",
+                        style: AppConst.sectionTitleStyle)
                   ],
                 ),
                 const SizedBox(height: 5),
-                const TimeAndDate(time: "09:45 PM", date: "31 Dec 2021"),
+                TimeAndDate(time: data.time, date: data.date),
                 const SizedBox(height: 10),
                 Column(
                     // itemCount: 5,
-                    children: List.generate(2, (index) {
+                    children: List.generate(data.products.length, (index) {
                   return Column(
                     children: [
                       index == 0
@@ -81,7 +86,7 @@ class OrderCard extends StatelessWidget {
                                 height: 2,
                                 color: AppConst.borderGrey,
                               )),
-                      const OrderFactorItem()
+                      OrderFactorItem(data: data.products[index])
                     ],
                   );
                 })),
@@ -103,8 +108,10 @@ class OrderCard extends StatelessWidget {
 }
 
 class OrderFactorItem extends StatelessWidget {
+  final Product data;
   const OrderFactorItem({
     Key? key,
+    required this.data,
   }) : super(key: key);
 
   @override
@@ -118,14 +125,15 @@ class OrderFactorItem extends StatelessWidget {
               width: 75,
               height: 75,
               color: Colors.green,
+              child: Image.network(data.imageUrl),
             ),
             const SizedBox(
               width: 10,
             ),
-            const Text("Wheat Bread X2", style: AppConst.normalDescriptionStyle)
+            Text(data.title, style: AppConst.normalDescriptionStyle)
           ],
         ),
-        const Text("\$${2.99}", style: AppConst.sectionTitleStyle)
+        Text("\$${data.price}", style: AppConst.sectionTitleStyle)
       ],
     );
   }

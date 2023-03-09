@@ -1,8 +1,9 @@
-import 'package:bakery/model/product_model.dart';
-import 'package:bakery/view_model/products_bloc.dart';
+import 'package:bakery/model/app_initializer.dart';
+import 'package:bakery/model/core_models/order_model.dart';
+import 'package:bakery/model/core_models/product_model.dart';
+import 'package:bakery/model/home_elements_models/home_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../widgets/nav_bar.dart';
 import 'cart_screen.dart';
@@ -19,43 +20,59 @@ class NavScreen extends StatefulWidget {
 
 class _NavScreenState extends State<NavScreen> {
   int selected = 0;
+  late AppInitializer appInit;
+  @override
+  void initState() {
+    appInit = AppInitializer();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<ProductBloc>(context).add(GetAllProducts());
-    var pages = [const HomeScreen(), const CartScreen(), const OrderScreen()];
+    late List<Widget> pages;
 
-    return BlocBuilder<ProductBloc, ProductState>(
-      builder: (context, state) {
-        if (state.products.isEmpty) {
+    return FutureBuilder(
+        future: appInit.getApiData(),
+        builder: ((context, snapshot) {
+          if (snapshot.hasData) {
+            appInit.updateTheState(context);
+            List<Product> favoriteData = appInit.appdata.favorites;
+
+            List<Product> cartData = appInit.appdata.cart;
+            List<Order> orderData = appInit.appdata.orders;
+            HomePageElements homeElements = appInit.appdata.homePageElements;
+            pages = [
+              HomeScreen(data: homeElements, favorites: favoriteData),
+              CartScreen(data: cartData),
+              OrderScreen(data: orderData)
+            ];
+            return Scaffold(
+                bottomNavigationBar: Nav(
+                  index: selected,
+                  onTap: (int index) {
+                    setState(() {
+                      selected = index;
+                    });
+                  },
+                  inputs: const [
+                    NavItem(
+                      icon: Icons.home,
+                      tite: "Home",
+                    ),
+                    NavItem(
+                      icon: Icons.card_travel_outlined,
+                      tite: "Cart",
+                    ),
+                    NavItem(
+                      icon: Icons.receipt_long_outlined,
+                      tite: "Orders",
+                    ),
+                  ],
+                ),
+                body: pages[selected]);
+          }
           return const CupertinoActivityIndicator();
-        }
-        return Scaffold(
-            bottomNavigationBar: Nav(
-              index: selected,
-              onTap: (int index) {
-                setState(() {
-                  selected = index;
-                });
-              },
-              inputs: const [
-                NavItem(
-                  icon: Icons.home,
-                  tite: "Home",
-                ),
-                NavItem(
-                  icon: Icons.card_travel_outlined,
-                  tite: "Cart",
-                ),
-                NavItem(
-                  icon: Icons.receipt_long_outlined,
-                  tite: "Orders",
-                ),
-              ],
-            ),
-            body: pages[selected]);
-      },
-    );
+        }));
   }
 }
 

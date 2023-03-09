@@ -3,13 +3,16 @@ import 'package:bakery/view/widgets/heart_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../consts.dart';
+import '../../model/core_models/product_model.dart';
 import 'my_rounded_button.dart';
 
 class HorizontalCard extends StatelessWidget {
   final HorizontalCardStyle? style;
+  final Product data;
   const HorizontalCard({
     Key? key,
     this.style = HorizontalCardStyle.show,
+    required this.data,
   }) : super(key: key);
 
   @override
@@ -37,12 +40,15 @@ class HorizontalCard extends StatelessWidget {
         children: [
           Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: AspectRatio(
                     // widthFactor: 1,
                     aspectRatio: 1,
-                    child: Container(color: Colors.green),
+                    child: Container(
+                        color: Colors.white,
+                        child: Image.network(data.imageUrl)),
                   ),
                 ),
                 style == HorizontalCardStyle.counter
@@ -58,29 +64,33 @@ class HorizontalCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("name of the chocolate",
-                    style: AppConst.productTitleStyle),
+                //data title
+                Text(data.title, style: AppConst.productTitleStyle),
                 Row(
                   children: [
-                    const Text("45 left", style: AppConst.productSubtitleStyle),
+                    //data left
+                    Text(data.left.toString(),
+                        style: AppConst.productSubtitleStyle),
                     const Text("  |  ", style: AppConst.productSubtitleStyle),
                     Row(
-                      children: const [
-                        Icon(
+                      children: [
+                        const Icon(
                           Icons.star_rounded,
                           color: AppConst.mainOrange,
                           size: 20,
                         ),
-                        Text("5.0", style: AppConst.productSubtitleStyle)
+                        //data rate
+                        Text(data.rate.toString(),
+                            style: AppConst.productSubtitleStyle)
                       ],
                     )
                   ],
                 ),
                 RichText(
-                  text: const TextSpan(
-                    text: '${0.99} ',
+                  text: TextSpan(
+                    text: '${data.price} ',
                     style: AppConst.productTitleStyle,
-                    children: <TextSpan>[
+                    children: const <TextSpan>[
                       TextSpan(
                         text: '/a piece',
                         style: AppConst.productSubtitleStyle,

@@ -2,10 +2,13 @@ import 'package:bakery/view/widgets/heart_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../consts.dart';
+import '../../model/core_models/product_model.dart';
 
 class VertivalCard extends StatelessWidget {
+  final Product data;
   const VertivalCard({
     Key? key,
+    required this.data,
   }) : super(key: key);
 
   @override
@@ -34,40 +37,41 @@ class VertivalCard extends StatelessWidget {
               AspectRatio(
                 // widthFactor: 1,
                 aspectRatio: 1,
-                child: Container(color: Colors.green),
+                child: Container(
+                    color: Colors.white, child: Image.network(data.imageUrl)),
               ),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Toast Bread",
-                        style: AppConst.productTitleStyle),
+                    Text(data.title, style: AppConst.productTitleStyle),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("45 left",
+                        Text("${data.left}",
                             style: AppConst.productSubtitleStyle),
                         const Text("  |  ",
                             style: AppConst.productSubtitleStyle),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Icon(
+                          children: [
+                            const Icon(
                               Icons.star_rounded,
                               color: AppConst.mainOrange,
                               size: 20,
                             ),
-                            Text("5.0", style: AppConst.productSubtitleStyle)
+                            Text("${data.rate}",
+                                style: AppConst.productSubtitleStyle)
                           ],
                         )
                       ],
                     ),
                     RichText(
-                      text: const TextSpan(
-                        text: '\$${0.99} ',
+                      text: TextSpan(
+                        text: '\$${data.price} ',
                         style: AppConst.productTitleStyle,
-                        children: <TextSpan>[
+                        children: const <TextSpan>[
                           TextSpan(
                             text: '/a piece',
                             style: AppConst.productSubtitleStyle,

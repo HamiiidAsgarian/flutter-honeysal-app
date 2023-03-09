@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppConst {
   static const double appHorizontalPadding = 20;
+  static const Color mainRed = Color(0xFFac3e20);
 
   static const Color burnedOrange = Color(0xFF977e3b);
 

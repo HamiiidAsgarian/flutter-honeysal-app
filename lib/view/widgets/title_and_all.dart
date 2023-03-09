@@ -21,7 +21,10 @@ class TitleAndAll extends StatelessWidget {
         children: [
           Expanded(child: Text(title, style: AppConst.sectionTitleStyle)),
           TextButton(
-              onPressed: () => onPressAll(),
+              onPressed: () {
+                print("asas");
+                onPressAll();
+              },
               child: Text("View All",
                   style: AppConst.chipTextStyle.copyWith(
                     color: AppConst.burnedOrange,

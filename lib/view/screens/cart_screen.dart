@@ -5,10 +5,14 @@ import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:bakery/view/widgets/horizontal_card.dart';
 import 'package:flutter/material.dart';
 
+import '../../model/core_models/product_model.dart';
+
 class CartScreen extends StatelessWidget {
   static String route = "/CartScreen";
 
-  const CartScreen({super.key});
+  final List<Product> data;
+
+  const CartScreen({super.key, this.data = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +26,15 @@ class CartScreen extends StatelessWidget {
             Expanded(
               flex: 2,
               child: ListView.builder(
+                  itemCount: data.length,
                   itemBuilder: (context, index) => Container(
                         padding: const EdgeInsets.only(
                             top: 20,
                             right: AppConst.appHorizontalPadding,
                             left: AppConst.appHorizontalPadding),
-                        child: const HorizontalCard(
+                        child: HorizontalCard(
                           style: HorizontalCardStyle.counter,
+                          data: data[index],
                         ),
                       )),
             ),

@@ -1,11 +1,19 @@
+import 'package:bakery/model/core_models/product_model.dart';
+import 'package:bakery/model/home_elements_models/promotion_model.dart';
 import 'package:bakery/view/screens/all_products_screen.dart';
 import 'package:bakery/view/screens/details_screen.dart';
 import 'package:bakery/view/screens/profile_screen.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';
+import 'package:bakery/view/widgets/promotion_card.dart';
 import 'package:bakery/view/widgets/title_and_all.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../consts.dart';
+import '../../model/home_elements_models/board_model.dart';
+import '../../model/home_elements_models/category_model.dart';
+import '../../model/home_elements_models/home_model.dart';
+import '../../view_model/favorite_bloc.dart';
 import '../widgets/vertical_card.dart';
 import '../widgets/horizontal_card.dart';
 import '../widgets/my_rounded_button.dart';
@@ -13,24 +21,65 @@ import '../widgets/my_rounded_button.dart';
 class HomeScreen extends StatelessWidget {
   static String route = "/home";
 
-  const HomeScreen({super.key});
+  final HomePageElements data;
+  final List<Product> favorites;
+
+  const HomeScreen({super.key, required this.data, this.favorites = const []});
 
   @override
   Widget build(BuildContext context) {
+    itemsMaker();
     return Scaffold(
-        // bottomNavigationBar: const MyNav(),
         body: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Statusbar(),
-          FavoritesSection(),
-          OrderSection(),
-          OrderSection(),
-        ],
+        children: [const Statusbar(), ...itemsMaker()],
       ),
     ));
+  }
+
+// To make elemnts structure of the screen based on data type and order
+  /// there are three main types of homepage elemnts including [Promotion],[BoardList],[CategoryList]
+  itemsMaker() {
+    List items = [];
+
+    for (var e in data.items) {
+      // print(e.imageUrl);
+      switch (e.runtimeType) {
+        case Promotion:
+          {
+            items.add(PromotionCard(data: e as Promotion));
+          }
+          break;
+        case BoardList:
+          {
+            items.add(
+              FavoritesSection(data: e as BoardList),
+            );
+          }
+          break;
+        case CategoryList:
+          {
+            items.add(OrderSection(data: e as CategoryList));
+          }
+          break;
+        default:
+      }
+    }
+    if (favorites.isNotEmpty) {
+      Widget facoriteBoardList = BlocBuilder<FavoriteBloc, FavoriteState>(
+        builder: (context, state) {
+          if (state.favoriteData.isNotEmpty) {
+            return FavoritesSection(
+                data: BoardList(items: state.favoriteData, title: "Favorites"));
+          }
+          return const SizedBox();
+        },
+      );
+      items.insert(1, facoriteBoardList);
+    }
+
+    return items;
   }
 }
 
@@ -149,8 +198,10 @@ class _StatusbarState extends State<Statusbar> {
 }
 
 class FavoritesSection extends StatelessWidget {
+  final BoardList data;
   const FavoritesSection({
     Key? key,
+    required this.data,
   }) : super(key: key);
 
   @override
@@ -163,13 +214,17 @@ class FavoritesSection extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                   horizontal: AppConst.appHorizontalPadding),
               child: TitleAndAll(
-                  title: 'Your favorite product', onPressAll: () {})),
+                  title: data.title,
+                  onPressAll: () {
+                    Navigator.pushNamed(context, AllProductsScreen.route,
+                        arguments: data.items);
+                  })),
           Expanded(
               child: ListView.builder(
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppConst.appHorizontalPadding),
                   scrollDirection: Axis.horizontal,
-                  itemCount: 20,
+                  itemCount: data.items.length,
                   itemBuilder: ((context, index) {
                     //For separating cards and also to display top and bottom shadows
                     return Container(
@@ -177,9 +232,15 @@ class FavoritesSection extends StatelessWidget {
                             const EdgeInsets.only(right: 10, top: 7, bottom: 7),
                         child: GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, DetailsScreen.route);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DetailsScreen(
+                                          item: data.items[index])));
+                              // Navigator.pushNamed(context, DetailsScreen.route,
+                              //     arguments: data.items[index]);
                             },
-                            child: const HorizontalCard()));
+                            child: HorizontalCard(data: data.items[index])));
                   })))
         ],
       ),
@@ -188,8 +249,10 @@ class FavoritesSection extends StatelessWidget {
 }
 
 class OrderSection extends StatefulWidget {
+  final CategoryList data;
   const OrderSection({
     Key? key,
+    required this.data,
   }) : super(key: key);
 
   @override
@@ -197,7 +260,7 @@ class OrderSection extends StatefulWidget {
 }
 
 class _OrderSectionState extends State<OrderSection> {
-  int? _selected;
+  int _selected = 0;
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -205,16 +268,17 @@ class _OrderSectionState extends State<OrderSection> {
           padding: const EdgeInsets.symmetric(
               horizontal: AppConst.appHorizontalPadding),
           child: TitleAndAll(
-              title: "Order",
+              title: widget.data.title,
               onPressAll: () {
-                Navigator.pushNamed(context, AllProductsScreen.route);
+                Navigator.pushNamed(context, AllProductsScreen.route,
+                    arguments: widget.data.categories[_selected].items);
               })),
       SizedBox(
         height: 40,
         child: ListView.builder(
             padding: const EdgeInsets.symmetric(
                 horizontal: AppConst.appHorizontalPadding),
-            itemCount: 6,
+            itemCount: widget.data.categories.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return Padding(
@@ -228,13 +292,15 @@ class _OrderSectionState extends State<OrderSection> {
                   selectionStatus: _selected == index ? true : false,
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Icon(
-                          Icons.cookie,
-                          size: 20,
-                        ),
-                        SizedBox(width: 7),
-                        Text("Cackes", style: AppConst.chipTextStyle),
+                      children: [
+                        SizedBox(
+                            width: 25,
+                            height: 25,
+                            child: Image.network(
+                                widget.data.categories[index].iconUrl)),
+                        const SizedBox(width: 7),
+                        Text(widget.data.categories[index].title,
+                            style: AppConst.chipTextStyle),
                       ]),
                 ),
               );
@@ -246,15 +312,24 @@ class _OrderSectionState extends State<OrderSection> {
         child: ListView.builder(
           padding: const EdgeInsets.symmetric(
               horizontal: AppConst.appHorizontalPadding),
-          itemCount: 15,
+          itemCount: widget.data.categories[_selected].items.length,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) => Padding(
             padding: const EdgeInsets.only(right: 10, top: 7, bottom: 7),
             child: GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, DetailsScreen.route);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DetailsScreen(
+                              item: widget
+                                  .data.categories[_selected].items[index])));
+                  // Navigator.pushNamed(context, DetailsScreen.route,
+                  //     arguments:
+                  //         widget.data.categories[_selected].items[index]);
                 },
-                child: const VertivalCard()),
+                child: VertivalCard(
+                    data: widget.data.categories[_selected].items[index])),
           ),
         ),
       )

@@ -37,6 +37,19 @@ class Product {
     };
   }
 
+//temp
+  factory Product.filled() {
+    return Product(
+        id: 1,
+        title: "filled",
+        price: 898,
+        category: "category",
+        imageUrl: "imageUrl",
+        description: "description",
+        rate: 5,
+        left: 2);
+  }
+//temp
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
       id: map['id'] as int,
