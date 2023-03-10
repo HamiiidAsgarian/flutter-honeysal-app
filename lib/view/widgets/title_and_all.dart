@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../consts.dart';
 
 class TitleAndAll extends StatelessWidget {
@@ -22,7 +21,6 @@ class TitleAndAll extends StatelessWidget {
           Expanded(child: Text(title, style: AppConst.sectionTitleStyle)),
           TextButton(
               onPressed: () {
-                print("asas");
                 onPressAll();
               },
               child: Text("View All",

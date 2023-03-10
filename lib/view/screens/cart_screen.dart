@@ -3,7 +3,9 @@ import 'package:bakery/view/screens/checkout_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:bakery/view/widgets/horizontal_card.dart';
+import 'package:bakery/view_model/cart_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../model/core_models/product_model.dart';
 
@@ -11,13 +13,20 @@ class CartScreen extends StatelessWidget {
   static String route = "/CartScreen";
 
   final List<Product> data;
+  final bool backButton;
 
-  const CartScreen({super.key, this.data = const []});
+  const CartScreen({super.key, this.data = const [], this.backButton = false});
 
   @override
   Widget build(BuildContext context) {
+    int length = a(context).first.length;
+    List items2 = a(context)[0];
+    List items3 = a(context)[1];
+
+    print(items2);
     return Scaffold(
-        appBar: const CustomAppbar(
+        appBar: CustomAppbar(
+          backButton: backButton,
           title: "Cart",
         ),
         body: Column(
@@ -26,17 +35,22 @@ class CartScreen extends StatelessWidget {
             Expanded(
               flex: 2,
               child: ListView.builder(
-                  itemCount: data.length,
-                  itemBuilder: (context, index) => Container(
-                        padding: const EdgeInsets.only(
-                            top: 20,
-                            right: AppConst.appHorizontalPadding,
-                            left: AppConst.appHorizontalPadding),
-                        child: HorizontalCard(
+                  itemCount: length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      padding: const EdgeInsets.only(
+                          top: 20,
+                          right: AppConst.appHorizontalPadding,
+                          left: AppConst.appHorizontalPadding),
+                      child: HorizontalCard(
                           style: HorizontalCardStyle.counter,
-                          data: data[index],
-                        ),
-                      )),
+                          counterInitValue: items3[index],
+                          data: items2[index],
+                          onChangeCounter: (int index) {
+                            print(index);
+                          }),
+                    );
+                  }),
             ),
             Expanded(
                 child: Container(
@@ -50,17 +64,17 @@ class CartScreen extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const RecieptRow(
+                        RecieptRow(
                           title: "Subtotal",
-                          price: "\$${29.8}",
+                          price: "\$${totalSumCalc()[0]}",
                         ),
-                        const RecieptRow(
+                        RecieptRow(
                           title: "Discount",
-                          price: "\$${29.8}",
+                          price: "\$${totalSumCalc()[1]}",
                         ),
-                        const RecieptRow(
+                        RecieptRow(
                           title: "Total",
-                          price: "\$${29.8}",
+                          price: "\$${totalSumCalc()[2]}",
                           style: RecieptRowStyle.bold,
                         ),
                         MainButton(
@@ -73,6 +87,43 @@ class CartScreen extends StatelessWidget {
                     )))
           ],
         ));
+  }
+
+  List<List> a(context) {
+    Map<dynamic, int> temp = {};
+    List products = [];
+
+    List<Product> cartItems = BlocProvider.of<CartBloc>(context).state.cartData;
+
+    for (var element in cartItems) {
+      if (temp.containsKey("${element.title}${element.price}")) {
+        temp["${element.title}${element.price}"] =
+            temp["${element.title}${element.price}"]! + 1;
+      } else {
+        products.add(element);
+        temp["${element.title}${element.price}"] = 0;
+      }
+    }
+    return [products, temp.values.toList()];
+  }
+
+  List<String> totalSumCalc() {
+    double discountPercentage = 0.01;
+    double subTotal = 0;
+    double discount = 0;
+    double total = 0;
+
+    for (Product element in data) {
+      subTotal += element.price;
+    }
+
+    discount = (subTotal * discountPercentage);
+    total = subTotal - discount;
+    return [
+      subTotal.toStringAsFixed(2),
+      discount.toStringAsFixed(2),
+      total.toStringAsFixed(2)
+    ];
   }
 }
 

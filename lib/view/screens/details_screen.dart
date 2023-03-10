@@ -1,9 +1,12 @@
 import 'package:bakery/consts.dart';
+import 'package:bakery/model/core_models/icon_info_model.dart';
 import 'package:bakery/model/core_models/product_model.dart';
 import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';
+import 'package:bakery/view_model/cart_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cart_screen.dart';
 
@@ -19,20 +22,20 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   @override
   Widget build(BuildContext context) {
-    // late Product item;
-    // if (ModalRoute.of(context) != null) {
-    //   item = ModalRoute.of(context)!.settings.arguments as Product;
-    // } else {
-    //   item = Product.filled();
-    // }
-    // item = item == null ? Product.filled() : item;
     return Scaffold(
       body: CustomScrollView(
         physics:
             const BouncingScrollPhysics(), //This sliver just provides appbar navigation and product image and background
         slivers: [
           ProductDetailAppbarSliver(imageUrl: widget.item.imageUrl),
-          ProductDetailDataSliver(item: widget.item)
+          ProductDetailDataSliver(item: widget.item
+              // onChangeCounter: (int index) {
+              //   ValueNotifier(index);
+              //   print(index);
+              //   indexNotifier.value = index;
+              //   // setState(() {});
+              // },
+              )
         ],
       ),
     );
@@ -41,13 +44,18 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
 class ProductDetailDataSliver extends StatelessWidget {
   final Product item;
+  // final Function onPressAddToCart;
+
   const ProductDetailDataSliver({
     Key? key,
     required this.item,
+    // required this.onPressAddToCart,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    int selectedItemsCount = 1;
+
     return SliverToBoxAdapter(
       child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
@@ -56,24 +64,34 @@ class ProductDetailDataSliver extends StatelessWidget {
             children: [
               DetailsTitle(title: item.title, rate: item.rate),
               const SizedBox(height: 20),
-              DetailsInfo(category: item.category, left: item.left),
+              DetailsInfo(
+                  category: item.category, left: item.left, point: item.point),
               const SizedBox(height: 20),
-              DetailsCounter(price: item.price),
+              DetailsCounter(
+                price: item.price,
+                onChangeCounter: (int index) {
+                  selectedItemsCount = index;
+                },
+              ),
               const SizedBox(height: 20),
               MainButton(onPress: () async {
-                await onpressAddtoCart(context);
+                for (int i = 0; i < selectedItemsCount; i++) {
+                  BlocProvider.of<CartBloc>(context).add(AddToCart(item: item));
+                }
+                await onpressAddtoCart(context, selectedItemsCount);
               }),
               const SizedBox(height: 20),
               Text(item.description, style: AppConst.normalDescriptionStyle),
               const SizedBox(height: 20),
-              const CustomExpansionTile(title: 'Ingredients'),
-              const CustomExpansionTile(title: 'Allergens'),
+              CustomExpansionTile(
+                  title: 'Ingredients', items: item.ingredients),
+              CustomExpansionTile(title: 'Allergens', items: item.ingredients),
             ],
           )),
     );
   }
 
-  onpressAddtoCart(context) {
+  onpressAddtoCart(context, int count) {
     showDialog(
       context: context,
       builder: ((dialogContext) => AlertDialog(
@@ -81,8 +99,9 @@ class ProductDetailDataSliver extends StatelessWidget {
                 const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             backgroundColor: AppConst.mainWhite,
             title: Stack(children: [
-              const Center(
-                  child: Text("Success!", style: AppConst.detailPriceStyle)),
+              Center(
+                  child: Text("Success! $count",
+                      style: AppConst.detailPriceStyle)),
               Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
@@ -229,9 +248,12 @@ class ProductDetailAppbarSliver extends StatelessWidget {
 
 class CustomExpansionTile extends StatelessWidget {
   final String? title;
+  final List<IconInfo> items;
+
   const CustomExpansionTile({
     Key? key,
     this.title = "",
+    required this.items,
   }) : super(key: key);
 
   @override
@@ -244,20 +266,15 @@ class CustomExpansionTile extends StatelessWidget {
         collapsedIconColor: AppConst.iconGrey,
         tilePadding: EdgeInsets.zero,
         childrenPadding: EdgeInsets.zero,
-        title: Text(title!, style: AppConst.sectionTitleStyle),
+        title: Text("$title", style: AppConst.sectionTitleStyle),
         children: [
           Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: const [
-              IngredientBox(),
-              IngredientBox(),
-              IngredientBox(),
-              IngredientBox(),
-              IngredientBox(),
-              IngredientBox(),
-            ],
-          )
+              spacing: 10,
+              runSpacing: 10,
+              children: items
+                  .map((e) =>
+                      IngredientBox(title: e.title, imageUrl: e.imageUrl))
+                  .toList())
         ],
       ),
     );
@@ -265,8 +282,13 @@ class CustomExpansionTile extends StatelessWidget {
 }
 
 class IngredientBox extends StatelessWidget {
+  final String title;
+  final String imageUrl;
+
   const IngredientBox({
     Key? key,
+    required this.title,
+    required this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -280,9 +302,9 @@ class IngredientBox extends StatelessWidget {
             color: AppConst.lightOrange),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.egg_outlined, size: 50),
-            Text("Egg", style: AppConst.normalDescriptionStyle)
+          children: [
+            SizedBox(width: 50, height: 50, child: Image.network(imageUrl)),
+            Text(title, style: AppConst.normalDescriptionStyle)
           ],
         ));
   }
@@ -290,9 +312,12 @@ class IngredientBox extends StatelessWidget {
 
 class DetailsCounter extends StatelessWidget {
   final double price;
+  final Function(int index) onChangeCounter;
+
   const DetailsCounter({
     Key? key,
     required this.price,
+    required this.onChangeCounter,
   }) : super(key: key);
 
   @override
@@ -301,7 +326,7 @@ class DetailsCounter extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const RoundConter(),
+        RoundConter(onChangeCounter: onChangeCounter),
         RichText(
           text: TextSpan(
             text: '\$$price ',
@@ -320,16 +345,25 @@ class DetailsCounter extends StatelessWidget {
 }
 
 class RoundConter extends StatefulWidget {
-  const RoundConter({
-    Key? key,
-  }) : super(key: key);
+  final int initValue;
+  final Function(int index) onChangeCounter;
+  const RoundConter(
+      {Key? key, required this.onChangeCounter, this.initValue = 1})
+      : super(key: key);
 
   @override
   State<RoundConter> createState() => _RoundConterState();
 }
 
 class _RoundConterState extends State<RoundConter> {
-  int _counter = 0;
+  late int _counter;
+
+  @override
+  void initState() {
+    _counter = widget.initValue;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -346,8 +380,10 @@ class _RoundConterState extends State<RoundConter> {
           GestureDetector(
             onTap: () {
               setState(() {
-                _counter--;
+                _counter > 1 ? _counter-- : () {};
               });
+
+              widget.onChangeCounter(_counter);
             },
             child: const Icon(Icons.remove),
           ),
@@ -355,8 +391,9 @@ class _RoundConterState extends State<RoundConter> {
           GestureDetector(
             onTap: () {
               setState(() {
-                _counter++;
+                _counter > 0 ? _counter++ : () {};
               });
+              widget.onChangeCounter(_counter);
             },
             child: const Icon(Icons.add),
           )
@@ -403,10 +440,13 @@ class DetailsTitle extends StatelessWidget {
 class DetailsInfo extends StatelessWidget {
   final String category;
   final int left;
+  final int point;
+
   const DetailsInfo({
     Key? key,
     required this.category,
     required this.left,
+    required this.point,
   }) : super(key: key);
 
   @override
@@ -464,10 +504,10 @@ class DetailsInfo extends StatelessWidget {
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
-                Icon(Icons.badge_outlined, color: AppConst.iconGrey),
-                SizedBox(width: 5),
-                Text("25 left", style: AppConst.productSubtitleStyle)
+              children: [
+                const Icon(Icons.badge_outlined, color: AppConst.iconGrey),
+                const SizedBox(width: 5),
+                Text("$point points", style: AppConst.productSubtitleStyle)
               ],
             ),
           ),

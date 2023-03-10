@@ -9,14 +9,19 @@ class GetCartData extends CartEvent {
   GetCartData({required this.data});
 }
 
+class AddToCart extends CartEvent {
+  Product item;
+  AddToCart({required this.item});
+}
+
 //--------------------------------------------------------
 abstract class CartState {
   CartState({required this.cartData});
-  List<Product>? cartData;
+  List<Product> cartData;
 }
 
 class CartInitial extends CartState {
-  CartInitial() : super(cartData: null);
+  CartInitial() : super(cartData: []);
 }
 
 class CartUpdate extends CartState {
@@ -29,10 +34,16 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   CartBloc() : super(CartInitial()) {
     on<GetCartData>(getApiCartData);
+    on<AddToCart>(addToCart);
   }
   // Future<List<Data>>
   getApiCartData(GetCartData event, Emitter<CartState> emit) async {
     cartItems = event.data;
+    emit(CartUpdate(cartData: cartItems));
+  }
+
+  addToCart(AddToCart event, Emitter<CartState> emit) {
+    cartItems.add(event.item);
     emit(CartUpdate(cartData: cartItems));
   }
 }

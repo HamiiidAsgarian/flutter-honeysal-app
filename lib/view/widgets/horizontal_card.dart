@@ -7,12 +7,17 @@ import '../../model/core_models/product_model.dart';
 import 'my_rounded_button.dart';
 
 class HorizontalCard extends StatelessWidget {
-  final HorizontalCardStyle? style;
+  final Function(int index)? onChangeCounter;
   final Product data;
+
+  final HorizontalCardStyle? style;
+  final int? counterInitValue;
   const HorizontalCard({
     Key? key,
     this.style = HorizontalCardStyle.show,
     required this.data,
+    this.onChangeCounter,
+    this.counterInitValue = 0,
   }) : super(key: key);
 
   @override
@@ -52,7 +57,12 @@ class HorizontalCard extends StatelessWidget {
                   ),
                 ),
                 style == HorizontalCardStyle.counter
-                    ? const SizedBox(height: 40, child: RoundConter())
+                    ? SizedBox(
+                        height: 40,
+                        child: RoundConter(
+                          initValue: counterInitValue ?? 0,
+                          onChangeCounter: onChangeCounter ?? (unsed) {},
+                        ))
                     : const SizedBox()
               ],
             ),

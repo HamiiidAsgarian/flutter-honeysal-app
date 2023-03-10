@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:bakery/model/core_models/icon_info_model.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class Product {
   int id;
@@ -10,6 +12,10 @@ class Product {
   String description;
   double rate;
   int left;
+  int point;
+  List<IconInfo> ingredients;
+  List<IconInfo> allergens;
+
   double? off;
   Product({
     required this.id,
@@ -20,6 +26,9 @@ class Product {
     required this.description,
     required this.rate,
     required this.left,
+    required this.point,
+    required this.ingredients,
+    required this.allergens,
     this.off,
   });
 
@@ -28,12 +37,15 @@ class Product {
       'id': id,
       'title': title,
       'price': price,
-      'off': off,
       'category': category,
       'imageUrl': imageUrl,
       'description': description,
       'rate': rate,
       'left': left,
+      'point': point,
+      'ingredients': ingredients.map((x) => x.toMap()).toList(),
+      'allergens': allergens.map((x) => x.toMap()).toList(),
+      'off': off,
     };
   }
 
@@ -47,7 +59,10 @@ class Product {
         imageUrl: "imageUrl",
         description: "description",
         rate: 5,
-        left: 2);
+        left: 2,
+        point: 2,
+        allergens: [],
+        ingredients: []);
   }
 //temp
   factory Product.fromMap(Map<String, dynamic> map) {
@@ -55,12 +70,23 @@ class Product {
       id: map['id'] as int,
       title: map['title'] as String,
       price: map['price'] as double,
-      off: map['off'] as double,
       category: map['category'] as String,
       imageUrl: map['imageUrl'] as String,
       description: map['description'] as String,
       rate: map['rate'] as double,
       left: map['left'] as int,
+      point: map['point'] as int,
+      ingredients: List<IconInfo>.from(
+        (map['ingredients'] as List<Map<String, dynamic>>).map<IconInfo>(
+          (x) => IconInfo.fromMap(x),
+        ),
+      ),
+      allergens: List<IconInfo>.from(
+        (map['allergens'] as List<Map<String, dynamic>>).map<IconInfo>(
+          (x) => IconInfo.fromMap(x),
+        ),
+      ),
+      off: map['off'] != null ? map['off'] as double : null,
     );
   }
 

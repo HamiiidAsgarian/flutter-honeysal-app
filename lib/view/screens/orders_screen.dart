@@ -10,12 +10,14 @@ import '../widgets/time_and_date.dart';
 class OrderScreen extends StatelessWidget {
   static String route = "/OrderScreen";
   final List<Order> data;
-  const OrderScreen({super.key, this.data = const []});
+  final bool backButton;
+
+  const OrderScreen({super.key, this.data = const [], this.backButton = false});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppbar(),
+      appBar: CustomAppbar(title: "Orders", backButton: backButton),
       // bottomNavigationBar: const MyNav(),
       body: ListView.builder(
           itemCount: data.length,

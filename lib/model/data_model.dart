@@ -14,13 +14,15 @@ class AppData {
   List<Product> favorites;
   List<Order> orders;
   HomePageElements homePageElements;
-  AppData({
-    required this.user,
-    required this.cart,
-    required this.favorites,
-    required this.orders,
-    required this.homePageElements,
-  });
+  List<Product> allProducts;
+
+  AppData(
+      {required this.user,
+      required this.cart,
+      required this.favorites,
+      required this.orders,
+      required this.homePageElements,
+      required this.allProducts});
   hi() {
     DataBloc().state.homeData;
   }
@@ -32,6 +34,7 @@ class AppData {
       'favorites': favorites.map((x) => x.toMap()).toList(),
       'orders': orders.map((x) => x.toMap()).toList(),
       'homePageElements': homePageElements.toMap(),
+      'allProducts': allProducts.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -55,6 +58,11 @@ class AppData {
       ),
       homePageElements: HomePageElements.fromMap(
           map['homePageElements'] as List<Map<String, dynamic>>),
+      allProducts: List<Product>.from(
+        (map['allProducts'] as List<Map<String, dynamic>>).map<Product>(
+          (x) => Product.fromMap(x),
+        ),
+      ),
     );
   }
 
