@@ -95,14 +95,14 @@ class DeliveryStage extends StatelessWidget {
                 // fillColor: AppConst.mainGreen,
                 onTap: (e) {},
                 icon: Icons.check_circle,
-                selectionStatus: true),
+                isActive: true),
             title: "Order placed and confirmed",
             time: "06:14 PM",
             date: "31 Dec 2023",
           ),
           OrderStage(
             leading: MyRoundButton(
-              selectionStatus: true,
+              isActive: true,
               selectedColor: AppConst.mainOrange,
               // fillColor: AppConst.mainOrange,
               onTap: (e) {},
@@ -114,7 +114,7 @@ class DeliveryStage extends StatelessWidget {
           ),
           OrderStage(
             leading: MyRoundButton(
-              selectionStatus: false,
+              isActive: false,
               selectedColor: AppConst.mainBlue,
               // fillColor: AppConst.mainBlue,
               onTap: (e) {},

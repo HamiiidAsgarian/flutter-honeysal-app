@@ -32,7 +32,7 @@ class ProfileScreen extends StatelessWidget {
                     Align(
                         alignment: Alignment.bottomRight,
                         child: MyRoundButton(
-                            selectionStatus: true,
+                            isActive: true,
                             type: CutomRoundedButtonType.pusher,
                             onTap: (isSelected) {},
                             fillColor: AppConst.mainWhite,
@@ -46,7 +46,7 @@ class ProfileScreen extends StatelessWidget {
                     style: AppConst.sectionTitleStyle),
                 const SizedBox(width: 5),
                 MyRoundButton(
-                    selectionStatus: true,
+                    isActive: true,
                     type: CutomRoundedButtonType.pusher,
                     onTap: (isSelected) {},
                     fillColor: AppConst.mainWhite,

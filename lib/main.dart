@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:bakery/model/core_models/product_model.dart';
 import 'package:bakery/model/home_elements_models/home_model.dart';
-import 'package:bakery/view/screens/all_products_screen.dart';
 import 'package:bakery/view/screens/checkout_screen.dart';
 import 'package:bakery/view/screens/details_screen.dart';
 import 'package:bakery/view/screens/login_screen.dart';
@@ -53,7 +52,7 @@ class MyApp extends StatelessWidget {
             NavScreen.route: (context) => const NavScreen(),
             HomeScreen.route: (context) =>
                 HomeScreen(data: HomePageElements(items: [])),
-            AllProductsScreen.route: (context) => const AllProductsScreen(),
+            // AllProductsScreen.route: (context) => const AllProductsScreen(),
             DetailsScreen.route: (context) =>
                 DetailsScreen(item: Product.filled()),
             CartScreen.route: (context) => const CartScreen(),

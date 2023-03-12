@@ -8,6 +8,14 @@ import 'my_rounded_button.dart';
 
 class HorizontalCard extends StatelessWidget {
   final Function(int index)? onChangeCounter;
+  final Function? onTapDelete;
+
+  final bool isFavoriteSelected;
+  final bool isAddToCartSelected;
+
+  final Function(bool isSelected)? onTapFavorite;
+  final Function(bool isSelected)? onTapAddToCart;
+
   final Product data;
 
   final HorizontalCardStyle? style;
@@ -18,6 +26,11 @@ class HorizontalCard extends StatelessWidget {
     required this.data,
     this.onChangeCounter,
     this.counterInitValue = 0,
+    this.onTapDelete,
+    this.onTapFavorite,
+    this.onTapAddToCart,
+    this.isFavoriteSelected = false,
+    this.isAddToCartSelected = false,
   }) : super(key: key);
 
   @override
@@ -116,10 +129,18 @@ class HorizontalCard extends StatelessWidget {
             children: [
               style == HorizontalCardStyle.show
                   ? HeartButton(
-                      onTap: (isActive) {},
+                      isActive: isFavoriteSelected,
+                      onTap: (isSelected) {
+                        onTapFavorite != null
+                            ? onTapFavorite!(isSelected)
+                            : null;
+                      },
                     )
                   : MyRoundButton(
-                      onTap: (e) {},
+                      // isActive: isAddToCartSelected,
+                      onTap: (e) {
+                        onTapDelete != null ? onTapDelete!() : null;
+                      },
                       type: CutomRoundedButtonType.pusher,
                       icon: Icons.delete_outline,
                     ),
@@ -128,10 +149,15 @@ class HorizontalCard extends StatelessWidget {
                       width: 40,
                       height: 40,
                       child: MyRoundButton(
-                          icon: Icons.shopping_bag_outlined,
-                          iconSize: 20,
-                          onTap: (isSelected) {},
-                          selectionStatus: false))
+                        isActive: isAddToCartSelected,
+                        icon: Icons.shopping_bag_outlined,
+                        iconSize: 20,
+                        onTap: (isSelected) {
+                          onTapAddToCart != null
+                              ? onTapAddToCart!(isSelected)
+                              : null;
+                        },
+                      ))
                   : const SizedBox(),
             ],
           )

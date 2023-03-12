@@ -1,5 +1,5 @@
 import 'package:bakery/consts.dart';
-import 'package:bakery/model/app_initializer.dart';
+import 'package:bakery/core/app_initializer.dart';
 import 'package:bakery/model/core_models/order_model.dart';
 import 'package:bakery/model/core_models/product_model.dart';
 import 'package:bakery/model/home_elements_models/home_model.dart';
@@ -23,7 +23,7 @@ class NavScreen extends StatefulWidget {
 
 class _NavScreenState extends State<NavScreen> {
   int selected = 0;
-  ValueNotifier<int> _selected = ValueNotifier(0);
+  final ValueNotifier<int> _selected = ValueNotifier(0);
   late AppInitializer appInit;
   @override
   void initState() {
@@ -33,14 +33,15 @@ class _NavScreenState extends State<NavScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("menue");
     late List<Widget> pages;
 
     return FutureBuilder(
-        future: appInit.getApiData(),
+        future: appInit.getApiData(context),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
             appInit.updateTheState(context);
+            // BlocProvider.of<CartBloc>(context).add(GetCartData(data: appdata.cart));
+
             List<Product> favoriteData = appInit.appdata.favorites;
 
             List<Product> cartData = appInit.appdata.cart;

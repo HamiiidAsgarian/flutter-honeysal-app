@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import '../core_models/product_model.dart';
 
-import 'board_model.dart';
+import 'carousel_model.dart';
 import 'category_model.dart';
 import 'promotion_model.dart';
 
@@ -42,7 +42,7 @@ class HomePageElements {
           break;
         case "board":
           {
-            homeItems.add(BoardList(
+            homeItems.add(CarouselList(
                 title: element["title"],
                 items: (element["items"] as List)
                     .map((e) => Product.fromMap(e))

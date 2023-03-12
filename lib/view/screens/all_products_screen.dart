@@ -4,27 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:bakery/view/screens/details_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/vertical_card.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../model/core_models/product_model.dart';
+import '../../view_model/cart_bloc.dart';
 
 class AllProductsScreen extends StatelessWidget {
-  static String route = '/AllProducts';
-
-  const AllProductsScreen({super.key});
-
-  // final List<Product> items;
-  // const AllProductsScreen({
-  //   Key? key,
-  //   this.items = const [],
-  // }) : super(key: key);
+  // static String route = '/AllProducts';
+  final List<Product> items;
+  const AllProductsScreen({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
-    final List<Product> items =
-        ModalRoute.of(context)!.settings.arguments as List<Product>;
+    // final List<Product> items =
+    //     ModalRoute.of(context)!.settings.arguments as List<Product>;
     return Scaffold(
         appBar: const CustomAppbar(
           title: "All Procusts",
+          backButton: true,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
@@ -52,12 +49,13 @@ class AllProductsScreen extends StatelessWidget {
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             DetailsScreen(item: items[index])));
-                                // Navigator.pushNamed(
-                                //     context, DetailsScreen.route,
-                                //     arguments: items[index]);
                               },
                               child: VertivalCard(
                                 data: items[index],
+                                onTapButton: () {
+                                  BlocProvider.of<CartBloc>(context)
+                                      .add(AddToCart(item: items[index]));
+                                },
                               )));
                     }))
           ]),

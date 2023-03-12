@@ -1,9 +1,11 @@
 import 'package:bakery/consts.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../model/core_models/order_model.dart';
 import '../../model/core_models/product_model.dart';
+import '../../view_model/orders_bloc.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/time_and_date.dart';
 
@@ -19,13 +21,17 @@ class OrderScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppbar(title: "Orders", backButton: backButton),
       // bottomNavigationBar: const MyNav(),
-      body: ListView.builder(
-          itemCount: data.length,
-          padding: const EdgeInsets.symmetric(
-              horizontal: AppConst.appHorizontalPadding, vertical: 10),
-          itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: OrderCard(data: data[index]))),
+      body: BlocBuilder<OrderBloc, OrderState>(
+        builder: (context, state) {
+          return ListView.builder(
+              itemCount: state.orderData.length,
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppConst.appHorizontalPadding, vertical: 10),
+              itemBuilder: (context, index) => Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: OrderCard(data: state.orderData[index])));
+        },
+      ),
     );
   }
 }
@@ -96,7 +102,7 @@ class OrderCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     MyRoundButton(
-                        selectionStatus: true,
+                        isActive: true,
                         type: CutomRoundedButtonType.pusher,
                         icon: Icons.shopping_bag_outlined,
                         onTap: (isSelected) {})

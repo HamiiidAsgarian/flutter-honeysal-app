@@ -12,11 +12,11 @@ class GetOrderData extends OrderEvent {
 //--------------------------------------------------------
 abstract class OrderState {
   OrderState({required this.orderData});
-  List<Order>? orderData;
+  List<Order> orderData;
 }
 
 class OrderInitial extends OrderState {
-  OrderInitial() : super(orderData: null);
+  OrderInitial() : super(orderData: []);
 }
 
 class OrderUpdate extends OrderState {

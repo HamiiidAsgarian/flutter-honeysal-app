@@ -5,18 +5,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 abstract class FavoriteEvent {}
 
 class GetFavoriteData extends FavoriteEvent {
-  List<Product> data;
-  GetFavoriteData({required this.data});
+  List<Product> item;
+  GetFavoriteData({required this.item});
 }
 
 class AddToFavoriteData extends FavoriteEvent {
-  Product data;
-  AddToFavoriteData({required this.data});
+  Product item;
+  AddToFavoriteData({required this.item});
 }
 
 class RemoveFromFavoriteData extends FavoriteEvent {
-  Product data;
-  RemoveFromFavoriteData({required this.data});
+  Product item;
+  RemoveFromFavoriteData({required this.item});
 }
 
 //--------------------------------------------------------
@@ -44,18 +44,18 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   }
   // Future<List<Data>>
   getApiFavoriteData(GetFavoriteData event, Emitter<FavoriteState> emit) {
-    favoriteItems = event.data;
+    favoriteItems = event.item;
     emit(FavoriteUpdate(favoriteData: favoriteItems));
   }
 
   addToFavoriteData(AddToFavoriteData event, Emitter<FavoriteState> emit) {
-    favoriteItems.add(event.data);
+    favoriteItems.add(event.item);
     emit(FavoriteUpdate(favoriteData: favoriteItems));
   }
 
   removeFromFavoriteData(
       RemoveFromFavoriteData event, Emitter<FavoriteState> emit) {
-    favoriteItems.removeWhere((e) => e.id == event.data.id);
+    favoriteItems.removeWhere((e) => e.id == event.item.id);
     emit(FavoriteUpdate(favoriteData: favoriteItems));
   }
 }

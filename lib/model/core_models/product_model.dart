@@ -94,4 +94,38 @@ class Product {
 
   factory Product.fromJson(String source) =>
       Product.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  bool operator ==(covariant Product other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id && other.title == title;
+    //  &&
+    // other.price == price &&
+    // other.category == category &&
+    // other.imageUrl == imageUrl &&
+    // other.description == description &&
+    // other.rate == rate &&
+    // other.left == left &&
+    // other.point == point &&
+    // listEquals(other.ingredients, ingredients) &&
+    // listEquals(other.allergens, allergens) &&
+    // other.off == off;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        title.hashCode ^
+        price.hashCode ^
+        category.hashCode ^
+        imageUrl.hashCode ^
+        description.hashCode ^
+        rate.hashCode ^
+        left.hashCode ^
+        point.hashCode ^
+        ingredients.hashCode ^
+        allergens.hashCode ^
+        off.hashCode;
+  }
 }

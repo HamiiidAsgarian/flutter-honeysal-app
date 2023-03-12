@@ -99,9 +99,8 @@ class ProductDetailDataSliver extends StatelessWidget {
                 const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             backgroundColor: AppConst.mainWhite,
             title: Stack(children: [
-              Center(
-                  child: Text("Success! $count",
-                      style: AppConst.detailPriceStyle)),
+              const Center(
+                  child: Text("Success!", style: AppConst.detailPriceStyle)),
               Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
@@ -110,8 +109,8 @@ class ProductDetailDataSliver extends StatelessWidget {
                         Navigator.pop(context);
                       }))
             ]),
-            content: const Text(
-              "You successfully added the item to cart!",
+            content: Text(
+              "You successfully added $count item to cart!",
               style: AppConst.normalDescriptionStyle,
               textAlign: TextAlign.center,
             ),
@@ -119,8 +118,13 @@ class ProductDetailDataSliver extends StatelessWidget {
               MainButton(
                   title: "Go to cart",
                   onPress: () {
-                    Navigator.pushReplacementNamed(
-                        dialogContext, CartScreen.route);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) =>
+                                const CartScreen(backButton: true))));
+                    // Navigator.pushReplacementNamed(
+                    //     dialogContext, CartScreen.route);
                   }),
               Center(
                 child: TextButton(
@@ -176,7 +180,7 @@ class ProductDetailAppbarSliver extends StatelessWidget {
             onTap: (bool isSelected) {
               Navigator.pop(context);
             },
-            selectionStatus: false,
+            isActive: false,
           ),
         ),
       ),
@@ -235,7 +239,7 @@ class ProductDetailAppbarSliver extends StatelessWidget {
             icon: Icons.favorite_border_outlined,
             fillColor: AppConst.mainWhite,
             onTap: (bool isSelected) {},
-            selectionStatus: false,
+            isActive: false,
           ),
         ),
         // Container(

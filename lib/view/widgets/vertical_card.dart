@@ -6,9 +6,11 @@ import '../../model/core_models/product_model.dart';
 
 class VertivalCard extends StatelessWidget {
   final Product data;
+  final Function onTapButton;
   const VertivalCard({
     Key? key,
     required this.data,
+    required this.onTapButton,
   }) : super(key: key);
 
   @override
@@ -79,7 +81,8 @@ class VertivalCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: 35, child: MainButton(onPress: () {}))
+                    SizedBox(
+                        height: 35, child: MainButton(onPress: onTapButton))
                   ],
                 ),
               )

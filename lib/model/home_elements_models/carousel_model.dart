@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import '../core_models/product_model.dart';
 
-class BoardList {
+class CarouselList {
   String title;
   List<Product> items;
-  BoardList({
+  CarouselList({
     required this.title,
     required this.items,
   });
@@ -17,8 +17,8 @@ class BoardList {
     };
   }
 
-  factory BoardList.fromMap(Map<String, dynamic> map) {
-    return BoardList(
+  factory CarouselList.fromMap(Map<String, dynamic> map) {
+    return CarouselList(
       title: map['title'] as String,
       items: List<Product>.from(
         (map['items'] as List<Map<String, dynamic>>).map<Product>(
@@ -30,6 +30,6 @@ class BoardList {
 
   String toJson() => json.encode(toMap());
 
-  factory BoardList.fromJson(String source) =>
-      BoardList.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory CarouselList.fromJson(String source) =>
+      CarouselList.fromMap(json.decode(source) as Map<String, dynamic>);
 }

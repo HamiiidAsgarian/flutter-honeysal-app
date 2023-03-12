@@ -12,7 +12,8 @@ import 'cart_screen.dart';
 class CheckoutScreen extends StatefulWidget {
   static String route = "/CheckoutScreen";
 
-  const CheckoutScreen({super.key});
+  final bool backButton;
+  const CheckoutScreen({super.key, this.backButton = false});
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -29,7 +30,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const CustomAppbar(),
+        appBar: CustomAppbar(backButton: widget.backButton),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(

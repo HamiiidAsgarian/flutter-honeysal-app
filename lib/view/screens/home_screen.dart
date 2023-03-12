@@ -6,11 +6,12 @@ import 'package:bakery/view/screens/profile_screen.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';
 import 'package:bakery/view/widgets/promotion_card.dart';
 import 'package:bakery/view/widgets/title_and_all.dart';
+import 'package:bakery/view_model/cart_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../consts.dart';
-import '../../model/home_elements_models/board_model.dart';
+import '../../model/home_elements_models/carousel_model.dart';
 import '../../model/home_elements_models/category_model.dart';
 import '../../model/home_elements_models/home_model.dart';
 import '../../view_model/favorite_bloc.dart';
@@ -39,7 +40,7 @@ class HomeScreen extends StatelessWidget {
   }
 
 // To make elemnts structure of the screen based on data type and order
-  /// there are three main types of homepage elemnts including [Promotion],[BoardList],[CategoryList]
+  /// there are three main types of homepage elemnts including [Promotion],[CarouselList],[CategoryList]
   itemsMaker() {
     List items = [];
 
@@ -51,10 +52,10 @@ class HomeScreen extends StatelessWidget {
             items.add(PromotionCard(data: e as Promotion));
           }
           break;
-        case BoardList:
+        case CarouselList:
           {
             items.add(
-              FavoritesSection(data: e as BoardList),
+              CarouselSection(data: e as CarouselList),
             );
           }
           break;
@@ -70,8 +71,9 @@ class HomeScreen extends StatelessWidget {
       Widget facoriteBoardList = BlocBuilder<FavoriteBloc, FavoriteState>(
         builder: (context, state) {
           if (state.favoriteData.isNotEmpty) {
-            return FavoritesSection(
-                data: BoardList(items: state.favoriteData, title: "Favorites"));
+            return CarouselSection(
+                data: CarouselList(
+                    items: state.favoriteData, title: "Favorites"));
           }
           return const SizedBox();
         },
@@ -129,7 +131,7 @@ class _StatusbarState extends State<Statusbar> {
                         searchMode = isSelected;
                       });
                     },
-                    selectionStatus: searchMode,
+                    isActive: searchMode,
                   ),
                   const SizedBox(width: 10),
                   GestureDetector(
@@ -197,9 +199,9 @@ class _StatusbarState extends State<Statusbar> {
   }
 }
 
-class FavoritesSection extends StatelessWidget {
-  final BoardList data;
-  const FavoritesSection({
+class CarouselSection extends StatelessWidget {
+  final CarouselList data;
+  const CarouselSection({
     Key? key,
     required this.data,
   }) : super(key: key);
@@ -216,8 +218,13 @@ class FavoritesSection extends StatelessWidget {
               child: TitleAndAll(
                   title: data.title,
                   onPressAll: () {
-                    Navigator.pushNamed(context, AllProductsScreen.route,
-                        arguments: data.items);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) =>
+                            AllProductsScreen(items: data.items)),
+                      ),
+                    );
                   })),
           Expanded(
               child: ListView.builder(
@@ -230,17 +237,61 @@ class FavoritesSection extends StatelessWidget {
                     return Container(
                         padding:
                             const EdgeInsets.only(right: 10, top: 7, bottom: 7),
-                        child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DetailsScreen(
-                                          item: data.items[index])));
-                              // Navigator.pushNamed(context, DetailsScreen.route,
-                              //     arguments: data.items[index]);
-                            },
-                            child: HorizontalCard(data: data.items[index])));
+                        child: GestureDetector(onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      DetailsScreen(item: data.items[index])));
+                          // Navigator.pushNamed(context, DetailsScreen.route,
+                          //     arguments: data.items[index]);
+                        }, child: BlocBuilder<FavoriteBloc, FavoriteState>(
+                          builder: (context, favoriteState) {
+                            return BlocBuilder<CartBloc, CartState>(
+                              builder: (context, cartState) {
+                                return HorizontalCard(
+                                    data: data.items[index],
+                                    onTapFavorite: (isSelected) {
+                                      FavoriteBloc favoriteStateTemp =
+                                          BlocProvider.of<FavoriteBloc>(
+                                              context);
+
+                                      isSelected == true
+                                          ? favoriteStateTemp.add(
+                                              AddToFavoriteData(
+                                                  item: data.items[index]))
+                                          : favoriteStateTemp.add(
+                                              RemoveFromFavoriteData(
+                                                  item: data.items[index]));
+                                    },
+                                    isFavoriteSelected: favoriteState
+                                                .favoriteData
+                                                .firstWhereOrNull((e) =>
+                                                    e == data.items[index]) ==
+                                            null
+                                        ? false
+                                        : true,
+                                    isAddToCartSelected: cartState.cartSetData
+                                                .firstWhereOrNull((e) =>
+                                                    e.product ==
+                                                    data.items[index]) ==
+                                            null
+                                        ? false
+                                        : true,
+                                    onTapAddToCart: ((isSelected) {
+                                      CartBloc cartStateTemp =
+                                          BlocProvider.of<CartBloc>(context);
+
+                                      isSelected == true
+                                          ? cartStateTemp.add(AddToCart(
+                                              item: data.items[index]))
+                                          : cartStateTemp.add(RemoveAllFromCart(
+                                              item: data.items[index]));
+                                    }));
+                              },
+                            );
+                          },
+                        )));
                   })))
         ],
       ),
@@ -270,8 +321,13 @@ class _OrderSectionState extends State<OrderSection> {
           child: TitleAndAll(
               title: widget.data.title,
               onPressAll: () {
-                Navigator.pushNamed(context, AllProductsScreen.route,
-                    arguments: widget.data.categories[_selected].items);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: ((context) => AllProductsScreen(
+                        items: widget.data.categories[_selected].items)),
+                  ),
+                );
               })),
       SizedBox(
         height: 40,
@@ -310,28 +366,31 @@ class _OrderSectionState extends State<OrderSection> {
       SizedBox(
         height: 330,
         child: ListView.builder(
-          padding: const EdgeInsets.symmetric(
-              horizontal: AppConst.appHorizontalPadding),
-          itemCount: widget.data.categories[_selected].items.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) => Padding(
-            padding: const EdgeInsets.only(right: 10, top: 7, bottom: 7),
-            child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DetailsScreen(
-                              item: widget
-                                  .data.categories[_selected].items[index])));
-                  // Navigator.pushNamed(context, DetailsScreen.route,
-                  //     arguments:
-                  //         widget.data.categories[_selected].items[index]);
-                },
-                child: VertivalCard(
-                    data: widget.data.categories[_selected].items[index])),
-          ),
-        ),
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppConst.appHorizontalPadding),
+            itemCount: widget.data.categories[_selected].items.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              Product currentProduct =
+                  widget.data.categories[_selected].items[index];
+              return Padding(
+                padding: const EdgeInsets.only(right: 10, top: 7, bottom: 7),
+                child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  DetailsScreen(item: currentProduct)));
+                    },
+                    child: VertivalCard(
+                        data: currentProduct,
+                        onTapButton: () {
+                          BlocProvider.of<CartBloc>(context)
+                              .add(AddToCart(item: currentProduct));
+                        })),
+              );
+            }),
       )
     ]);
   }

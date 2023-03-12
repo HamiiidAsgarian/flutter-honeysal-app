@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../consts.dart';
 
-class HeartButton extends StatefulWidget {
+class HeartButton extends StatelessWidget {
   final bool isActive;
   final Function(bool isActive) onTap;
 
@@ -12,19 +12,19 @@ class HeartButton extends StatefulWidget {
     required this.onTap,
   }) : super(key: key);
 
-  @override
-  State<HeartButton> createState() => _HeartButtonState();
-}
+//   @override
+//   State<HeartButton> createState() => _HeartButtonState();
+// }
 
-class _HeartButtonState extends State<HeartButton> {
-  late bool _isActive;
+// class _HeartButtonState extends State<HeartButton> {
+//   late bool _isActive;
 
-  @override
-  void initState() {
-    _isActive = widget.isActive;
+//   @override
+//   void initState() {
+//     _isActive = widget.isActive;
 
-    super.initState();
-  }
+//     super.initState();
+//   }
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +35,7 @@ class _HeartButtonState extends State<HeartButton> {
       curve: Curves.easeInOutBack,
       builder: (context, value, child) => GestureDetector(
         onTap: () {
-          widget.onTap(!_isActive);
-          setState(() {
-            _isActive = !_isActive;
-          });
+          onTap(!isActive);
         },
         child: SizedBox(
           width: 30,
@@ -46,7 +43,7 @@ class _HeartButtonState extends State<HeartButton> {
           child: Center(
             child: Icon(
               Icons.favorite_border,
-              color: _isActive ? Colors.red : AppConst.borderGrey,
+              color: isActive ? Colors.red : AppConst.borderGrey,
               size: value,
             ),
           ),

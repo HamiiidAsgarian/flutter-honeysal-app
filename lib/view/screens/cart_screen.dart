@@ -6,7 +6,6 @@ import 'package:bakery/view/widgets/horizontal_card.dart';
 import 'package:bakery/view_model/cart_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../model/core_models/product_model.dart';
 
 class CartScreen extends StatelessWidget {
@@ -19,11 +18,7 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int length = a(context).first.length;
-    List items2 = a(context)[0];
-    List items3 = a(context)[1];
-
-    print(items2);
+    // BlocProvider.of<CartBloc>(context).add(CartItemsToCartSet());
     return Scaffold(
         appBar: CustomAppbar(
           backButton: backButton,
@@ -31,26 +26,61 @@ class CartScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            const SizedBox(height: 15),
+            // const SizedBox(height: 15),
             Expanded(
               flex: 2,
-              child: ListView.builder(
-                  itemCount: length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: const EdgeInsets.only(
-                          top: 20,
-                          right: AppConst.appHorizontalPadding,
-                          left: AppConst.appHorizontalPadding),
-                      child: HorizontalCard(
-                          style: HorizontalCardStyle.counter,
-                          counterInitValue: items3[index],
-                          data: items2[index],
-                          onChangeCounter: (int index) {
-                            print(index);
-                          }),
-                    );
-                  }),
+              child: BlocBuilder<CartBloc, CartState>(
+                builder: (context, state) {
+                  // print("//// ${state.cartSetData.length}");
+                  return ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      itemCount: state.cartSetData.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          padding: const EdgeInsets.only(
+                              top: 20,
+                              right: AppConst.appHorizontalPadding,
+                              left: AppConst.appHorizontalPadding),
+                          child: HorizontalCard(
+                              style: HorizontalCardStyle.counter,
+                              counterInitValue: state.cartSetData[index].count,
+                              data: state.cartSetData[index].product,
+                              onTapDelete: () {
+                                BlocProvider.of<CartBloc>(context,
+                                        listen: false)
+                                    .add(RemoveAllFromCart(
+                                        item:
+                                            state.cartSetData[index].product));
+                              },
+                              onChangeCounter: (int count) {
+                                List<Product> cartList = BlocProvider.of<
+                                        CartBloc>(context, listen: false)
+                                    .state
+                                    .cartData
+                                    .where((element) =>
+                                        element.title ==
+                                        state.cartSetData[index].product.title)
+                                    .toList();
+                                //if [counter] increase then item will be added to the bloc
+                                if (count > cartList.length) {
+                                  BlocProvider.of<CartBloc>(context,
+                                          listen: false)
+                                      .add(AddToCart(
+                                          item: state
+                                              .cartSetData[index].product));
+                                } else if (cartList.length > 1 &&
+                                    count < cartList.length) {
+                                  BlocProvider.of<CartBloc>(context,
+                                          listen: false)
+                                      .add(RemoveFromCart(
+                                          item: state
+                                              .cartSetData[index].product));
+                                }
+                              }),
+                        );
+                      });
+                },
+              ),
             ),
             Expanded(
                 child: Container(
@@ -61,59 +91,55 @@ class CartScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: AppConst.appHorizontalPadding,
                         vertical: 20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        RecieptRow(
-                          title: "Subtotal",
-                          price: "\$${totalSumCalc()[0]}",
-                        ),
-                        RecieptRow(
-                          title: "Discount",
-                          price: "\$${totalSumCalc()[1]}",
-                        ),
-                        RecieptRow(
-                          title: "Total",
-                          price: "\$${totalSumCalc()[2]}",
-                          style: RecieptRowStyle.bold,
-                        ),
-                        MainButton(
-                            onPress: () {
-                              Navigator.pushNamed(
-                                  context, CheckoutScreen.route);
-                            },
-                            title: "Checkout")
-                      ],
+                    child: BlocBuilder<CartBloc, CartState>(
+                      builder: (context, state) {
+                        List<String> costsColculation =
+                            costColculation(state.cartData);
+
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            RecieptRow(
+                              title: "Subtotal",
+                              price: "\$${costsColculation[0]}",
+                            ),
+                            RecieptRow(
+                              title: "Discount",
+                              price: "\$${costsColculation[1]}",
+                            ),
+                            RecieptRow(
+                              title: "Total",
+                              price: "\$${costsColculation[2]}",
+                              style: RecieptRowStyle.bold,
+                            ),
+                            MainButton(
+                                onPress: () {
+                                  // Navigator.pushNamed(
+                                  //     context, CheckoutScreen.route);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: ((context) =>
+                                              const CheckoutScreen(
+                                                backButton: true,
+                                              ))));
+                                },
+                                title: "Checkout")
+                          ],
+                        );
+                      },
                     )))
           ],
         ));
   }
 
-  List<List> a(context) {
-    Map<dynamic, int> temp = {};
-    List products = [];
-
-    List<Product> cartItems = BlocProvider.of<CartBloc>(context).state.cartData;
-
-    for (var element in cartItems) {
-      if (temp.containsKey("${element.title}${element.price}")) {
-        temp["${element.title}${element.price}"] =
-            temp["${element.title}${element.price}"]! + 1;
-      } else {
-        products.add(element);
-        temp["${element.title}${element.price}"] = 0;
-      }
-    }
-    return [products, temp.values.toList()];
-  }
-
-  List<String> totalSumCalc() {
+  List<String> costColculation(List<Product> products) {
     double discountPercentage = 0.01;
     double subTotal = 0;
     double discount = 0;
     double total = 0;
 
-    for (Product element in data) {
+    for (Product element in products) {
       subTotal += element.price;
     }
 

@@ -2,6 +2,8 @@
 import 'package:bakery/model/core_models/product_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../model/cart_screen_models/cart_item_model.dart';
+
 abstract class CartEvent {}
 
 class GetCartData extends CartEvent {
@@ -14,36 +16,115 @@ class AddToCart extends CartEvent {
   AddToCart({required this.item});
 }
 
+class RemoveFromCart extends CartEvent {
+  Product item;
+  RemoveFromCart({required this.item});
+}
+
+class RemoveAllFromCart extends CartEvent {
+  Product item;
+  RemoveAllFromCart({required this.item});
+}
+
+class CartItemsToCartSet extends CartEvent {
+  // List<Product> item;
+  // CartItemsToCartSet({required this.item});
+}
+
 //--------------------------------------------------------
 abstract class CartState {
-  CartState({required this.cartData});
+  CartState({this.cartData = const [], required this.cartSetData});
   List<Product> cartData;
+  List<CartItem> cartSetData;
 }
 
 class CartInitial extends CartState {
-  CartInitial() : super(cartData: []);
+  CartInitial() : super(cartData: [], cartSetData: []);
 }
 
 class CartUpdate extends CartState {
-  CartUpdate({required super.cartData});
+  CartUpdate({required super.cartData, super.cartSetData = const []});
+}
+
+class CartSetUpdate extends CartState {
+  CartSetUpdate({
+    required super.cartSetData,
+    required super.cartData,
+  });
 }
 
 //--------------------------------------------------------
 class CartBloc extends Bloc<CartEvent, CartState> {
   List<Product> cartItems = [];
+  List<CartItem> cartItemsSet = [];
 
   CartBloc() : super(CartInitial()) {
     on<GetCartData>(getApiCartData);
     on<AddToCart>(addToCart);
+    on<RemoveFromCart>(removeFromCart);
+    on<RemoveAllFromCart>(removeAllFromCart);
+    // on<CartItemsToCartSet>(cartItemsToCartSet);
   }
-  // Future<List<Data>>
-  getApiCartData(GetCartData event, Emitter<CartState> emit) async {
+
+//---------------------------------------------------------------
+
+  getApiCartData(GetCartData event, Emitter<CartState> emit) {
     cartItems = event.data;
-    emit(CartUpdate(cartData: cartItems));
+
+//Turn all existed products to cartItem format
+    for (Product element in cartItems) {
+      productsToCartItem(element); //Note is not a pure fuction
+    }
+
+    emit(CartUpdate(cartData: cartItems, cartSetData: cartItemsSet));
   }
+
+//---------------------------------------------------------------
 
   addToCart(AddToCart event, Emitter<CartState> emit) {
     cartItems.add(event.item);
-    emit(CartUpdate(cartData: cartItems));
+    productsToCartItem(event.item); //Note is not a pure fuction
+
+    emit(CartUpdate(cartData: cartItems, cartSetData: cartItemsSet));
+  }
+
+//---------------------------------------------------------------
+
+  removeFromCart(RemoveFromCart event, Emitter<CartState> emit) {
+    // var a = cartItems.firstWhere((e) => e == event.item);
+    cartItems.remove(event.item);
+    cartItemsSet.where((e) => e.product.id == event.item.id).first.count -= 1;
+    emit(CartUpdate(cartData: cartItems, cartSetData: cartItemsSet));
+  }
+
+//---------------------------------------------------------------
+
+  removeAllFromCart(RemoveAllFromCart event, Emitter<CartState> emit) {
+    cartItems.removeWhere((e) => e == event.item);
+    cartItemsSet.removeWhere((CartItem e) => e.product == event.item);
+
+    emit(CartUpdate(cartData: cartItems, cartSetData: cartItemsSet));
+  }
+
+//---------------------------------------------------------------
+
+  productsToCartItem(Product product) {
+    CartItem? selected =
+        cartItemsSet.firstWhereOrNull((e) => product == e.product);
+
+    if (selected != null) {
+      selected.count += 1;
+    } else {
+      cartItemsSet.add(CartItem(product: product, count: 1));
+    }
+  }
+}
+
+extension FirstWhereOrNullExtension<E> on Iterable<E> {
+  E? firstWhereOrNull(bool Function(E) test) {
+    for (E element in this) {
+      if (test(element)) return element;
+    }
+    return null;
   }
 }

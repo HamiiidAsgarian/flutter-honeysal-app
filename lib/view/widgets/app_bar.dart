@@ -22,6 +22,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       elevation: 0,
       backgroundColor: AppConst.mainWhite,
       toolbarHeight: bottomsWithHeight,
@@ -47,7 +48,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                   onTap: (bool isSelected) {
                     Navigator.pop(context);
                   },
-                  selectionStatus: false,
+                  isActive: false,
                 ),
               ),
             )
