@@ -53,7 +53,14 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
               ),
             )
           : null,
-      actions: [action ?? const SizedBox()],
+      actions: [
+        Container(
+            margin: const EdgeInsets.only(
+                top: 10, right: AppConst.appHorizontalPadding),
+            width: 40,
+            height: 20,
+            child: action)
+      ],
     );
   }
 

@@ -1,4 +1,9 @@
 import 'package:bakery/consts.dart';
+import 'package:bakery/core/app_initializer.dart';
+import 'package:bakery/model/core_models/order_model.dart';
+import 'package:bakery/view/screens/home_screen.dart';
+import 'package:bakery/view/screens/navigation_container_screen.dart';
+import 'package:bakery/view/screens/orders_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +12,26 @@ import '../widgets/time_and_date.dart';
 
 class PickupScreen extends StatelessWidget {
   static String route = "/PickupScreen";
+  final bool backButton;
+  final Order data;
 
-  const PickupScreen({super.key});
+  const PickupScreen({super.key, this.backButton = false, required this.data});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppbar(),
+      appBar: CustomAppbar(
+          backButton: backButton,
+          action: MyRoundButton(
+              icon: Icons.close,
+              onTap: (e) {
+                // Navigator.of(context).popUntil((route) => route.isFirst);
+
+                // Navigator.of(context).pushReplacementNamed(OrderScreen.route);
+
+                Navigator.popUntil(context, (route) => route.isFirst);
+//NOTE: fix this. where to navigate after order succussful
+              })),
       // bottomNavigationBar: const MyNav(),
       body: Padding(
         padding: const EdgeInsets.symmetric(
@@ -23,9 +41,9 @@ class PickupScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
-              const DeliveryTimeSection(),
+              DeliveryTimeSection(time: data.time, date: data.date),
               const SizedBox(height: 35),
-              const DeliveryStage(),
+              DeliveryStage(orderNumber: data.id, stage: data.stage),
               const SizedBox(height: 25),
               Container(
                 padding: const EdgeInsets.all(15),
@@ -35,7 +53,7 @@ class PickupScreen extends StatelessWidget {
                 width: double.infinity,
                 child: const Center(
                   child: Text(
-                      "plaesegive the track order to your employee to collect your order,thank you!",
+                      "plaese give the track order to your employee to collect your order,thank you!",
                       textAlign: TextAlign.center,
                       style: AppConst.smallTextStyle),
                 ),
@@ -49,8 +67,12 @@ class PickupScreen extends StatelessWidget {
 }
 
 class DeliveryStage extends StatelessWidget {
+  final int orderNumber;
+  final String stage;
   const DeliveryStage({
     Key? key,
+    required this.orderNumber,
+    required this.stage,
   }) : super(key: key);
 
   @override
@@ -81,7 +103,7 @@ class DeliveryStage extends StatelessWidget {
                   style: AppConst.normalDescriptionStyle,
                 ),
                 Text(
-                  "1866552",
+                  "$orderNumber",
                   style: AppConst.normalDescriptionStyle.copyWith(
                       decoration: TextDecoration.underline,
                       fontWeight: FontWeight.bold),
@@ -167,8 +189,12 @@ class OrderStage extends StatelessWidget {
 }
 
 class DeliveryTimeSection extends StatelessWidget {
+  final String time;
+  final String date;
   const DeliveryTimeSection({
     Key? key,
+    required this.time,
+    required this.date,
   }) : super(key: key);
 
   @override
@@ -183,9 +209,9 @@ class DeliveryTimeSection extends StatelessWidget {
           height: 40,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text("1 jan 2022", style: AppConst.detailPriceStyle),
-              Padding(
+            children: [
+              Text(date, style: AppConst.detailPriceStyle),
+              const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25),
                 child: VerticalDivider(
                   width: 3,
@@ -193,7 +219,7 @@ class DeliveryTimeSection extends StatelessWidget {
                   color: AppConst.borderGrey,
                 ),
               ),
-              Text("05:00 Am", style: AppConst.detailPriceStyle)
+              Text(time, style: AppConst.detailPriceStyle)
             ],
           ),
         )

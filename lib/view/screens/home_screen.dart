@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
           break;
         case CategoryList:
           {
-            items.add(OrderSection(data: e as CategoryList));
+            items.add(CategoryListSection(data: e as CategoryList));
           }
           break;
         default:
@@ -285,8 +285,9 @@ class CarouselSection extends StatelessWidget {
                                       isSelected == true
                                           ? cartStateTemp.add(AddToCart(
                                               item: data.items[index]))
-                                          : cartStateTemp.add(RemoveAllFromCart(
-                                              item: data.items[index]));
+                                          : cartStateTemp.add(
+                                              RemoveAllofAnItemFromCart(
+                                                  item: data.items[index]));
                                     }));
                               },
                             );
@@ -299,18 +300,18 @@ class CarouselSection extends StatelessWidget {
   }
 }
 
-class OrderSection extends StatefulWidget {
+class CategoryListSection extends StatefulWidget {
   final CategoryList data;
-  const OrderSection({
+  const CategoryListSection({
     Key? key,
     required this.data,
   }) : super(key: key);
 
   @override
-  State<OrderSection> createState() => _OrderSectionState();
+  State<CategoryListSection> createState() => _CategoryListSectionState();
 }
 
-class _OrderSectionState extends State<OrderSection> {
+class _CategoryListSectionState extends State<CategoryListSection> {
   int _selected = 0;
   @override
   Widget build(BuildContext context) {
@@ -365,32 +366,54 @@ class _OrderSectionState extends State<OrderSection> {
       const SizedBox(height: 15),
       SizedBox(
         height: 330,
-        child: ListView.builder(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppConst.appHorizontalPadding),
-            itemCount: widget.data.categories[_selected].items.length,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              Product currentProduct =
-                  widget.data.categories[_selected].items[index];
-              return Padding(
-                padding: const EdgeInsets.only(right: 10, top: 7, bottom: 7),
-                child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  DetailsScreen(item: currentProduct)));
-                    },
-                    child: VertivalCard(
-                        data: currentProduct,
-                        onTapButton: () {
-                          BlocProvider.of<CartBloc>(context)
-                              .add(AddToCart(item: currentProduct));
-                        })),
-              );
-            }),
+        child: BlocBuilder<FavoriteBloc, FavoriteState>(
+          builder: (context, state) {
+            return ListView.builder(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppConst.appHorizontalPadding),
+                itemCount: widget.data.categories[_selected].items.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  Product currentProduct =
+                      widget.data.categories[_selected].items[index];
+                  return Padding(
+                    padding:
+                        const EdgeInsets.only(right: 10, top: 7, bottom: 7),
+                    child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      DetailsScreen(item: currentProduct)));
+                        },
+                        child: VerticalCard(
+                            data: currentProduct,
+                            isFavoriteSelected: state.favoriteData
+                                        .firstWhereOrNull(
+                                            (e) => e == currentProduct) ==
+                                    null
+                                ? false
+                                : true,
+                            onTapFavorite: (isSelected) {
+                              FavoriteBloc favoriteStateTemp =
+                                  BlocProvider.of<FavoriteBloc>(context);
+
+                              isSelected == true
+                                  ? favoriteStateTemp.add(
+                                      AddToFavoriteData(item: currentProduct))
+                                  : favoriteStateTemp.add(
+                                      RemoveFromFavoriteData(
+                                          item: currentProduct));
+                            },
+                            onTapButton: () {
+                              BlocProvider.of<CartBloc>(context)
+                                  .add(AddToCart(item: currentProduct));
+                            })),
+                  );
+                });
+          },
+        ),
       )
     ]);
   }

@@ -4,14 +4,18 @@ import 'package:flutter/material.dart';
 import '../../consts.dart';
 import '../../model/core_models/product_model.dart';
 
-class VertivalCard extends StatelessWidget {
+class VerticalCard extends StatelessWidget {
   final Product data;
   final Function onTapButton;
-  const VertivalCard({
-    Key? key,
-    required this.data,
-    required this.onTapButton,
-  }) : super(key: key);
+  final Function onTapFavorite;
+  final bool isFavoriteSelected;
+  const VerticalCard(
+      {Key? key,
+      required this.data,
+      required this.onTapButton,
+      required this.onTapFavorite,
+      required this.isFavoriteSelected})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +96,10 @@ class VertivalCard extends StatelessWidget {
           Align(
             alignment: Alignment.topRight,
             child: HeartButton(
-              onTap: (isActive) {},
+              isActive: isFavoriteSelected,
+              onTap: (isActive) {
+                onTapFavorite(isActive);
+              },
             ),
           ),
         ],

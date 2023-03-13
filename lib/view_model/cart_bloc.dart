@@ -21,9 +21,13 @@ class RemoveFromCart extends CartEvent {
   RemoveFromCart({required this.item});
 }
 
-class RemoveAllFromCart extends CartEvent {
+class RemoveAllofAnItemFromCart extends CartEvent {
   Product item;
-  RemoveAllFromCart({required this.item});
+  RemoveAllofAnItemFromCart({required this.item});
+}
+
+class EmptyTheCart extends CartEvent {
+  EmptyTheCart();
 }
 
 class CartItemsToCartSet extends CartEvent {
@@ -62,7 +66,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<GetCartData>(getApiCartData);
     on<AddToCart>(addToCart);
     on<RemoveFromCart>(removeFromCart);
-    on<RemoveAllFromCart>(removeAllFromCart);
+    on<RemoveAllofAnItemFromCart>(removeAllFromCart);
+    on<EmptyTheCart>(emptyTheCart);
+
     // on<CartItemsToCartSet>(cartItemsToCartSet);
   }
 
@@ -99,13 +105,21 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
 //---------------------------------------------------------------
 
-  removeAllFromCart(RemoveAllFromCart event, Emitter<CartState> emit) {
+  removeAllFromCart(RemoveAllofAnItemFromCart event, Emitter<CartState> emit) {
     cartItems.removeWhere((e) => e == event.item);
     cartItemsSet.removeWhere((CartItem e) => e.product == event.item);
 
     emit(CartUpdate(cartData: cartItems, cartSetData: cartItemsSet));
   }
 
+//---------------------------------------------------------------
+
+  emptyTheCart(EmptyTheCart event, Emitter<CartState> emit) {
+    cartItems = [];
+    cartItemsSet = [];
+
+    emit(CartUpdate(cartData: cartItems, cartSetData: cartItemsSet));
+  }
 //---------------------------------------------------------------
 
   productsToCartItem(Product product) {

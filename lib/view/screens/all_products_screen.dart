@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../model/core_models/product_model.dart';
 import '../../view_model/cart_bloc.dart';
+import '../../view_model/favorite_bloc.dart';
 
 class AllProductsScreen extends StatelessWidget {
   // static String route = '/AllProducts';
@@ -27,8 +28,9 @@ class AllProductsScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
           child: Column(children: [
             Row(children: const []),
-            Expanded(
-                child: GridView.builder(
+            Expanded(child: BlocBuilder<FavoriteBloc, FavoriteState>(
+              builder: (context, state) {
+                return GridView.builder(
                     itemCount: items.length,
                     // padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                     gridDelegate:
@@ -50,14 +52,32 @@ class AllProductsScreen extends StatelessWidget {
                                         builder: (context) =>
                                             DetailsScreen(item: items[index])));
                               },
-                              child: VertivalCard(
+                              child: VerticalCard(
+                                onTapFavorite: (isSelected) {
+                                  FavoriteBloc favoriteStateTemp =
+                                      BlocProvider.of<FavoriteBloc>(context);
+                                  isSelected == true
+                                      ? favoriteStateTemp.add(
+                                          AddToFavoriteData(item: items[index]))
+                                      : favoriteStateTemp.add(
+                                          RemoveFromFavoriteData(
+                                              item: items[index]));
+                                },
+                                isFavoriteSelected: state.favoriteData
+                                            .firstWhereOrNull(
+                                                (e) => e == items[index]) ==
+                                        null
+                                    ? false
+                                    : true,
                                 data: items[index],
                                 onTapButton: () {
                                   BlocProvider.of<CartBloc>(context)
                                       .add(AddToCart(item: items[index]));
                                 },
                               )));
-                    }))
+                    });
+              },
+            ))
           ]),
         ));
   }

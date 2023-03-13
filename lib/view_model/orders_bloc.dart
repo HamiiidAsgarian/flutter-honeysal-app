@@ -9,6 +9,11 @@ class GetOrderData extends OrderEvent {
   GetOrderData({required this.data});
 }
 
+class AddOrder extends OrderEvent {
+  Order data;
+  AddOrder({required this.data});
+}
+
 //--------------------------------------------------------
 abstract class OrderState {
   OrderState({required this.orderData});
@@ -29,10 +34,16 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   OrderBloc() : super(OrderInitial()) {
     on<GetOrderData>(getApiOrderData);
+    on<AddOrder>(addOrder);
   }
   // Future<List<Data>>
   getApiOrderData(GetOrderData event, Emitter<OrderState> emit) async {
     orderItems = event.data;
+    emit(OrderUpdate(orderData: orderItems));
+  }
+
+  addOrder(AddOrder event, Emitter<OrderState> emit) async {
+    orderItems.add(event.data);
     emit(OrderUpdate(orderData: orderItems));
   }
 }

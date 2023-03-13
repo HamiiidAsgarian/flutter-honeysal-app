@@ -48,7 +48,7 @@ class CartScreen extends StatelessWidget {
                               onTapDelete: () {
                                 BlocProvider.of<CartBloc>(context,
                                         listen: false)
-                                    .add(RemoveAllFromCart(
+                                    .add(RemoveAllofAnItemFromCart(
                                         item:
                                             state.cartSetData[index].product));
                               },

@@ -28,27 +28,30 @@ class HeartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder(
-      key: UniqueKey(),
-      duration: const Duration(milliseconds: 400),
-      tween: Tween(begin: 5.0, end: 30.0),
-      curve: Curves.easeInOutBack,
-      builder: (context, value, child) => GestureDetector(
-        onTap: () {
-          onTap(!isActive);
-        },
-        child: SizedBox(
-          width: 30,
-          height: 30,
-          child: Center(
-            child: Icon(
-              Icons.favorite_border,
-              color: isActive ? Colors.red : AppConst.borderGrey,
-              size: value,
-            ),
+    return
+        // TweenAnimationBuilder(
+        //   key: GlobalKey(),
+        //   duration: const Duration(milliseconds: 400),
+        //   tween: Tween(begin: 5.0, end: 30.0),
+        //   curve: Curves.easeInOutBack,
+        //   builder: (context, value, child) =>
+
+        GestureDetector(
+      onTap: () {
+        onTap(!isActive);
+      },
+      child: SizedBox(
+        width: 30,
+        height: 30,
+        child: Center(
+          child: Icon(
+            Icons.favorite_border,
+            color: isActive ? Colors.red : AppConst.borderGrey,
+            size: 30,
           ),
         ),
       ),
     );
+    // );
   }
 }

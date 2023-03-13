@@ -47,6 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 });
               },
               phoneInputController: _phoneInputController,
+              validator: (String? value) {},
             ),
             const SizedBox(height: 20),
 

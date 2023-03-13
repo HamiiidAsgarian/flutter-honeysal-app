@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
                 DetailsScreen(item: Product.filled()),
             CartScreen.route: (context) => const CartScreen(),
             CheckoutScreen.route: (context) => const CheckoutScreen(),
-            PickupScreen.route: (context) => const PickupScreen(),
+            // PickupScreen.route: (context) => const PickupScreen(),
             OrderScreen.route: (context) => const OrderScreen(),
             StartScreen.route: (context) => const StartScreen(),
             LoginScreen.route: (context) => const LoginScreen(),
