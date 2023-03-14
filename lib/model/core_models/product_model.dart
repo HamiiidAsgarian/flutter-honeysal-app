@@ -45,7 +45,7 @@ class Product {
       'point': point,
       'ingredients': ingredients.map((x) => x.toMap()).toList(),
       'allergens': allergens.map((x) => x.toMap()).toList(),
-      'off': off,
+      // 'off': off,
     };
   }
 
@@ -86,7 +86,7 @@ class Product {
           (x) => IconInfo.fromMap(x),
         ),
       ),
-      off: map['off'] != null ? map['off'] as double : null,
+      // off: map['off'] != null ? map['off'] as double : null,
     );
   }
 
@@ -115,17 +115,15 @@ class Product {
 
   @override
   int get hashCode {
-    return id.hashCode ^
-        title.hashCode ^
-        price.hashCode ^
-        category.hashCode ^
-        imageUrl.hashCode ^
-        description.hashCode ^
-        rate.hashCode ^
-        left.hashCode ^
-        point.hashCode ^
-        ingredients.hashCode ^
-        allergens.hashCode ^
-        off.hashCode;
+    return id.hashCode ^ title.hashCode;
+    // price.hashCode ^
+    // category.hashCode ^
+    // imageUrl.hashCode ^
+    // description.hashCode ^
+    // rate.hashCode ^
+    // left.hashCode ^
+    // point.hashCode ^
+    // ingredients.hashCode ^
+    // allergens.hashCode;
   }
 }

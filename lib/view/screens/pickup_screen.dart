@@ -1,9 +1,5 @@
 import 'package:bakery/consts.dart';
-import 'package:bakery/core/app_initializer.dart';
 import 'package:bakery/model/core_models/order_model.dart';
-import 'package:bakery/view/screens/home_screen.dart';
-import 'package:bakery/view/screens/navigation_container_screen.dart';
-import 'package:bakery/view/screens/orders_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +39,9 @@ class PickupScreen extends StatelessWidget {
               const SizedBox(height: 20),
               DeliveryTimeSection(time: data.time, date: data.date),
               const SizedBox(height: 35),
-              DeliveryStage(orderNumber: data.id, stage: data.stage),
+              DeliveryStage(
+                  data: data,
+                  stage: "${data.stage.status}"), //NOTE: nullable id
               const SizedBox(height: 25),
               Container(
                 padding: const EdgeInsets.all(15),
@@ -67,11 +65,11 @@ class PickupScreen extends StatelessWidget {
 }
 
 class DeliveryStage extends StatelessWidget {
-  final int orderNumber;
+  final Order data;
   final String stage;
   const DeliveryStage({
     Key? key,
-    required this.orderNumber,
+    required this.data,
     required this.stage,
   }) : super(key: key);
 
@@ -103,7 +101,7 @@ class DeliveryStage extends StatelessWidget {
                   style: AppConst.normalDescriptionStyle,
                 ),
                 Text(
-                  "$orderNumber",
+                  "${data.id}",
                   style: AppConst.normalDescriptionStyle.copyWith(
                       decoration: TextDecoration.underline,
                       fontWeight: FontWeight.bold),
@@ -117,34 +115,38 @@ class DeliveryStage extends StatelessWidget {
                 // fillColor: AppConst.mainGreen,
                 onTap: (e) {},
                 icon: Icons.check_circle,
-                isActive: true),
+                isActive: data.stage.confirm != null),
             title: "Order placed and confirmed",
-            time: "06:14 PM",
-            date: "31 Dec 2023",
+            time:
+                data.stage.confirm != null ? data.stage.confirm!.time! : "Soon",
+            date:
+                data.stage.confirm != null ? data.stage.confirm!.date! : "Soon",
           ),
           OrderStage(
             leading: MyRoundButton(
-              isActive: true,
+              isActive: data.stage.process != null,
               selectedColor: AppConst.mainOrange,
               // fillColor: AppConst.mainOrange,
               onTap: (e) {},
               icon: Icons.delivery_dining,
             ),
             title: "Order processed",
-            time: "08:17 PM",
-            date: "31 Dec 2023",
+            time:
+                data.stage.process != null ? data.stage.process!.time! : "Soon",
+            date:
+                data.stage.process != null ? data.stage.process!.date! : "Soon",
           ),
           OrderStage(
             leading: MyRoundButton(
-              isActive: false,
+              isActive: data.stage.ready != null,
               selectedColor: AppConst.mainBlue,
               // fillColor: AppConst.mainBlue,
               onTap: (e) {},
               icon: Icons.check,
             ),
             title: "Order ready to collect",
-            time: "Soon",
-            date: "soon",
+            time: data.stage.ready != null ? data.stage.ready!.time! : "Soon",
+            date: data.stage.ready != null ? data.stage.ready!.date! : "Soon",
           ),
         ],
       ),

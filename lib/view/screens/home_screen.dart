@@ -1,3 +1,4 @@
+import 'package:bakery/core/utilities.dart';
 import 'package:bakery/model/core_models/product_model.dart';
 import 'package:bakery/model/home_elements_models/promotion_model.dart';
 import 'package:bakery/view/screens/all_products_screen.dart';

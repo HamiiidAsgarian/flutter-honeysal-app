@@ -100,9 +100,14 @@ Future<Map<String, dynamic>> getAllData() async {
     "orders": [
       {
         "id": 111,
-        "time": "99:99",
+        "time": "111:99",
         "date": "21-23-9889",
-        "stage": "deliverd",
+        "stage": {
+          "status": "process",
+          "confirm": {'time': "19:12", "date": "2033/07/07"},
+          "process": {'time': "19:12", "date": "2033/07/08"},
+          "ready": {'time': "soon", "date": "soon"}
+        },
         "totalCost": 2323.232,
         "products": [
           {
@@ -147,18 +152,44 @@ Future<Map<String, dynamic>> getAllData() async {
               {'imageUrl': "", "title": "egg"}
             ]
           },
+          {
+            'id': 1,
+            'title': "i1",
+            'price': 3200.2,
+            'off': 32,
+            'category': "category",
+            'imageUrl':
+                "https://www.cookingclassy.com/wp-content/uploads/2014/06/chocolate-chip-cookie-16-500x500.jpg",
+            'description': "description",
+            'rate': 4.5,
+            'left': 4,
+            'point': 8,
+            'ingredients': [
+              {'imageUrl': "", "title": "egg"},
+              {'imageUrl': "", "title": "egg"}
+            ],
+            'allergens': [
+              {'imageUrl': "", "title": "egg"},
+              {'imageUrl': "", "title": "egg"}
+            ]
+          }
         ]
       },
       {
-        "id": 222222,
-        "time": "99:99",
-        "date": "21-23-9889",
-        "stage": "deliverd",
+        "id": 222,
+        "time": "222:99",
+        "date": "222-23-9889",
+        "stage": {
+          "status": "process",
+          "confirm": {'time': "19:12", "date": "2033/07/07"},
+          "process": {'time': "19:12", "date": "2033/07/08"},
+          "ready": {'time': "soon", "date": "soon"}
+        },
         "totalCost": 2323.232,
         "products": [
           {
-            'id': 4,
-            'title': "i4",
+            'id': 2,
+            'title': "i2",
             'price': 3200.2,
             'off': 32,
             'category': "category",
@@ -178,8 +209,8 @@ Future<Map<String, dynamic>> getAllData() async {
             ]
           },
           {
-            'id': 5,
-            'title': "i5",
+            'id': 2,
+            'title': "i2",
             'price': 3200.2,
             'off': 32,
             'category': "category",
@@ -197,7 +228,28 @@ Future<Map<String, dynamic>> getAllData() async {
               {'imageUrl': "", "title": "egg"},
               {'imageUrl': "", "title": "egg"}
             ]
-          }
+          },
+          {
+            'id': 1,
+            'title': "i1",
+            'price': 3200.2,
+            'off': 32,
+            'category': "category",
+            'imageUrl':
+                "https://www.cookingclassy.com/wp-content/uploads/2014/06/chocolate-chip-cookie-16-500x500.jpg",
+            'description': "description",
+            'rate': 4.5,
+            'left': 4,
+            'point': 8,
+            'ingredients': [
+              {'imageUrl': "", "title": "egg"},
+              {'imageUrl': "", "title": "egg"}
+            ],
+            'allergens': [
+              {'imageUrl': "", "title": "egg"},
+              {'imageUrl': "", "title": "egg"}
+            ]
+          },
         ]
       },
     ],

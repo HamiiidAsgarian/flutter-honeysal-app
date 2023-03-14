@@ -1,10 +1,13 @@
 import 'package:bakery/consts.dart';
+import 'package:bakery/view/screens/pickup_screen.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
+import 'package:bakery/view_model/cart_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/utilities.dart';
+import '../../model/cart_screen_models/cart_item_model.dart';
 import '../../model/core_models/order_model.dart';
-import '../../model/core_models/product_model.dart';
 import '../../view_model/orders_bloc.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/time_and_date.dart';
@@ -48,11 +51,16 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<CountedProductItem> productSet =
+        productsListToCartItemSet(data.products);
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [Text(data.stage, style: AppConst.normalDescriptionStyle)],
+          children: [
+            Text(data.stage.status!.name,
+                style: AppConst.normalDescriptionStyle)
+          ],
         ),
         const SizedBox(height: 15),
         Container(
@@ -81,7 +89,7 @@ class OrderCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 Column(
                     // itemCount: 5,
-                    children: List.generate(data.products.length, (index) {
+                    children: List.generate(productSet.length, (index) {
                   return Column(
                     children: [
                       index == 0
@@ -94,7 +102,7 @@ class OrderCard extends StatelessWidget {
                                 height: 2,
                                 color: AppConst.borderGrey,
                               )),
-                      OrderFactorItem(data: data.products[index])
+                      OrderFactorItem(product: productSet[index])
                     ],
                   );
                 })),
@@ -104,8 +112,23 @@ class OrderCard extends StatelessWidget {
                     MyRoundButton(
                         isActive: true,
                         type: CutomRoundedButtonType.pusher,
+                        icon: Icons.list_alt_outlined,
+                        onTap: (isSelected) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) => PickupScreen(
+                                      backButton: true, data: data))));
+                        }),
+                    const SizedBox(width: 25),
+                    MyRoundButton(
+                        isActive: true,
+                        type: CutomRoundedButtonType.pusher,
                         icon: Icons.shopping_bag_outlined,
-                        onTap: (isSelected) {})
+                        onTap: (isSelected) {
+                          BlocProvider.of<CartBloc>(context)
+                              .add(AddListToCart(item: data.products));
+                        }),
                   ],
                 )
               ],
@@ -116,10 +139,11 @@ class OrderCard extends StatelessWidget {
 }
 
 class OrderFactorItem extends StatelessWidget {
-  final Product data;
+  final CountedProductItem product;
+
   const OrderFactorItem({
     Key? key,
-    required this.data,
+    required this.product,
   }) : super(key: key);
 
   @override
@@ -133,15 +157,16 @@ class OrderFactorItem extends StatelessWidget {
               width: 75,
               height: 75,
               color: Colors.green,
-              child: Image.network(data.imageUrl),
+              child: Image.network(product.product.imageUrl),
             ),
             const SizedBox(
               width: 10,
             ),
-            Text(data.title, style: AppConst.normalDescriptionStyle)
+            Text("${product.product.title} (x${product.count})",
+                style: AppConst.normalDescriptionStyle)
           ],
         ),
-        Text("\$${data.price}", style: AppConst.sectionTitleStyle)
+        Text("\$${product.product.price}", style: AppConst.sectionTitleStyle)
       ],
     );
   }

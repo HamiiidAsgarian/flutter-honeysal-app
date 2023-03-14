@@ -119,9 +119,10 @@ class CartScreen extends StatelessWidget {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: ((context) =>
-                                              const CheckoutScreen(
+                                          builder: ((context) => CheckoutScreen(
+                                                costs: costsColculation,
                                                 backButton: true,
+                                                order: state.cartData,
                                               ))));
                                 },
                                 title: "Checkout")

@@ -20,7 +20,6 @@ class MobileTextInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomTextInput(
       validator: (v) {
-        print("v");
         return validator(v);
       },
       keyboardType: TextInputType.number,

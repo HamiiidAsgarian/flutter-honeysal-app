@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:bakery/model/core_models/product_model.dart';
 import 'package:bakery/model/home_elements_models/home_model.dart';
-import 'package:bakery/view/screens/checkout_screen.dart';
 import 'package:bakery/view/screens/details_screen.dart';
 import 'package:bakery/view/screens/login_screen.dart';
 import 'package:bakery/view/screens/orders_screen.dart';
@@ -17,7 +16,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'view/screens/cart_screen.dart';
 import 'view/screens/home_screen.dart';
 import 'view/screens/navigation_container_screen.dart';
-import 'view/screens/pickup_screen.dart';
 import 'view/screens/signup_screen.dart';
 
 void main() {
@@ -56,7 +54,7 @@ class MyApp extends StatelessWidget {
             DetailsScreen.route: (context) =>
                 DetailsScreen(item: Product.filled()),
             CartScreen.route: (context) => const CartScreen(),
-            CheckoutScreen.route: (context) => const CheckoutScreen(),
+            // CheckoutScreen.route: (context) => const CheckoutScreen(),
             // PickupScreen.route: (context) => const PickupScreen(),
             OrderScreen.route: (context) => const OrderScreen(),
             StartScreen.route: (context) => const StartScreen(),

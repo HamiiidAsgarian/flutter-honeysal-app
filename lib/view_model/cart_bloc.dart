@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:bakery/core/utilities.dart';
 import 'package:bakery/model/core_models/product_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,6 +15,11 @@ class GetCartData extends CartEvent {
 class AddToCart extends CartEvent {
   Product item;
   AddToCart({required this.item});
+}
+
+class AddListToCart extends CartEvent {
+  List<Product> item;
+  AddListToCart({required this.item});
 }
 
 class RemoveFromCart extends CartEvent {
@@ -39,7 +45,7 @@ class CartItemsToCartSet extends CartEvent {
 abstract class CartState {
   CartState({this.cartData = const [], required this.cartSetData});
   List<Product> cartData;
-  List<CartItem> cartSetData;
+  List<CountedProductItem> cartSetData;
 }
 
 class CartInitial extends CartState {
@@ -60,11 +66,13 @@ class CartSetUpdate extends CartState {
 //--------------------------------------------------------
 class CartBloc extends Bloc<CartEvent, CartState> {
   List<Product> cartItems = [];
-  List<CartItem> cartItemsSet = [];
+  List<CountedProductItem> cartItemsSet = [];
 
   CartBloc() : super(CartInitial()) {
     on<GetCartData>(getApiCartData);
     on<AddToCart>(addToCart);
+    on<AddListToCart>(addListToCart);
+
     on<RemoveFromCart>(removeFromCart);
     on<RemoveAllofAnItemFromCart>(removeAllFromCart);
     on<EmptyTheCart>(emptyTheCart);
@@ -86,6 +94,16 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
 //---------------------------------------------------------------
+  addListToCart(AddListToCart event, Emitter<CartState> emit) {
+    cartItems = [...cartItems, ...event.item];
+
+    cartItemsSet = productsListToCartItemSet(cartItems);
+    // productsToCartItem(event.item); //Note is not a pure fuction
+
+    emit(CartUpdate(cartData: cartItems, cartSetData: cartItemsSet));
+  }
+
+  //---------------------------------------------------------------
 
   addToCart(AddToCart event, Emitter<CartState> emit) {
     cartItems.add(event.item);
@@ -107,7 +125,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   removeAllFromCart(RemoveAllofAnItemFromCart event, Emitter<CartState> emit) {
     cartItems.removeWhere((e) => e == event.item);
-    cartItemsSet.removeWhere((CartItem e) => e.product == event.item);
+    cartItemsSet.removeWhere((CountedProductItem e) => e.product == event.item);
 
     emit(CartUpdate(cartData: cartItems, cartSetData: cartItemsSet));
   }
@@ -123,22 +141,13 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 //---------------------------------------------------------------
 
   productsToCartItem(Product product) {
-    CartItem? selected =
+    CountedProductItem? selected =
         cartItemsSet.firstWhereOrNull((e) => product == e.product);
 
     if (selected != null) {
       selected.count += 1;
     } else {
-      cartItemsSet.add(CartItem(product: product, count: 1));
+      cartItemsSet.add(CountedProductItem(product: product, count: 1));
     }
-  }
-}
-
-extension FirstWhereOrNullExtension<E> on Iterable<E> {
-  E? firstWhereOrNull(bool Function(E) test) {
-    for (E element in this) {
-      if (test(element)) return element;
-    }
-    return null;
   }
 }

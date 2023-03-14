@@ -1,18 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
 import 'product_model.dart';
 
 class Order {
-  int id;
+  int? id;
   List<Product> products;
   String date;
   String time;
 
-  String stage;
+  Stage stage;
   double totalCost;
   Order({
-    required this.id,
+    this.id,
     required this.products,
     required this.date,
     required this.time,
@@ -20,87 +19,13 @@ class Order {
     required this.totalCost,
   });
 
-  // Map<String, dynamic> toMap() {
-  //   return <String, dynamic>{
-  //     'id': id,
-  //     'products': products.map((x) => x.toMap()).toList(),
-  //     'date': date,
-  //     'time': time,
-  //     'stage': stage,
-  //     'totalCost': totalCost,
-  //   };
-  // }
-
-  // factory Order.fromMap(Map<String, dynamic> map) {
-  //   return Order(
-  //     id: map['id'] as int,
-  //     totalCost: map['totalCost'] as double,
-  //     products: List<Product>.from(
-  //       (map['items'] as List<Map<String, dynamic>>).map<Product>(
-  //         (x) => Product.fromMap(x),
-  //       ),
-  //     ),
-  //     date: map['date'] as String,
-  //     time: map['time'] as String,
-  //     stage: map['stage'] as String,
-  //   );
-  // }
-
-  // String toJson() => json.encode(toMap());
-
-  // factory Order.fromJson(String source) =>
-  //     Order.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  // Order copyWith({
-  //   int? id,
-  //   List<Product>? products,
-  //   String? date,
-  //   String? time,
-  //   String? stage,
-  //   double? totalCost,
-  // }) {
-  //   return Order(
-  //     id: id ?? this.id,
-  //     products: products ?? this.products,
-  //     date: date ?? this.date,
-  //     time: time ?? this.time,
-  //     stage: stage ?? this.stage,
-  //     totalCost: totalCost ?? this.totalCost,
-  //   );
-  // }
-
-  // @override
-  // String toString() {
-  //   return 'Order(id: $id, products: $products, date: $date, stage: $stage, totalCost: $totalCost)';
-  // }
-
-  // @override
-  // bool operator ==(covariant Order other) {
-  //   if (identical(this, other)) return true;
-
-  //   return other.id == id &&
-  //       listEquals(other.products, products) &&
-  //       other.date == date &&
-  //       other.stage == stage &&
-  //       other.totalCost == totalCost;
-  // }
-
-  // @override
-  // int get hashCode {
-  //   return id.hashCode ^
-  //       products.hashCode ^
-  //       date.hashCode ^
-  //       stage.hashCode ^
-  //       totalCost.hashCode;
-  // }
-
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
       'products': products.map((x) => x.toMap()).toList(),
       'date': date,
       'time': time,
-      'stage': stage,
+      'stage': stage.toMap(),
       'totalCost': totalCost,
     };
   }
@@ -115,7 +40,7 @@ class Order {
       ),
       date: map['date'] as String,
       time: map['time'] as String,
-      stage: map['stage'] as String,
+      stage: Stage.fromMap(map['stage']),
       totalCost: map['totalCost'] as double,
     );
   }
@@ -125,3 +50,87 @@ class Order {
   factory Order.fromJson(String source) =>
       Order.fromMap(json.decode(source) as Map<String, dynamic>);
 }
+
+//------------------------------------------------------
+class Stage {
+  OrderStageStatus? status;
+  StageTimeDate? confirm;
+  StageTimeDate? process;
+  StageTimeDate? ready;
+
+  Stage({
+    required this.status,
+    this.process,
+    this.confirm,
+    this.ready,
+  });
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'status': status!.name.toString(),
+      'confirm': confirm != null ? confirm!.toMap() : null,
+      'process': process != null ? confirm!.toMap() : null,
+      'ready': ready != null ? confirm!.toMap() : null,
+    };
+  }
+
+  factory Stage.fromMap(Map<String, dynamic> map) {
+    OrderStageStatus? res;
+    switch (map['status']) {
+      case "confirm":
+        res = OrderStageStatus.confirm;
+        break;
+      case "process":
+        res = OrderStageStatus.process;
+        break;
+
+      case "ready":
+        res = OrderStageStatus.ready;
+        break;
+    }
+
+    return Stage(
+        status: res,
+        process: map['process'] != null
+            ? StageTimeDate.fromMap(map['process'])
+            : null,
+        confirm: map['confirm'] != null
+            ? StageTimeDate.fromMap(map['confirm'])
+            : null,
+        ready: map['redy'] != null ? StageTimeDate.fromMap(map['redy']) : null);
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Stage.fromJson(String source) =>
+      Stage.fromMap(json.decode(source) as Map<String, dynamic>);
+}
+//------------------------------------------------------
+
+class StageTimeDate {
+  String? time;
+  String? date;
+  StageTimeDate({this.time, this.date});
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'time': time,
+      'date': date,
+    };
+  }
+
+  factory StageTimeDate.fromMap(Map<String, dynamic> map) {
+    return StageTimeDate(
+      time: map['time'] != null ? map['time'] as String : null,
+      date: map['date'] != null ? map['date'] as String : null,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory StageTimeDate.fromJson(String source) =>
+      StageTimeDate.fromMap(json.decode(source) as Map<String, dynamic>);
+}
+//------------------------------------------------------
+
+enum OrderStageStatus { confirm, process, ready }

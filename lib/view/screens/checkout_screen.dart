@@ -1,5 +1,6 @@
 import 'package:bakery/consts.dart';
 import 'package:bakery/model/core_models/order_model.dart';
+import 'package:bakery/model/core_models/product_model.dart';
 import 'package:bakery/services/send_order_form.dart';
 import 'package:bakery/view/screens/pickup_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
@@ -18,14 +19,21 @@ class CheckoutScreen extends StatefulWidget {
   static String route = "/CheckoutScreen";
 
   final bool backButton;
-  const CheckoutScreen({super.key, this.backButton = false});
+  final List<String> costs;
+  final List<Product> order;
+
+  const CheckoutScreen(
+      {super.key,
+      this.backButton = false,
+      required this.costs,
+      required this.order});
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  final TextEditingController dateinput = TextEditingController();
+  final TextEditingController _dateinput = TextEditingController();
   final TextEditingController _timeInputController = TextEditingController();
   final TextEditingController _phoneInputController = TextEditingController();
   final TextEditingController _creditInputController = TextEditingController();
@@ -48,7 +56,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   const SizedBox(height: 10),
                   CustomTextInput(
                     keyboardType: TextInputType.datetime,
-                    textEditingController: dateinput,
+                    textEditingController: _dateinput,
                     title: "pickup date",
                     hint: '2033/12/12',
                     mask: '####/##/##',
@@ -76,9 +84,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                         if (pickedDate != null) {
                           String formattedDate =
-                              DateFormat('yyyy/MM/dd').format(pickedDate);
+                              DateFormat('y/M/d').format(pickedDate);
                           setState(() {
-                            dateinput.text =
+                            _dateinput.text =
                                 formattedDate; //set output date to TextField value.
                           });
                         } else {
@@ -87,10 +95,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       },
                     ),
                     validator: (value) {
-                      print(value);
                       if (value != null &&
                           value.isNotEmpty &&
-                          value.length >= 10) {
+                          value.length >= 8) {
                         List<String> hourMinute = value.split("/");
                         int year = int.parse(hourMinute[0]);
                         int month = int.parse(hourMinute[1]);
@@ -109,7 +116,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   const SizedBox(height: 10),
                   CustomTextInput(
                     validator: (value) {
-                      print(value);
                       if (value != null &&
                           value.isNotEmpty &&
                           value.length >= 5) {
@@ -215,34 +221,57 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         onPressed: () async {}),
                   ),
                   const SizedBox(height: 25),
-                  CostsSection(onPressCheckout: () async {
-                    // print(_formKey.currentState!.validate());
-                    if (_formKey.currentState!.validate()) {
-                      // print("aa");
-                      _formKey.currentState!.save();
+                  CostsSection(
+                      costs: widget.costs,
+                      onPressCheckout: () async {
+                        // print(_formKey.currentState!.validate());
+                        if (_formKey.currentState!.validate()) {
+                          // print("aa");
+                          _formKey.currentState!.save();
+                          // CheckoutForm checkoutForm = CheckoutForm(
+                          //     date: _dateinput.text,
+                          //     pickupTime: _timeInputController.text,
+                          //     telephone: _phoneInputController.text,
+                          //     payment: _creditInputController.text,
+                          //     totalPrice: double.parse(widget.costs[3]));
 
-                      showAlertDialog(context);
+                          Order newOrder = Order(
+                              id: 8789877, //NOTE id should not be sent
+                              date: _dateinput.text,
+                              time: _timeInputController.text,
+                              stage: Stage(
+                                  status: OrderStageStatus.confirm,
+                                  confirm: StageTimeDate(
+                                      date: DateFormat('y/M/d')
+                                          .format(DateTime.now()),
+                                      time: DateFormat.Hm()
+                                          .format(DateTime.now()))),
+                              products: widget.order,
+                              totalCost: double.parse(widget.costs[2]));
 
-                      await sendOrderForm().then((value) {
-                        Order res = Order.fromMap(value);
-                        Navigator.pop(context);
-                        BlocProvider.of<OrderBloc>(context)
-                            .add(AddOrder(data: res));
+                          showAlertDialog(context);
 
-                        BlocProvider.of<CartBloc>(context).add(EmptyTheCart());
-                        // if (value != null) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: ((context) => PickupScreen(
-                                      data: res,
-                                      backButton: false,
-                                    ))));
-                        // }
-                        return value;
-                      });
-                    }
-                  })
+                          await sendOrderData(newOrder).then((value) {
+                            Order res = Order.fromMap(value);
+                            Navigator.pop(context);
+                            BlocProvider.of<OrderBloc>(context)
+                                .add(AddOrder(data: res));
+
+                            BlocProvider.of<CartBloc>(context)
+                                .add(EmptyTheCart());
+                            // if (value != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: ((context) => PickupScreen(
+                                          data: res,
+                                          backButton: false,
+                                        ))));
+                            // }
+                            return value;
+                          });
+                        }
+                      })
                 ],
               ),
             ),
@@ -252,29 +281,37 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   showAlertDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
-      content: FutureBuilder(
-          future: sendOrderForm(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Row(
-                children: [
-                  // const CircularProgressIndicator(),
-                  Container(
-                      margin: const EdgeInsets.only(left: 5),
-                      child: const Text("OK")),
-                ],
-              );
-            }
-            return Row(
-              children: [
-                const CircularProgressIndicator(),
-                Container(
-                    margin: const EdgeInsets.only(left: 5),
-                    child: const Text("Loading")),
-              ],
-            );
-          }),
-    );
+        content: Row(
+      children: [
+        const CircularProgressIndicator(),
+        Container(
+            margin: const EdgeInsets.only(left: 5),
+            child: const Text("Loading")),
+      ],
+    )
+        // FutureBuilder(
+        // future: sendOrderData(),
+        // builder: (context, snapshot) {
+        //   if (snapshot.hasData) {
+        //     return Row(
+        //       children: [
+        //         // const CircularProgressIndicator(),
+        //         Container(
+        //             margin: const EdgeInsets.only(left: 5),
+        //             child: const Text("OK")),
+        //       ],
+        //     );
+        //   }
+        //   return Row(
+        //     children: [
+        //       const CircularProgressIndicator(),
+        //       Container(
+        //           margin: const EdgeInsets.only(left: 5),
+        //           child: const Text("Loading")),
+        //     ],
+        //   );
+        // }),
+        );
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -288,10 +325,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 class CostsSection extends StatelessWidget {
   // final GlobalKey<FormState> formValidator;
   final Function onPressCheckout;
+  final List costs;
 
   const CostsSection({
     Key? key,
     required this.onPressCheckout,
+    required this.costs,
     // required this.formValidator,
   }) : super(key: key);
 
@@ -304,29 +343,34 @@ class CostsSection extends StatelessWidget {
             // color: Colors.red,
             border: Border(top: BorderSide(color: AppConst.borderGrey))),
         padding: const EdgeInsets.symmetric(vertical: 15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const RecieptRow(
-              title: "Subtotal",
-              price: "\$${29.8}",
-            ),
-            const RecieptRow(
-              title: "Discount",
-              price: "\$${29.8}",
-            ),
-            const RecieptRow(
-              title: "Total",
-              price: "\$${29.8}",
-              style: RecieptRowStyle.bold,
-            ),
-            MainButton(
-                onPress: () {
-                  onPressCheckout();
-                },
-                title: "Checkout")
-          ],
+        child: BlocBuilder<CartBloc, CartState>(
+          builder: (context, state) {
+            // List<String> costsColculation = costColculation(state.cartData);
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                RecieptRow(
+                  title: "Subtotal",
+                  price: "\$${costs[0]}",
+                ),
+                RecieptRow(
+                  title: "Discount",
+                  price: "\$${costs[1]}",
+                ),
+                RecieptRow(
+                  title: "Total",
+                  price: "\$${costs[2]}",
+                  style: RecieptRowStyle.bold,
+                ),
+                MainButton(
+                    onPress: () {
+                      onPressCheckout();
+                    },
+                    title: "Checkout")
+              ],
+            );
+          },
         ));
   }
 }
