@@ -97,7 +97,8 @@ class Stage {
         confirm: map['confirm'] != null
             ? StageTimeDate.fromMap(map['confirm'])
             : null,
-        ready: map['redy'] != null ? StageTimeDate.fromMap(map['redy']) : null);
+        ready:
+            map['ready'] != null ? StageTimeDate.fromMap(map['ready']) : null);
   }
 
   String toJson() => json.encode(toMap());

@@ -1,5 +1,5 @@
 import 'package:bakery/model/app_data_model.dart';
-import 'package:bakery/services/data2.dart';
+import 'package:bakery/services/app_start_data.dart';
 import 'package:bakery/view_model/cart_bloc.dart';
 import 'package:bakery/view_model/favorite_bloc.dart';
 import 'package:bakery/view_model/orders_bloc.dart';

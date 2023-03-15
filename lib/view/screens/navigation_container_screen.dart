@@ -14,7 +14,7 @@ import 'home_screen.dart';
 import 'orders_screen.dart';
 
 class NavScreen extends StatefulWidget {
-  static String route = "/";
+  static String route = "/1";
   const NavScreen({super.key});
 
   @override

@@ -1,10 +1,13 @@
 import 'package:bakery/consts.dart';
 import 'package:bakery/view/screens/checkout_screen.dart';
+import 'package:bakery/view/screens/login_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/utilities.dart';
+import '../../services/login_data.dart';
 import '../widgets/mobile_text_input.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -98,7 +101,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ])),
 
             const SizedBox(height: 20),
-            MainButton(onPress: () {}, title: "Create account"),
+            MainButton(
+                onPress: () {
+                  showLoadingDialogPanel(context, "Sending data");
+                  signUpDataPost(true).then((value) {
+                    if (value["status"] == 200) {
+                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: ((context) => LoginScreen())));
+                    } else {
+                      Navigator.pop(context);
+                      // showLoadingDialogPanel(context, "Login failed");
+                    }
+                  });
+                },
+                title: "Create account"),
             const SizedBox(height: 20),
 
             Center(
@@ -112,7 +131,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         .copyWith(color: AppConst.burnedOrange),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () async {
-                        //on tap code here, you can navigate to other page or URL
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => const LoginScreen())));
                       }),
               ])),
             ),

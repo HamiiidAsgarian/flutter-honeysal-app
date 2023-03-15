@@ -1,11 +1,13 @@
 import 'package:bakery/consts.dart';
+import 'package:bakery/view/screens/login_screen.dart';
+import 'package:bakery/view/screens/signup_screen.dart';
 import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:flutter/material.dart';
 
-class StartScreen extends StatelessWidget {
+class WellcomeScreen extends StatelessWidget {
   static String route = "/StartScreen";
 
-  const StartScreen({super.key});
+  const WellcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +39,22 @@ class StartScreen extends StatelessWidget {
                       .copyWith(color: AppConst.mainWhite)),
               const SizedBox(height: 20),
               MainButton(
-                onPress: () {},
+                onPress: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => const LoginScreen())));
+                },
                 title: "log in",
               ),
               const SizedBox(height: 20),
               MainButton(
-                onPress: () {},
+                onPress: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => const SignUpScreen())));
+                },
                 title: "Create account",
                 fillColor: AppConst.mainWhite,
                 titleColor: AppConst.burnedOrange,

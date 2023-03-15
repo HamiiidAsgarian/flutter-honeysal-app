@@ -103,10 +103,10 @@ Future<Map<String, dynamic>> getAllData() async {
         "time": "111:99",
         "date": "21-23-9889",
         "stage": {
-          "status": "process",
-          "confirm": {'time': "19:12", "date": "2033/07/07"},
-          "process": {'time': "19:12", "date": "2033/07/08"},
-          "ready": {'time': "soon", "date": "soon"}
+          "status": "ready",
+          "confirm": {'time': "19:12", "date": "2033/07/33"},
+          "process": {'time': "19:12", "date": "2033/07/22"},
+          // "ready": {'time': "19:12", "date": "2033/07/22"}
         },
         "totalCost": 2323.232,
         "products": [

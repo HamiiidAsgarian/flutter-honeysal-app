@@ -1,9 +1,14 @@
 import 'package:bakery/consts.dart';
 import 'package:bakery/view/screens/checkout_screen.dart';
+import 'package:bakery/view/screens/navigation_container_screen.dart';
+import 'package:bakery/view/screens/signup_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/utilities.dart';
+import '../../services/login_data.dart';
 
 class LoginScreen extends StatelessWidget {
   static String route = "/LoginScreen";
@@ -87,7 +92,23 @@ class LoginScreen extends StatelessWidget {
             ])),
 
             const SizedBox(height: 20),
-            MainButton(onPress: () {}, title: "Log in"),
+            MainButton(
+                onPress: () {
+                  showLoadingDialogPanel(context, "Sending data");
+                  logInDataPost(false).then((value) {
+                    if (value["status"] == 200) {
+                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: ((context) => const NavScreen())));
+                    } else {
+                      Navigator.pop(context);
+                      // showLoadingDialogPanel(context, "Login failed");
+                    }
+                  });
+                },
+                title: "Log in"),
             // const SizedBox(height: 20),
             Container(
               margin: const EdgeInsets.symmetric(vertical: 20),
@@ -99,24 +120,27 @@ class LoginScreen extends StatelessWidget {
                 color: AppConst.borderGrey,
               ),
             ),
-            MainButton(
-              onPress: () {},
-              title: "Login with google",
-              fillColor: const Color.fromARGB(255, 255, 60, 0),
-            ),
-            const SizedBox(height: 20),
+            // MainButton(
+            //   onPress: () {},
+            //   title: "Login with google",
+            //   fillColor: const Color.fromARGB(255, 255, 60, 0),
+            // ),
+            // const SizedBox(height: 20),
             Center(
               child: Text.rich(TextSpan(children: [
                 const TextSpan(
-                    text: "Already have an account? ",
+                    text: "Don't have an account yet? ",
                     style: AppConst.smallTextStyle),
                 TextSpan(
-                    text: "Log In",
+                    text: "Sign up",
                     style: AppConst.smallTextStyle
                         .copyWith(color: AppConst.burnedOrange),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () async {
-                        //on tap code here, you can navigate to other page or URL
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => const SignUpScreen())));
                       }),
               ])),
             ),
@@ -125,4 +149,22 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
+
+  // raw(BuildContext context) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) => Center(
+  //             child: Container(
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(5),
+  //                 color: Colors.white,
+  //               ),
+  //               width: 50,
+  //               height: 50,
+  //               child: const Center(
+  //                 child: CupertinoActivityIndicator(),
+  //               ),
+  //             ),
+  //           ));
+  // }
 }
