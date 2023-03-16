@@ -40,6 +40,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   String selectedPhoneCode = "+97";
   final _formKey = GlobalKey<FormState>();
+  // bool _isPayemntValid = false;
+  final ValueNotifier<bool> _isPayemntValid = ValueNotifier(false);
+  final ValueNotifier<bool> _isPhoneValid = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +64,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     hint: '2033/12/12',
                     mask: '####/##/##',
                     suffix: IconButton(
+                      splashRadius: 1,
                       icon: const Icon(
                         Icons.calendar_month,
-                        color: AppConst.iconGrey,
+                        color: AppConst.mainBlack,
                         size: 30,
                       ),
                       onPressed: () async {
@@ -139,9 +143,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     hint: '19:00',
                     mask: '##:##',
                     suffix: IconButton(
+                        splashRadius: 1,
                         icon: const Icon(
                           Icons.timer_outlined,
-                          color: AppConst.iconGrey,
+                          color: AppConst.mainBlack,
                           size: 30,
                         ),
                         onPressed: () async {
@@ -181,6 +186,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                   const SizedBox(height: 10),
                   MobileTextInput(
+                    onChange: (value) {
+                      print(value!.length);
+                      if (value.length == 10) {
+                        _isPhoneValid.value = true;
+                      } else {
+                        _isPhoneValid.value = false;
+                      }
+                    },
+                    suffix: ValueListenableBuilder(
+                      valueListenable: _isPhoneValid,
+                      builder: (context, value, child) {
+                        return Icon(
+                          Icons.check_circle,
+                          color: value == true
+                              ? AppConst.mainOrange
+                              : AppConst.iconGrey,
+                          size: 30,
+                        );
+                      },
+                    ),
                     validator: (value) {
                       if (value != null &&
                           value.isNotEmpty &&
@@ -199,6 +224,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                   const SizedBox(height: 10),
                   CustomTextInput(
+                    onChange: (value) {
+                      if (value!.length == 19) {
+                        _isPayemntValid.value = true;
+                      } else {
+                        _isPayemntValid.value = false;
+                      }
+                    },
+                    suffix: ValueListenableBuilder(
+                        valueListenable: _isPayemntValid,
+                        builder: (context, value, child) => Icon(
+                              Icons.check_circle,
+                              color: value
+                                  ? AppConst.mainOrange
+                                  : AppConst.iconGrey,
+                              size: 30,
+                            )),
                     validator: (value) {
                       if (value != null &&
                           value.isNotEmpty &&
@@ -212,13 +253,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     title: "Payment Method",
                     hint: '****-****-****-****',
                     mask: '####-####-####-####',
-                    suffix: IconButton(
-                        icon: const Icon(
-                          Icons.check_circle,
-                          color: AppConst.iconGrey,
-                          size: 30,
-                        ),
-                        onPressed: () async {}),
                   ),
                   const SizedBox(height: 25),
                   CostsSection(
@@ -385,6 +419,7 @@ class CustomTextInput extends StatelessWidget {
   final Color? fillColor;
   final TextInputType? keyboardType;
   final Function(String? value)? validator;
+  final Function(String? value)? onChange;
 
   final TextEditingController? textEditingController;
 
@@ -399,7 +434,8 @@ class CustomTextInput extends StatelessWidget {
       this.prefix,
       this.textEditingController,
       this.keyboardType,
-      this.validator});
+      this.validator,
+      this.onChange});
 
   @override
   Widget build(BuildContext context) {
@@ -409,6 +445,9 @@ class CustomTextInput extends StatelessWidget {
         Text(title, style: AppConst.normalDescriptionStyle),
         const SizedBox(height: 5),
         TextFormField(
+          onChanged: (value) {
+            onChange != null ? onChange!(value) : () {};
+          },
           validator: (v) {
             return validator!(v);
           },

@@ -11,10 +11,13 @@ import '../../model/core_models/product_model.dart';
 class CartScreen extends StatelessWidget {
   static String route = "/CartScreen";
 
-  final List<Product> data;
+  // final List<Product> data;
   final bool backButton;
 
-  const CartScreen({super.key, this.data = const [], this.backButton = false});
+  const CartScreen(
+      {super.key,
+      //  this.data = const [],
+      this.backButton = false});
 
   @override
   Widget build(BuildContext context) {

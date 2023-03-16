@@ -1,5 +1,6 @@
 import 'package:bakery/consts.dart';
 import 'package:bakery/model/core_models/order_model.dart';
+import 'package:bakery/view/screens/navigation_container_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +22,11 @@ class PickupScreen extends StatelessWidget {
           action: MyRoundButton(
               icon: Icons.close,
               onTap: (e) {
-                // Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.of(context).popUntil((route) => route.isFirst);
 
-                // Navigator.of(context).pushReplacementNamed(OrderScreen.route);
+                // Navigator.of(context).pushReplacementNamed(NavScreen(homeElements: homeElements));
 
-                Navigator.popUntil(context, (route) => route.isFirst);
+                // Navigator.popUntil(context, (route) => route.isFirst);
 //NOTE: fix this. where to navigate after order succussful
               })),
       // bottomNavigationBar: const MyNav(),

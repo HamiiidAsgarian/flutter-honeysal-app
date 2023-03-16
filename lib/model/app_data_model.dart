@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 import 'package:bakery/model/home_elements_models/home_model.dart';
-import 'package:bakery/view_model/data_bloc.dart';
+import 'package:bakery/view_model/first_screen_bloc.dart';
 
 import 'core_models/order_model.dart';
 import 'core_models/product_model.dart';
@@ -23,9 +23,6 @@ class AppData {
       required this.orders,
       required this.homePageElements,
       required this.allProducts});
-  hi() {
-    DataBloc().state.homeData;
-  }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

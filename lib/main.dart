@@ -1,23 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:bakery/model/core_models/product_model.dart';
-import 'package:bakery/model/home_elements_models/home_model.dart';
 import 'package:bakery/orbiter.dart';
-import 'package:bakery/view/screens/details_screen.dart';
-import 'package:bakery/view/screens/login_screen.dart';
-import 'package:bakery/view/screens/orders_screen.dart';
-import 'package:bakery/view/screens/profile_screen.dart';
-import 'package:bakery/view/screens/wellcome_screen.dart';
 import 'package:bakery/view_model/cart_bloc.dart';
 import 'package:bakery/view_model/favorite_bloc.dart';
+import 'package:bakery/view_model/first_screen_bloc.dart';
 import 'package:bakery/view_model/orders_bloc.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'view/screens/cart_screen.dart';
-import 'view/screens/home_screen.dart';
-import 'view/screens/navigation_container_screen.dart';
-import 'view/screens/signup_screen.dart';
+import 'view_model/all_products_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +35,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => FavoriteBloc(),
+          ),
+          BlocProvider(
+            create: (context) => AllProductsBloc(),
           ),
         ],
         child: MaterialApp(

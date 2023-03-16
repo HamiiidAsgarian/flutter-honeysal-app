@@ -24,9 +24,13 @@ class HomeScreen extends StatelessWidget {
   static String route = "/home";
 
   final HomePageElements data;
-  final List<Product> favorites;
+  // final List<Product> favorites;
 
-  const HomeScreen({super.key, required this.data, this.favorites = const []});
+  const HomeScreen({
+    super.key,
+    required this.data,
+    //  this.favorites = const []
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -68,19 +72,19 @@ class HomeScreen extends StatelessWidget {
         default:
       }
     }
-    if (favorites.isNotEmpty) {
-      Widget facoriteBoardList = BlocBuilder<FavoriteBloc, FavoriteState>(
-        builder: (context, state) {
-          if (state.favoriteData.isNotEmpty) {
-            return CarouselSection(
-                data: CarouselList(
-                    items: state.favoriteData, title: "Favorites"));
-          }
-          return const SizedBox();
-        },
-      );
-      items.insert(1, facoriteBoardList);
-    }
+    // if (favorites.isNotEmpty) {
+    Widget facoriteBoardList = BlocBuilder<FavoriteBloc, FavoriteState>(
+      builder: (context, state) {
+        if (state.favoriteData.isNotEmpty) {
+          return CarouselSection(
+              data:
+                  CarouselList(items: state.favoriteData, title: "Favorites"));
+        }
+        return const SizedBox();
+      },
+    );
+    items.insert(1, facoriteBoardList);
+    // }
 
     return items;
   }

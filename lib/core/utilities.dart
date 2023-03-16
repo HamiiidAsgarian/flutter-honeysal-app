@@ -34,7 +34,7 @@ showLoadingDialogPanel(BuildContext context, String text) {
       context: context,
       builder: (context) => Center(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
                 color: Colors.white,

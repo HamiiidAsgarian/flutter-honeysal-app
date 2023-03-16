@@ -7,7 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/utilities.dart';
-import '../../services/login_data.dart';
+import '../../services/app_start_data.dart';
 import '../widgets/mobile_text_input.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -110,7 +110,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: ((context) => LoginScreen())));
+                              builder: ((context) => const LoginScreen())));
                     } else {
                       Navigator.pop(context);
                       // showLoadingDialogPanel(context, "Login failed");

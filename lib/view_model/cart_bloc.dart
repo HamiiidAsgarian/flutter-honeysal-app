@@ -4,6 +4,7 @@ import 'package:bakery/model/core_models/product_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../model/cart_screen_models/cart_item_model.dart';
+import '../model/home_elements_models/home_model.dart';
 
 abstract class CartEvent {}
 
@@ -37,6 +38,13 @@ class EmptyTheCart extends CartEvent {
 }
 
 class CartItemsToCartSet extends CartEvent {
+  // List<Product> item;
+  // CartItemsToCartSet({required this.item});
+}
+
+class Ge extends CartEvent {
+  HomePageElements data;
+  Ge({required this.data});
   // List<Product> item;
   // CartItemsToCartSet({required this.item});
 }

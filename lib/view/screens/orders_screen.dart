@@ -14,10 +14,13 @@ import '../widgets/time_and_date.dart';
 
 class OrderScreen extends StatelessWidget {
   static String route = "/OrderScreen";
-  final List<Order> data;
+  // final List<Order> data;
   final bool backButton;
 
-  const OrderScreen({super.key, this.data = const [], this.backButton = false});
+  const OrderScreen(
+      {super.key,
+      // this.data = const [],
+      this.backButton = false});
 
   @override
   Widget build(BuildContext context) {
