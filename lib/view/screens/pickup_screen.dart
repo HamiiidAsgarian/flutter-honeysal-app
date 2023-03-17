@@ -18,18 +18,18 @@ class PickupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppbar(
-          backButton: backButton,
-          action: MyRoundButton(
-              icon: Icons.close,
-              onTap: (e) {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-
-                // Navigator.of(context).pushReplacementNamed(NavScreen(homeElements: homeElements));
-
-                // Navigator.popUntil(context, (route) => route.isFirst);
-//NOTE: fix this. where to navigate after order succussful
-              })),
-      // bottomNavigationBar: const MyNav(),
+        backButton: backButton,
+        action: MyRoundButton(
+          icon: Icons.close,
+          onTap: (e) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: ((context) => const NavScreen()),
+              ),
+            );
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
             horizontal: AppConst.appHorizontalPadding),

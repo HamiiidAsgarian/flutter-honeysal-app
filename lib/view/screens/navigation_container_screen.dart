@@ -1,5 +1,4 @@
 import 'package:bakery/consts.dart';
-import 'package:bakery/model/home_elements_models/home_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,50 +9,28 @@ import 'home_screen.dart';
 import 'orders_screen.dart';
 
 class NavScreen extends StatelessWidget {
-  // final List<Product> favoriteData;
-
-  // final List<Product> cartData;
-  // final List<Order> orderData;
-  final HomePageElements homeElements;
-
+  final int initScreen;
   static String route = "/1";
-  const NavScreen(
-      {super.key,
-      // required this.favoriteData,
-      // required this.cartData,
-      // required this.orderData,
-      required this.homeElements});
+  const NavScreen({super.key, this.initScreen = 0});
 
-//   @override
-//   State<NavScreen> createState() => _NavScreenState();
-// }
-
-// class _NavScreenState extends State<NavScreen> {
-  // int selected = 0;
-  // late AppInitializer appInit;
-  // @override
-  // void initState() {
-  //   appInit = AppInitializer();
-  //   super.initState();
-  // }
-
-  static final ValueNotifier<int> _selected = ValueNotifier(0);
   @override
   Widget build(BuildContext context) {
+    final ValueNotifier<int> selected = ValueNotifier(initScreen);
+
     late List<Widget> pages = [
-      HomeScreen(data: homeElements),
+      const HomeScreen(),
       const CartScreen(),
       const OrderScreen()
     ];
 
     return ValueListenableBuilder(
-        valueListenable: _selected,
+        valueListenable: selected,
         builder: ((context, value, child) {
           return Scaffold(
               bottomNavigationBar: Nav(
                 index: value,
                 onTap: (int index) {
-                  _selected.value = index;
+                  selected.value = index;
                 },
                 inputs: [
                   const NavItem(

@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // import 'model/core_models/order_model.dart';
 // import 'model/core_models/product_model.dart';
-import 'model/home_elements_models/home_model.dart';
+// import 'model/home_elements_models/home_model.dart';
 
 class Orbiter extends StatelessWidget {
   static String route = "/";
@@ -24,7 +24,6 @@ class Orbiter extends StatelessWidget {
     final bool isAuthenticated = (local.getBool('Authenticated') ?? false);
 
     local.setBool("firstTime", false);
-    print("is first time: $isFirstTime , is auth:$isAuthenticated");
     return [isFirstTime, isAuthenticated];
   }
 
@@ -49,17 +48,14 @@ class Orbiter extends StatelessWidget {
             // List<Product> cartData = appInit.appdata.cart;
             // List<Product> favoriteData = appInit.appdata.favorites;
             // List<Order> orderData = appInit.appdata.orders;
-            HomePageElements homeElements = appInit.appdata.homePageElements;
+            // HomePageElements homeElements = appInit.appdata.homePageElements;
 
             Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: ((context) => NavScreen(
-                          // cartData: [],
-                          // favoriteData: favoriteData,
-                          homeElements: homeElements,
-                          // orderData: orderData,
-                        ))));
+              context,
+              MaterialPageRoute(
+                builder: ((context) => const NavScreen(initScreen: 0)),
+              ),
+            );
           }
         });
       }

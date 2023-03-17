@@ -10,9 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/utilities.dart';
-// import '../../model/core_models/order_model.dart';
-// import '../../model/core_models/product_model.dart';
-import '../../model/home_elements_models/home_model.dart';
 
 class LoginScreen extends StatelessWidget {
   static String route = "/LoginScreen";
@@ -127,18 +124,14 @@ class LoginScreen extends StatelessWidget {
                       // List<Product> cartData = appInit.appdata.cart;
                       // List<Product> favoriteData = appInit.appdata.favorites;
                       // List<Order> orderData = appInit.appdata.orders;
-                      HomePageElements homeElements =
-                          appInit.appdata.homePageElements;
+
+                      // HomePageElements homeElements =
+                      //     appInit.appdata.homePageElements;
 
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: ((context) => NavScreen(
-                                    // cartData: [],
-                                    // favoriteData: favoriteData,
-                                    homeElements: homeElements,
-                                    // orderData: orderData,
-                                  ))));
+                              builder: ((context) => const NavScreen())));
                     } else {
                       Navigator.pop(context);
                       // showLoadingDialogPanel(context, "Login failed");

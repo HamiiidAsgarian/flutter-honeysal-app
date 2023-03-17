@@ -187,8 +187,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   const SizedBox(height: 10),
                   MobileTextInput(
                     onChange: (value) {
-                      print(value!.length);
-                      if (value.length == 10) {
+                      if (value != null && value.length == 10) {
                         _isPhoneValid.value = true;
                       } else {
                         _isPhoneValid.value = false;

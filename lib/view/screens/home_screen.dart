@@ -1,5 +1,6 @@
 import 'package:bakery/core/utilities.dart';
 import 'package:bakery/model/core_models/product_model.dart';
+import 'package:bakery/model/core_models/user_model.dart';
 import 'package:bakery/model/home_elements_models/promotion_model.dart';
 import 'package:bakery/view/screens/all_products_screen.dart';
 import 'package:bakery/view/screens/details_screen.dart';
@@ -14,7 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../consts.dart';
 import '../../model/home_elements_models/carousel_model.dart';
 import '../../model/home_elements_models/category_model.dart';
-import '../../model/home_elements_models/home_model.dart';
+import '../../view_model/all_products_bloc.dart';
 import '../../view_model/favorite_bloc.dart';
 import '../widgets/vertical_card.dart';
 import '../widgets/horizontal_card.dart';
@@ -23,33 +24,41 @@ import '../widgets/my_rounded_button.dart';
 class HomeScreen extends StatelessWidget {
   static String route = "/home";
 
-  final HomePageElements data;
+  // final HomePageElements data;
   // final List<Product> favorites;
 
   const HomeScreen({
     super.key,
-    required this.data,
+    // required this.data,
     //  this.favorites = const []
   });
 
   @override
   Widget build(BuildContext context) {
-    itemsMaker();
+    // itemsMaker();
     return Scaffold(
         body: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-      child: ListView(
-        children: [const Statusbar(), ...itemsMaker()],
+      child: BlocBuilder<AllProductsBloc, AllProductsState>(
+        builder: (context, state) {
+          return ListView(
+            children: [
+              Statusbar(
+                  allProducts: state.allProducts, userData: state.userData!),
+              ...itemsMaker(state.homePageElementsData.items)
+            ],
+          );
+        },
       ),
     ));
   }
 
 // To make elemnts structure of the screen based on data type and order
   /// there are three main types of homepage elemnts including [Promotion],[CarouselList],[CategoryList]
-  itemsMaker() {
+  itemsMaker(List<dynamic> data) {
     List items = [];
 
-    for (var e in data.items) {
+    for (var e in data) {
       // print(e.imageUrl);
       switch (e.runtimeType) {
         case Promotion:
@@ -90,19 +99,17 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class Statusbar extends StatefulWidget {
+class Statusbar extends StatelessWidget {
+  final List<Product> allProducts;
+  final User userData;
   const Statusbar({
     Key? key,
+    required this.allProducts,
+    required this.userData,
   }) : super(key: key);
-
-  @override
-  State<Statusbar> createState() => _StatusbarState();
-}
-
-class _StatusbarState extends State<Statusbar> {
-  bool searchMode = false;
   @override
   Widget build(BuildContext context) {
+    ValueNotifier searchMode = ValueNotifier(false);
     return Padding(
       padding:
           const EdgeInsets.symmetric(horizontal: AppConst.appHorizontalPadding),
@@ -117,89 +124,148 @@ class _StatusbarState extends State<Statusbar> {
                 bottom: BorderSide(width: 5, color: AppConst.mainOrange)),
             // color: Colors.red,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Container(
-                  // color: Colors.red,
-                  child: titleGenerator(searchMode),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  MyRoundButton(
-                    icon: Icons.search,
-                    onTap: (isSelected) {
-                      setState(() {
-                        searchMode = isSelected;
-                      });
-                    },
-                    isActive: searchMode,
+          child: ValueListenableBuilder(
+            valueListenable: searchMode,
+            builder: (context, value, child) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: ValueListenableBuilder(
+                    valueListenable: searchMode,
+                    builder: (context, value, child) => AnimatedSwitcher(
+                        switchInCurve: Curves.easeInOut,
+                        switchOutCurve: Curves.easeInOut,
+                        duration: const Duration(milliseconds: 400),
+                        transitionBuilder: (child, animation) =>
+                            ScaleTransition(
+                              scale: animation,
+                              child: child,
+                            ),
+                        child: titleGenerator(value)),
                   ),
-                  const SizedBox(width: 10),
-                  GestureDetector(
-                    onTap: () =>
-                        Navigator.pushNamed(context, ProfileScreen.route),
-                    child: const CircleAvatar(
-                      backgroundColor: AppConst.mainOrange,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    MyRoundButton(
+                      isActive: value,
+                      icon: Icons.search,
+                      onTap: (_) {
+                        searchMode.value = !searchMode.value;
+                      },
                     ),
-                  )
-                ],
-              )
-            ],
+                    const SizedBox(width: 10),
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: ((context) => ProfileScreen(
+                                  data: userData, backButton: true)))),
+                      child: CircleAvatar(
+                          backgroundColor: AppConst.mainOrange,
+                          backgroundImage:
+                              NetworkImage(userData.imageUrl ?? "")),
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  titleGenerator(bool searchOn) {
+//-------------
+
+  Widget titleGenerator(bool searchOn) {
     if (searchOn == true) {
-      return TweenAnimationBuilder(
-          key: UniqueKey(),
-          duration: const Duration(milliseconds: 400),
-          tween: Tween(begin: 0.0, end: 1.0),
-          builder: (BuildContext context, double? value, Widget? child) {
-            return Opacity(
-              opacity: value ?? 0,
-              child: const SizedBox(
-                width: 50,
-                height: 50,
-                child: TextField(
-                  cursorColor: AppConst.mainOrange,
-                  style: TextStyle(fontSize: 20),
-                  decoration: InputDecoration(
-                      hintText: "Search products",
-                      focusedBorder: InputBorder.none,
-                      border: InputBorder.none),
+      return Container(
+        key: Key("search"),
+        // color: Colors.green,
+        // width: 50,
+        height: 50,
+        child: Autocomplete<Product>(
+          optionsBuilder: ((textEditingValue) {
+            if (textEditingValue.text.isEmpty) {
+              return List.empty(growable: false);
+            } else {
+              return allProducts.where((e) => e.title
+                  .toLowerCase()
+                  .contains(textEditingValue.text.toLowerCase()));
+            }
+          }),
+          fieldViewBuilder:
+              (context, textEditingController, focusNode, onFieldSubmitted) =>
+                  TextField(
+            autofocus: true,
+            controller: textEditingController,
+            focusNode: focusNode,
+            onEditingComplete: onFieldSubmitted,
+            cursorColor: AppConst.mainOrange,
+            style: const TextStyle(fontSize: 20),
+            decoration: const InputDecoration(
+                hintText: "Search products",
+                focusedBorder: InputBorder.none,
+                border: InputBorder.none),
+          ),
+          optionsViewBuilder: (context, onSelected, options) {
+            return ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 500),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 35),
+                child: SingleChildScrollView(
+                  child: Material(
+                    child: Column(
+                      children: List.generate(
+                          options.length,
+                          (index) => GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: ((context) => DetailsScreen(
+                                              item:
+                                                  options.elementAt(index)))));
+                                },
+                                child: Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 10),
+                                    // height: 50,
+                                    color: index.isEven
+                                        ? AppConst.lightOrange
+                                        : AppConst.whiteOrange,
+                                    child: Text(options.elementAt(index).title,
+                                        style:
+                                            AppConst.normalDescriptionStyle)),
+                              )),
+                    ),
+                  ),
                 ),
               ),
             );
-          });
+          },
+          displayStringForOption: (option) {
+            return option.title;
+          },
+        ),
+        // child: ,
+      );
     }
 
-    return TweenAnimationBuilder(
-      key: UniqueKey(),
-      duration: const Duration(milliseconds: 400),
-      tween: Tween(begin: 0.0, end: 1.0),
-      builder: (BuildContext context, double? value, Widget? child) {
-        return Opacity(
-          opacity: value ?? 0,
-          child: const SizedBox(
-            width: 50,
-            height: 50,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Good morning',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-              ),
-            ),
-          ),
-        );
-      },
+    return Container(
+      // color: Colors.red,
+      key: Key("goodMorning"),
+      // width: 50,
+      height: 50,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          'Good morning',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+        ),
+      ),
     );
   }
 }
@@ -224,12 +290,11 @@ class CarouselSection extends StatelessWidget {
                   title: data.title,
                   onPressAll: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) =>
-                            AllProductsScreen(items: data.items)),
-                      ),
-                    );
+                        context,
+                        MaterialPageRoute(
+                          builder: ((context) =>
+                              AllProductsScreen(items: data.items)),
+                        ));
                   })),
           Expanded(
               child: ListView.builder(
@@ -254,46 +319,63 @@ class CarouselSection extends StatelessWidget {
                           builder: (context, favoriteState) {
                             return BlocBuilder<CartBloc, CartState>(
                               builder: (context, cartState) {
-                                return HorizontalCard(
-                                    data: data.items[index],
-                                    onTapFavorite: (isSelected) {
-                                      FavoriteBloc favoriteStateTemp =
-                                          BlocProvider.of<FavoriteBloc>(
-                                              context);
+                                return TweenAnimationBuilder(
+                                  tween: Tween<double>(begin: .0, end: 1.0),
+                                  curve: Curves.easeOut,
+                                  duration: Duration(milliseconds: 1200),
+                                  builder: (BuildContext context, double value,
+                                      Widget? child) {
+                                    return Opacity(
+                                      opacity: value,
+                                      child: HorizontalCard(
+                                          data: data.items[index],
+                                          onTapFavorite: (isSelected) {
+                                            FavoriteBloc favoriteStateTemp =
+                                                BlocProvider.of<FavoriteBloc>(
+                                                    context);
 
-                                      isSelected == true
-                                          ? favoriteStateTemp.add(
-                                              AddToFavoriteData(
-                                                  item: data.items[index]))
-                                          : favoriteStateTemp.add(
-                                              RemoveFromFavoriteData(
-                                                  item: data.items[index]));
-                                    },
-                                    isFavoriteSelected: favoriteState
-                                                .favoriteData
-                                                .firstWhereOrNull((e) =>
-                                                    e == data.items[index]) ==
-                                            null
-                                        ? false
-                                        : true,
-                                    isAddToCartSelected: cartState.cartSetData
-                                                .firstWhereOrNull((e) =>
-                                                    e.product ==
-                                                    data.items[index]) ==
-                                            null
-                                        ? false
-                                        : true,
-                                    onTapAddToCart: ((isSelected) {
-                                      CartBloc cartStateTemp =
-                                          BlocProvider.of<CartBloc>(context);
+                                            isSelected == true
+                                                ? favoriteStateTemp.add(
+                                                    AddToFavoriteData(
+                                                        item:
+                                                            data.items[index]))
+                                                : favoriteStateTemp.add(
+                                                    RemoveFromFavoriteData(
+                                                        item:
+                                                            data.items[index]));
+                                          },
+                                          isFavoriteSelected: favoriteState
+                                                      .favoriteData
+                                                      .firstWhereOrNull((e) =>
+                                                          e ==
+                                                          data.items[index]) ==
+                                                  null
+                                              ? false
+                                              : true,
+                                          isAddToCartSelected: cartState
+                                                      .cartSetData
+                                                      .firstWhereOrNull((e) =>
+                                                          e.product ==
+                                                          data.items[index]) ==
+                                                  null
+                                              ? false
+                                              : true,
+                                          onTapAddToCart: ((isSelected) {
+                                            CartBloc cartStateTemp =
+                                                BlocProvider.of<CartBloc>(
+                                                    context);
 
-                                      isSelected == true
-                                          ? cartStateTemp.add(AddToCart(
-                                              item: data.items[index]))
-                                          : cartStateTemp.add(
-                                              RemoveAllofAnItemFromCart(
-                                                  item: data.items[index]));
-                                    }));
+                                            isSelected == true
+                                                ? cartStateTemp.add(AddToCart(
+                                                    item: data.items[index]))
+                                                : cartStateTemp.add(
+                                                    RemoveAllofAnItemFromCart(
+                                                        item:
+                                                            data.items[index]));
+                                          })),
+                                    );
+                                  },
+                                );
                               },
                             );
                           },

@@ -2,7 +2,6 @@
 import 'package:bakery/orbiter.dart';
 import 'package:bakery/view_model/cart_bloc.dart';
 import 'package:bakery/view_model/favorite_bloc.dart';
-import 'package:bakery/view_model/first_screen_bloc.dart';
 import 'package:bakery/view_model/orders_bloc.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

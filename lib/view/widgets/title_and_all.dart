@@ -12,22 +12,35 @@ class TitleAndAll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // color: Colors.red,
-      padding: const EdgeInsets.only(top: 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(child: Text(title, style: AppConst.sectionTitleStyle)),
-          TextButton(
-              onPressed: () {
-                onPressAll();
-              },
-              child: Text("View All",
-                  style: AppConst.chipTextStyle.copyWith(
-                    color: AppConst.burnedOrange,
-                  )))
-        ],
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0, end: 1.0),
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOut,
+      builder: (context, value, child) => Opacity(
+        opacity: value,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              child: Transform.scale(
+                  scale: value,
+                  child: Text(title, style: AppConst.sectionTitleStyle)),
+            ),
+            TextButton(
+                onPressed: () {
+                  onPressAll();
+                },
+                child: Container(
+                  child: Transform.scale(
+                    scale: value,
+                    child: Text("View All",
+                        style: AppConst.chipTextStyle.copyWith(
+                          color: AppConst.burnedOrange,
+                        )),
+                  ),
+                ))
+          ],
+        ),
       ),
     );
   }
