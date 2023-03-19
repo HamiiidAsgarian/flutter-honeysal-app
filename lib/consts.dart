@@ -70,4 +70,8 @@ class AppConst {
       fontSize: 13,
       color: Colors.grey,
       fontWeight: FontWeight.w500);
+
+  static cartsAppearDurationMaker(int index) {
+    return Duration(milliseconds: 300 + (index * 50));
+  }
 }

@@ -33,9 +33,16 @@ class OrderScreen extends StatelessWidget {
               itemCount: state.orderData.length,
               padding: const EdgeInsets.symmetric(
                   horizontal: AppConst.appHorizontalPadding, vertical: 10),
-              itemBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: OrderCard(data: state.orderData[index])));
+              itemBuilder: (context, index) => TweenAnimationBuilder(
+                    duration: AppConst.cartsAppearDurationMaker(index),
+                    tween: Tween(
+                        begin: MediaQuery.of(context).size.width, end: 0.0),
+                    builder: (context, value, child) => Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Transform.translate(
+                            offset: Offset(value, 0),
+                            child: OrderCard(data: state.orderData[index]))),
+                  ));
         },
       ),
     );

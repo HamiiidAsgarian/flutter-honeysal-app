@@ -41,11 +41,32 @@ class HomeScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       child: BlocBuilder<AllProductsBloc, AllProductsState>(
         builder: (context, state) {
-          return ListView(
+          // BlocProvider.of<AllProductsBloc>(context).add(IsFirstShow());
+          List<Widget> items = itemsMaker(state.homePageElementsData.items);
+          double animationBeginValue =
+              state.isFirstTime ? MediaQuery.of(context).size.width : 0;
+
+          return Column(
             children: [
               Statusbar(
                   allProducts: state.allProducts, userData: state.userData!),
-              ...itemsMaker(state.homePageElementsData.items)
+              Expanded(
+                child: ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) => TweenAnimationBuilder(
+                        tween:
+                            Tween<double>(begin: animationBeginValue, end: 0.0),
+                        duration: AppConst.cartsAppearDurationMaker(index),
+                        builder: ((context, value, child) =>
+                            Transform.translate(
+                                offset: Offset(value, 0), child: items[index]))
+                        // children: [
+                        //   Statusbar(
+                        //       allProducts: state.allProducts, userData: state.userData!),
+                        //   ...itemsMaker(state.homePageElementsData.items)
+                        // ],
+                        )),
+              ),
             ],
           );
         },
@@ -55,10 +76,10 @@ class HomeScreen extends StatelessWidget {
 
 // To make elemnts structure of the screen based on data type and order
   /// there are three main types of homepage elemnts including [Promotion],[CarouselList],[CategoryList]
-  itemsMaker(List<dynamic> data) {
-    List items = [];
+  List<Widget> itemsMaker(List<dynamic> data) {
+    List<Widget> items = [];
 
-    for (var e in data) {
+    for (dynamic e in data) {
       // print(e.imageUrl);
       switch (e.runtimeType) {
         case Promotion:
@@ -84,12 +105,23 @@ class HomeScreen extends StatelessWidget {
     // if (favorites.isNotEmpty) {
     Widget facoriteBoardList = BlocBuilder<FavoriteBloc, FavoriteState>(
       builder: (context, state) {
-        if (state.favoriteData.isNotEmpty) {
-          return CarouselSection(
-              data:
-                  CarouselList(items: state.favoriteData, title: "Favorites"));
-        }
-        return const SizedBox();
+        return state.favoriteData.isNotEmpty
+            ? AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeOutBack, //NOTE
+                height: 220,
+                child: SingleChildScrollView(
+                  child: CarouselSection(
+                      data: CarouselList(
+                          items: state.favoriteData, title: "Favorites")),
+                ),
+              )
+            : AnimatedContainer(
+                curve: Curves.easeInBack, //NOTE
+
+                duration: const Duration(milliseconds: 500),
+                height: 0,
+              );
       },
     );
     items.insert(1, facoriteBoardList);
@@ -136,9 +168,8 @@ class Statusbar extends StatelessWidget {
                         switchInCurve: Curves.easeInOut,
                         switchOutCurve: Curves.easeInOut,
                         duration: const Duration(milliseconds: 400),
-                        transitionBuilder: (child, animation) =>
-                            ScaleTransition(
-                              scale: animation,
+                        transitionBuilder: (child, animation) => FadeTransition(
+                              opacity: animation,
                               child: child,
                             ),
                         child: titleGenerator(value)),
@@ -180,8 +211,8 @@ class Statusbar extends StatelessWidget {
 
   Widget titleGenerator(bool searchOn) {
     if (searchOn == true) {
-      return Container(
-        key: Key("search"),
+      return SizedBox(
+        key: const Key("search"),
         // color: Colors.green,
         // width: 50,
         height: 50,
@@ -254,7 +285,7 @@ class Statusbar extends StatelessWidget {
       );
     }
 
-    return Container(
+    return const SizedBox(
       // color: Colors.red,
       key: Key("goodMorning"),
       // width: 50,
@@ -272,15 +303,18 @@ class Statusbar extends StatelessWidget {
 
 class CarouselSection extends StatelessWidget {
   final CarouselList data;
+  final double height;
+
   const CarouselSection({
     Key? key,
     required this.data,
+    this.height = 220,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 220,
+      height: height,
       child: Column(
         children: [
           Padding(
@@ -319,63 +353,46 @@ class CarouselSection extends StatelessWidget {
                           builder: (context, favoriteState) {
                             return BlocBuilder<CartBloc, CartState>(
                               builder: (context, cartState) {
-                                return TweenAnimationBuilder(
-                                  tween: Tween<double>(begin: .0, end: 1.0),
-                                  curve: Curves.easeOut,
-                                  duration: Duration(milliseconds: 1200),
-                                  builder: (BuildContext context, double value,
-                                      Widget? child) {
-                                    return Opacity(
-                                      opacity: value,
-                                      child: HorizontalCard(
-                                          data: data.items[index],
-                                          onTapFavorite: (isSelected) {
-                                            FavoriteBloc favoriteStateTemp =
-                                                BlocProvider.of<FavoriteBloc>(
-                                                    context);
+                                return HorizontalCard(
+                                    data: data.items[index],
+                                    onTapFavorite: (isSelected) {
+                                      FavoriteBloc favoriteStateTemp =
+                                          BlocProvider.of<FavoriteBloc>(
+                                              context);
 
-                                            isSelected == true
-                                                ? favoriteStateTemp.add(
-                                                    AddToFavoriteData(
-                                                        item:
-                                                            data.items[index]))
-                                                : favoriteStateTemp.add(
-                                                    RemoveFromFavoriteData(
-                                                        item:
-                                                            data.items[index]));
-                                          },
-                                          isFavoriteSelected: favoriteState
-                                                      .favoriteData
-                                                      .firstWhereOrNull((e) =>
-                                                          e ==
-                                                          data.items[index]) ==
-                                                  null
-                                              ? false
-                                              : true,
-                                          isAddToCartSelected: cartState
-                                                      .cartSetData
-                                                      .firstWhereOrNull((e) =>
-                                                          e.product ==
-                                                          data.items[index]) ==
-                                                  null
-                                              ? false
-                                              : true,
-                                          onTapAddToCart: ((isSelected) {
-                                            CartBloc cartStateTemp =
-                                                BlocProvider.of<CartBloc>(
-                                                    context);
+                                      isSelected == true
+                                          ? favoriteStateTemp.add(
+                                              AddToFavoriteData(
+                                                  item: data.items[index]))
+                                          : favoriteStateTemp.add(
+                                              RemoveFromFavoriteData(
+                                                  item: data.items[index]));
+                                    },
+                                    isFavoriteSelected: favoriteState
+                                                .favoriteData
+                                                .firstWhereOrNull((e) =>
+                                                    e == data.items[index]) ==
+                                            null
+                                        ? false
+                                        : true,
+                                    isAddToCartSelected: cartState.cartSetData
+                                                .firstWhereOrNull((e) =>
+                                                    e.product ==
+                                                    data.items[index]) ==
+                                            null
+                                        ? false
+                                        : true,
+                                    onTapAddToCart: ((isSelected) {
+                                      CartBloc cartStateTemp =
+                                          BlocProvider.of<CartBloc>(context);
 
-                                            isSelected == true
-                                                ? cartStateTemp.add(AddToCart(
-                                                    item: data.items[index]))
-                                                : cartStateTemp.add(
-                                                    RemoveAllofAnItemFromCart(
-                                                        item:
-                                                            data.items[index]));
-                                          })),
-                                    );
-                                  },
-                                );
+                                      isSelected == true
+                                          ? cartStateTemp.add(AddToCart(
+                                              item: data.items[index]))
+                                          : cartStateTemp.add(
+                                              RemoveAllofAnItemFromCart(
+                                                  item: data.items[index]));
+                                    }));
                               },
                             );
                           },

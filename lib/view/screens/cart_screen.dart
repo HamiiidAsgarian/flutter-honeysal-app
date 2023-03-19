@@ -39,47 +39,64 @@ class CartScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 15),
                       itemCount: state.cartSetData.length,
                       itemBuilder: (context, index) {
-                        return Container(
-                          padding: const EdgeInsets.only(
-                              top: 20,
-                              right: AppConst.appHorizontalPadding,
-                              left: AppConst.appHorizontalPadding),
-                          child: HorizontalCard(
-                              style: HorizontalCardStyle.counter,
-                              counterInitValue: state.cartSetData[index].count,
-                              data: state.cartSetData[index].product,
-                              onTapDelete: () {
-                                BlocProvider.of<CartBloc>(context,
-                                        listen: false)
-                                    .add(RemoveAllofAnItemFromCart(
-                                        item:
-                                            state.cartSetData[index].product));
-                              },
-                              onChangeCounter: (int count) {
-                                List<Product> cartList = BlocProvider.of<
-                                        CartBloc>(context, listen: false)
-                                    .state
-                                    .cartData
-                                    .where((element) =>
-                                        element.title ==
-                                        state.cartSetData[index].product.title)
-                                    .toList();
-                                //if [counter] increase then item will be added to the bloc
-                                if (count > cartList.length) {
-                                  BlocProvider.of<CartBloc>(context,
-                                          listen: false)
-                                      .add(AddToCart(
-                                          item: state
-                                              .cartSetData[index].product));
-                                } else if (cartList.length > 1 &&
-                                    count < cartList.length) {
-                                  BlocProvider.of<CartBloc>(context,
-                                          listen: false)
-                                      .add(RemoveFromCart(
-                                          item: state
-                                              .cartSetData[index].product));
-                                }
-                              }),
+                        double animationBeginValue =
+                            // state.isFirstTime
+                            // ?
+                            MediaQuery.of(context).size.width;
+                        // : 0;
+
+                        return TweenAnimationBuilder(
+                          duration: AppConst.cartsAppearDurationMaker(index),
+                          tween: Tween(begin: animationBeginValue, end: 0.0),
+                          builder: (context, value, child) =>
+                              Transform.translate(
+                            offset: Offset(value, 0),
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  top: 20,
+                                  right: AppConst.appHorizontalPadding,
+                                  left: AppConst.appHorizontalPadding),
+                              child: HorizontalCard(
+                                  style: HorizontalCardStyle.counter,
+                                  counterInitValue:
+                                      state.cartSetData[index].count,
+                                  data: state.cartSetData[index].product,
+                                  onTapDelete: () {
+                                    BlocProvider.of<CartBloc>(context,
+                                            listen: false)
+                                        .add(RemoveAllofAnItemFromCart(
+                                            item: state
+                                                .cartSetData[index].product));
+                                  },
+                                  onChangeCounter: (int count) {
+                                    List<Product> cartList =
+                                        BlocProvider.of<CartBloc>(context,
+                                                listen: false)
+                                            .state
+                                            .cartData
+                                            .where((element) =>
+                                                element.title ==
+                                                state.cartSetData[index].product
+                                                    .title)
+                                            .toList();
+                                    //if [counter] increase then item will be added to the bloc
+                                    if (count > cartList.length) {
+                                      BlocProvider.of<CartBloc>(context,
+                                              listen: false)
+                                          .add(AddToCart(
+                                              item: state
+                                                  .cartSetData[index].product));
+                                    } else if (cartList.length > 1 &&
+                                        count < cartList.length) {
+                                      BlocProvider.of<CartBloc>(context,
+                                              listen: false)
+                                          .add(RemoveFromCart(
+                                              item: state
+                                                  .cartSetData[index].product));
+                                    }
+                                  }),
+                            ),
+                          ),
                         );
                       });
                 },
@@ -100,37 +117,37 @@ class CartScreen extends StatelessWidget {
                             costColculation(state.cartData);
 
                         return Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            RecieptRow(
-                              title: "Subtotal",
-                              price: "\$${costsColculation[0]}",
-                            ),
-                            RecieptRow(
-                              title: "Discount",
-                              price: "\$${costsColculation[1]}",
-                            ),
-                            RecieptRow(
-                              title: "Total",
-                              price: "\$${costsColculation[2]}",
-                              style: RecieptRowStyle.bold,
-                            ),
-                            MainButton(
-                                onPress: () {
-                                  // Navigator.pushNamed(
-                                  //     context, CheckoutScreen.route);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: ((context) => CheckoutScreen(
-                                                costs: costsColculation,
-                                                backButton: true,
-                                                order: state.cartData,
-                                              ))));
-                                },
-                                title: "Checkout")
-                          ],
-                        );
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              RecieptRow(
+                                title: "Subtotal",
+                                price: "\$${costsColculation[0]}",
+                              ),
+                              RecieptRow(
+                                title: "Discount",
+                                price: "\$${costsColculation[1]}",
+                              ),
+                              RecieptRow(
+                                title: "Total",
+                                price: "\$${costsColculation[2]}",
+                                style: RecieptRowStyle.bold,
+                              ),
+                              MainButton(
+                                  onPress: () {
+                                    // Navigator.pushNamed(
+                                    //     context, CheckoutScreen.route);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: ((context) =>
+                                                CheckoutScreen(
+                                                  costs: costsColculation,
+                                                  backButton: true,
+                                                  order: state.cartData,
+                                                ))));
+                                  },
+                                  title: "Checkout")
+                            ]);
                       },
                     )))
           ],
