@@ -205,7 +205,7 @@ class DeliveryTimeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text("Estimated DElivery",
+        const Text("Estimated Delivery info",
             style: AppConst.normalDescriptionStyle),
         const SizedBox(height: 15),
         SizedBox(

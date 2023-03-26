@@ -1,4 +1,5 @@
 import 'package:bakery/consts.dart';
+import 'package:bakery/core/validator.dart';
 import 'package:bakery/model/core_models/order_model.dart';
 import 'package:bakery/model/core_models/product_model.dart';
 import 'package:bakery/services/send_order_form.dart';
@@ -205,14 +206,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         );
                       },
                     ),
-                    validator: (value) {
-                      if (value != null &&
-                          value.isNotEmpty &&
-                          value.length == 10) {
-                        return null;
-                      }
-                      return "Please Enter in valid phone number";
-                    },
+                    validator: (value) =>
+                        Validators.phoneNumberValidator(value),
                     selectedPhoneCode: selectedPhoneCode,
                     onSelected: (String selected) {
                       setState(() {
@@ -245,7 +240,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           value.length == 19) {
                         return null;
                       }
-                      return "Please Enter in valid phone number";
+                      return "Please Enter in valid card number";
                     },
                     keyboardType: TextInputType.number,
                     textEditingController: _creditInputController,

@@ -51,3 +51,23 @@ showLoadingDialogPanel(BuildContext context, String text) {
             ),
           ));
 }
+
+showSnackBar(BuildContext context, String message, SnackbarType type) {
+  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: const Duration(seconds: 2),
+      backgroundColor: () {
+        switch (type) {
+          case SnackbarType.add:
+            return Colors.greenAccent;
+          case SnackbarType.delete:
+            return Colors.redAccent;
+          default:
+            return Colors.black;
+        }
+      }(),
+      content: Text(message, style: AppConst.normalDescriptionStyle)));
+}
+
+enum SnackbarType { add, delete }

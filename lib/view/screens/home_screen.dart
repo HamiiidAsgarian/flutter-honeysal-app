@@ -24,24 +24,17 @@ import '../widgets/my_rounded_button.dart';
 class HomeScreen extends StatelessWidget {
   static String route = "/home";
 
-  // final HomePageElements data;
-  // final List<Product> favorites;
-
   const HomeScreen({
     super.key,
-    // required this.data,
-    //  this.favorites = const []
   });
 
   @override
   Widget build(BuildContext context) {
-    // itemsMaker();
     return Scaffold(
         body: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       child: BlocBuilder<AllProductsBloc, AllProductsState>(
         builder: (context, state) {
-          // BlocProvider.of<AllProductsBloc>(context).add(IsFirstShow());
           List<Widget> items = itemsMaker(state.homePageElementsData.items);
           double animationBeginValue =
               state.isFirstTime ? MediaQuery.of(context).size.width : 0;
@@ -59,13 +52,8 @@ class HomeScreen extends StatelessWidget {
                         duration: AppConst.cartsAppearDurationMaker(index),
                         builder: ((context, value, child) =>
                             Transform.translate(
-                                offset: Offset(value, 0), child: items[index]))
-                        // children: [
-                        //   Statusbar(
-                        //       allProducts: state.allProducts, userData: state.userData!),
-                        //   ...itemsMaker(state.homePageElementsData.items)
-                        // ],
-                        )),
+                                offset: Offset(value, 0),
+                                child: items[index])))),
               ),
             ],
           );
@@ -211,9 +199,13 @@ class Statusbar extends StatelessWidget {
 
   Widget titleGenerator(bool searchOn) {
     if (searchOn == true) {
-      return SizedBox(
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         key: const Key("search"),
-        // color: Colors.green,
+
+        decoration: const BoxDecoration(
+            gradient:
+                LinearGradient(colors: [AppConst.lightOrange, Colors.white])),
         // width: 50,
         height: 50,
         child: Autocomplete<Product>(
@@ -236,6 +228,7 @@ class Statusbar extends StatelessWidget {
             cursorColor: AppConst.mainOrange,
             style: const TextStyle(fontSize: 20),
             decoration: const InputDecoration(
+                hintStyle: TextStyle(color: AppConst.mainWhite),
                 hintText: "Search products",
                 focusedBorder: InputBorder.none,
                 border: InputBorder.none),
@@ -285,12 +278,14 @@ class Statusbar extends StatelessWidget {
       );
     }
 
-    return const SizedBox(
-      // color: Colors.red,
-      key: Key("goodMorning"),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: const BoxDecoration(
+          gradient: LinearGradient(colors: [Colors.white, Colors.white])),
+      key: const Key("goodMorning"),
       // width: 50,
       height: 50,
-      child: Align(
+      child: const Align(
         alignment: Alignment.centerLeft,
         child: Text(
           'Good morning',
@@ -347,8 +342,6 @@ class CarouselSection extends StatelessWidget {
                               MaterialPageRoute(
                                   builder: (context) =>
                                       DetailsScreen(item: data.items[index])));
-                          // Navigator.pushNamed(context, DetailsScreen.route,
-                          //     arguments: data.items[index]);
                         }, child: BlocBuilder<FavoriteBloc, FavoriteState>(
                           builder: (context, favoriteState) {
                             return BlocBuilder<CartBloc, CartState>(
@@ -360,13 +353,23 @@ class CarouselSection extends StatelessWidget {
                                           BlocProvider.of<FavoriteBloc>(
                                               context);
 
-                                      isSelected == true
-                                          ? favoriteStateTemp.add(
-                                              AddToFavoriteData(
-                                                  item: data.items[index]))
-                                          : favoriteStateTemp.add(
-                                              RemoveFromFavoriteData(
-                                                  item: data.items[index]));
+                                      if (isSelected == true) {
+                                        favoriteStateTemp.add(AddToFavoriteData(
+                                            item: data.items[index]));
+
+                                        showSnackBar(
+                                            context,
+                                            "${data.title} has been added to the favorites list",
+                                            SnackbarType.add);
+                                      } else {
+                                        favoriteStateTemp.add(
+                                            RemoveFromFavoriteData(
+                                                item: data.items[index]));
+                                        showSnackBar(
+                                            context,
+                                            "${data.title} has been removed from the favorites list",
+                                            SnackbarType.delete);
+                                      }
                                     },
                                     isFavoriteSelected: favoriteState
                                                 .favoriteData

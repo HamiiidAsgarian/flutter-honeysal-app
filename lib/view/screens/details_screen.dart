@@ -5,6 +5,7 @@ import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';
 import 'package:bakery/view_model/cart_bloc.dart';
+import 'package:bakery/view_model/favorite_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,7 +28,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         physics:
             const BouncingScrollPhysics(), //This sliver just provides appbar navigation and product image and background
         slivers: [
-          ProductDetailAppbarSliver(imageUrl: widget.item.imageUrl),
+          ProductDetailAppbarSliver(product: widget.item),
           ProductDetailDataSliver(item: widget.item
               // onChangeCounter: (int index) {
               //   ValueNotifier(index);
@@ -142,10 +143,12 @@ class ProductDetailDataSliver extends StatelessWidget {
 }
 
 class ProductDetailAppbarSliver extends StatelessWidget {
-  final String imageUrl;
+  // final String imageUrl;
+  final Product product;
   const ProductDetailAppbarSliver({
     Key? key,
-    required this.imageUrl,
+    required this.product,
+    // required this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -214,7 +217,9 @@ class ProductDetailAppbarSliver extends StatelessWidget {
                           height: 50,
                         )),
                     SizedBox(
-                        width: 500, height: 500, child: Image.network(imageUrl))
+                        width: 500,
+                        height: 500,
+                        child: Image.network(product.imageUrl))
                   ])),
             ),
           ),
@@ -235,12 +240,29 @@ class ProductDetailAppbarSliver extends StatelessWidget {
           padding: const EdgeInsets.only(
               right: bottomsPaddings, top: bottomsPaddings),
           // color: Colors.red,
-          child: MyRoundButton(
-            icon: Icons.favorite_border_outlined,
-            fillColor: AppConst.mainWhite,
-            onTap: (bool isSelected) {},
-            isActive: false,
-          ),
+          child: BlocBuilder<FavoriteBloc, FavoriteState>(
+              builder: (context, state) {
+            bool isAlreadyInFavorites = false;
+            if (state.favoriteData.contains(product)) {
+              isAlreadyInFavorites = true;
+            }
+
+            return MyRoundButton(
+              icon: Icons.favorite_border_outlined,
+              fillColor: AppConst.mainWhite,
+              selectedColor: AppConst.mainRed,
+              onTap: (bool isSelected) {
+                if (isAlreadyInFavorites == false) {
+                  BlocProvider.of<FavoriteBloc>(context)
+                      .add(AddToFavoriteData(item: product));
+                } else {
+                  BlocProvider.of<FavoriteBloc>(context)
+                      .add(RemoveFromFavoriteData(item: product));
+                }
+              },
+              isActive: isAlreadyInFavorites,
+            );
+          }),
         ),
         // Container(
         //     padding: const EdgeInsets.only(right: 10),

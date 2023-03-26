@@ -7,6 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/utilities.dart';
+import '../../core/validator.dart';
 import '../../services/app_start_data.dart';
 import '../widgets/mobile_text_input.dart';
 
@@ -22,6 +23,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   String selectedPhoneCode = "+98";
   final TextEditingController _phoneInputController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,29 +38,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
             const Text("Sign up to continue",
                 style: AppConst.productSubtitleStyle),
             const SizedBox(height: 10),
-            const CustomTextInput(
-              title: 'Email',
-              hint: "Enter your email",
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 20),
-            MobileTextInput(
-              selectedPhoneCode: selectedPhoneCode,
-              onSelected: (String selected) {
-                setState(() {
-                  selectedPhoneCode = selected;
-                });
-              },
-              phoneInputController: _phoneInputController,
-              validator: (String? value) {},
-            ),
-            const SizedBox(height: 20),
+            Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    CustomTextInput(
+                        title: 'Email',
+                        hint: "Enter your email",
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) => Validators.emailValidator(value)),
+                    const SizedBox(height: 20),
+                    MobileTextInput(
+                      selectedPhoneCode: selectedPhoneCode,
+                      onSelected: (String selected) {
+                        setState(() {
+                          selectedPhoneCode = selected;
+                        });
+                      },
+                      phoneInputController: _phoneInputController,
+                      validator: (String? value) =>
+                          Validators.phoneNumberValidator(value),
+                    ),
+                    const SizedBox(height: 20),
+                    CustomTextInput(
+                        title: 'Password',
+                        hint: "Enter your password",
+                        keyboardType: TextInputType.visiblePassword,
+                        validator: (value) =>
+                            Validators.passwordValidator(value)),
+                  ],
+                )),
 
-            const CustomTextInput(
-              title: 'Password',
-              hint: "Enter your password",
-              keyboardType: TextInputType.visiblePassword,
-            ),
             const SizedBox(height: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,19 +113,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
             const SizedBox(height: 20),
             MainButton(
                 onPress: () {
-                  showLoadingDialogPanel(context, "Sending data");
-                  signUpDataPost(true).then((value) {
-                    if (value["status"] == 200) {
-                      Navigator.pop(context);
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: ((context) => const LoginScreen())));
-                    } else {
-                      Navigator.pop(context);
-                      // showLoadingDialogPanel(context, "Login failed");
-                    }
-                  });
+                  if (_formKey.currentState!.validate()) {
+                    showLoadingDialogPanel(context, "Sending data");
+                    signUpDataPost(true).then((value) {
+                      if (value["status"] == 200) {
+                        Navigator.pop(context);
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => const LoginScreen())));
+                      } else {
+                        Navigator.pop(context);
+                        // showLoadingDialogPanel(context, "Login failed");
+                      }
+                    });
+                  }
                 },
                 title: "Create account"),
             const SizedBox(height: 20),

@@ -1,5 +1,6 @@
 import 'package:bakery/consts.dart';
 import 'package:bakery/core/app_initializer.dart';
+import 'package:bakery/core/validator.dart';
 import 'package:bakery/view/screens/checkout_screen.dart';
 import 'package:bakery/view/screens/navigation_container_screen.dart';
 import 'package:bakery/view/screens/signup_screen.dart';
@@ -17,6 +18,8 @@ class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   static final ValueNotifier<bool> _rememberMeCheckBox = ValueNotifier(false);
+
+  static final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,17 +40,25 @@ class LoginScreen extends StatelessWidget {
             const Text("Log in to continue",
                 style: AppConst.productSubtitleStyle),
             const SizedBox(height: 10),
-            const CustomTextInput(
-              title: 'Email',
-              hint: "Enter your email",
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 20),
-            const CustomTextInput(
-              title: 'Password',
-              hint: "Enter your password",
-              keyboardType: TextInputType.visiblePassword,
-            ),
+            Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    CustomTextInput(
+                        title: 'Email',
+                        hint: "Enter your email",
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) => Validators.emailValidator(value)),
+                    const SizedBox(height: 20),
+                    CustomTextInput(
+                        title: 'Password',
+                        hint: "Enter your password",
+                        keyboardType: TextInputType.visiblePassword,
+                        validator: (value) =>
+                            Validators.passwordValidator(value)),
+                  ],
+                )),
+
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,35 +119,30 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 20),
             MainButton(
                 onPress: () {
-                  AppInitializer appInit = AppInitializer();
-                  showLoadingDialogPanel(context, "Sending data");
-                  // logInDataPost(false)
+                  if (_formKey.currentState!.validate()) {
+                    AppInitializer appInit = AppInitializer();
+                    showLoadingDialogPanel(context, "Sending data");
+                    // logInDataPost(false)
 
-                  appInit.getApiData(context).then((value) {
-                    // if (value["status"] == 200) {
-                    if (value != []) {
-                      appInit.updateTheState(context);
-                      if (_rememberMeCheckBox.value) {
-                        local();
+                    appInit.getApiData(context).then((value) {
+                      // if (value["status"] == 200) {
+                      if (value != []) {
+                        appInit.updateTheState(context);
+                        if (_rememberMeCheckBox.value) {
+                          local();
+                        }
+                        Navigator.pop(context);
+
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => const NavScreen())));
+                      } else {
+                        Navigator.pop(context);
+                        // showLoadingDialogPanel(context, "Login failed");
                       }
-                      Navigator.pop(context);
-
-                      // List<Product> cartData = appInit.appdata.cart;
-                      // List<Product> favoriteData = appInit.appdata.favorites;
-                      // List<Order> orderData = appInit.appdata.orders;
-
-                      // HomePageElements homeElements =
-                      //     appInit.appdata.homePageElements;
-
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: ((context) => const NavScreen())));
-                    } else {
-                      Navigator.pop(context);
-                      // showLoadingDialogPanel(context, "Login failed");
-                    }
-                  });
+                    });
+                  }
                 },
                 title: "Log in"),
             // const SizedBox(height: 20),
