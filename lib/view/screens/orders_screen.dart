@@ -30,10 +30,15 @@ class OrderScreen extends StatelessWidget {
       body: BlocBuilder<OrderBloc, OrderState>(
         builder: (context, state) {
           return ListView.builder(
-              itemCount: state.orderData.length,
+              itemCount: state.orderData.isEmpty ? 1 : state.orderData.length,
               padding: const EdgeInsets.symmetric(
                   horizontal: AppConst.appHorizontalPadding, vertical: 10),
-              itemBuilder: (context, index) => TweenAnimationBuilder(
+              itemBuilder: (context, index) {
+                if (state.orderData.isEmpty) {
+                  return const Text("There is no order",
+                      style: AppConst.normalDescriptionStyle);
+                } else {
+                  return TweenAnimationBuilder(
                     duration: AppConst.cartsAppearDurationMaker(index),
                     tween: Tween(
                         begin: MediaQuery.of(context).size.width, end: 0.0),
@@ -42,7 +47,9 @@ class OrderScreen extends StatelessWidget {
                         child: Transform.translate(
                             offset: Offset(value, 0),
                             child: OrderCard(data: state.orderData[index]))),
-                  ));
+                  );
+                }
+              });
         },
       ),
     );
@@ -128,7 +135,9 @@ class OrderCard extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: ((context) => PickupScreen(
-                                      backButton: true, data: data))));
+                                      closeButton: false,
+                                      backButton: true,
+                                      data: data))));
                         }),
                     const SizedBox(width: 25),
                     MyRoundButton(
@@ -136,6 +145,10 @@ class OrderCard extends StatelessWidget {
                         type: CutomRoundedButtonType.pusher,
                         icon: Icons.shopping_bag_outlined,
                         onTap: (isSelected) {
+                          showSnackBar(
+                              context,
+                              "This order has been added to the cart",
+                              SnackbarType.add);
                           BlocProvider.of<CartBloc>(context)
                               .add(AddListToCart(item: data.products));
                         }),

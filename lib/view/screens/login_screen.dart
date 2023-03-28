@@ -59,7 +59,7 @@ class LoginScreen extends StatelessWidget {
                   ],
                 )),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -71,6 +71,7 @@ class LoginScreen extends StatelessWidget {
                       child: ValueListenableBuilder(
                         valueListenable: _rememberMeCheckBox,
                         builder: (context, value, child) => Checkbox(
+                            activeColor: AppConst.mainOrange,
                             visualDensity: VisualDensity.compact,
                             value: value,
                             onChanged: (e) {
@@ -80,7 +81,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 5),
+                  const SizedBox(width: 10),
                   Text("Remember me",
                       style: AppConst.productSubtitleStyle
                           .copyWith(color: AppConst.mainBlack))

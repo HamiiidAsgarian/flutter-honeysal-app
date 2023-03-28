@@ -11,24 +11,31 @@ class PickupScreen extends StatelessWidget {
   static String route = "/PickupScreen";
   final bool backButton;
   final Order data;
+  final bool closeButton;
 
-  const PickupScreen({super.key, this.backButton = false, required this.data});
+  const PickupScreen(
+      {super.key,
+      this.backButton = false,
+      required this.data,
+      required this.closeButton});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppbar(
         backButton: backButton,
-        action: MyRoundButton(
-          icon: Icons.close,
-          onTap: (e) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: ((context) => const NavScreen()),
-              ),
-            );
-          },
-        ),
+        action: closeButton == true
+            ? MyRoundButton(
+                icon: Icons.close,
+                onTap: (e) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: ((context) => const NavScreen()),
+                    ),
+                  );
+                },
+              )
+            : null,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(

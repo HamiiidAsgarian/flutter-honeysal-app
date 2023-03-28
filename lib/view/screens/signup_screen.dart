@@ -83,6 +83,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   style: AppConst.smallTextStyle
                       .copyWith(color: AppConst.mainGreen),
                 ),
+                Text(
+                  "• Include upper and lower cases",
+                  style: AppConst.smallTextStyle
+                      .copyWith(color: AppConst.mainGreen),
+                ),
+                Text(
+                  "• Include numbers",
+                  style: AppConst.smallTextStyle
+                      .copyWith(color: AppConst.mainGreen),
+                ),
               ],
             ),
             const SizedBox(height: 50),

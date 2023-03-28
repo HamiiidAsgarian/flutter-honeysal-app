@@ -6,6 +6,7 @@ import 'package:bakery/view/widgets/horizontal_card.dart';
 import 'package:bakery/view_model/cart_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../core/utilities.dart';
 import '../../model/core_models/product_model.dart';
 
 class CartScreen extends StatelessWidget {
@@ -37,67 +38,85 @@ class CartScreen extends StatelessWidget {
                   // print("//// ${state.cartSetData.length}");
                   return ListView.builder(
                       padding: const EdgeInsets.only(bottom: 15),
-                      itemCount: state.cartSetData.length,
+                      itemCount: state.cartSetData.isNotEmpty
+                          ? state.cartSetData.length
+                          : 1, //is there is no item then show the one text that says Cart is emoty...
                       itemBuilder: (context, index) {
-                        double animationBeginValue =
-                            // state.isFirstTime
-                            // ?
-                            MediaQuery.of(context).size.width;
-                        // : 0;
+                        if (state.cartSetData.isEmpty) {
+                          return const Center(child: Text("Cart is empty..."));
+                        } else {
+                          double animationBeginValue =
+                              MediaQuery.of(context).size.width;
+                          return TweenAnimationBuilder(
+                            duration: AppConst.cartsAppearDurationMaker(index),
+                            tween: Tween(begin: animationBeginValue, end: 0.0),
+                            builder: (context, value, child) =>
+                                Transform.translate(
+                              offset: Offset(value, 0),
+                              child: Container(
+                                padding: const EdgeInsets.only(
+                                    top: 20,
+                                    right: AppConst.appHorizontalPadding,
+                                    left: AppConst.appHorizontalPadding),
+                                child: HorizontalCard(
+                                    style: HorizontalCardStyle.counter,
+                                    counterInitValue:
+                                        state.cartSetData[index].count,
+                                    data: state.cartSetData[index].product,
+                                    onTapDelete: () {
+                                      Product currentProduct =
+                                          state.cartSetData[index].product;
+                                      showSnackBar(
+                                          context,
+                                          "${currentProduct.title} has been deleted from the cart",
+                                          SnackbarType.delete);
 
-                        return TweenAnimationBuilder(
-                          duration: AppConst.cartsAppearDurationMaker(index),
-                          tween: Tween(begin: animationBeginValue, end: 0.0),
-                          builder: (context, value, child) =>
-                              Transform.translate(
-                            offset: Offset(value, 0),
-                            child: Container(
-                              padding: const EdgeInsets.only(
-                                  top: 20,
-                                  right: AppConst.appHorizontalPadding,
-                                  left: AppConst.appHorizontalPadding),
-                              child: HorizontalCard(
-                                  style: HorizontalCardStyle.counter,
-                                  counterInitValue:
-                                      state.cartSetData[index].count,
-                                  data: state.cartSetData[index].product,
-                                  onTapDelete: () {
-                                    BlocProvider.of<CartBloc>(context,
-                                            listen: false)
-                                        .add(RemoveAllofAnItemFromCart(
-                                            item: state
-                                                .cartSetData[index].product));
-                                  },
-                                  onChangeCounter: (int count) {
-                                    List<Product> cartList =
+                                      BlocProvider.of<CartBloc>(context,
+                                              listen: false)
+                                          .add(RemoveAllofAnItemFromCart(
+                                              item: currentProduct));
+                                    },
+                                    onChangeCounter: (int count) {
+                                      List<Product> cartList =
+                                          BlocProvider.of<CartBloc>(context,
+                                                  listen: false)
+                                              .state
+                                              .cartData
+                                              .where((element) =>
+                                                  element.title ==
+                                                  state.cartSetData[index]
+                                                      .product.title)
+                                              .toList();
+                                      //if [counter] increase then item will be added to the bloc
+                                      Product currentProduct =
+                                          state.cartSetData[index].product;
+                                      if (count > cartList.length) {
+                                        showSnackBar(
+                                            context,
+                                            "${currentProduct.title} has been added to the cart",
+                                            SnackbarType.add);
+
                                         BlocProvider.of<CartBloc>(context,
                                                 listen: false)
-                                            .state
-                                            .cartData
-                                            .where((element) =>
-                                                element.title ==
-                                                state.cartSetData[index].product
-                                                    .title)
-                                            .toList();
-                                    //if [counter] increase then item will be added to the bloc
-                                    if (count > cartList.length) {
-                                      BlocProvider.of<CartBloc>(context,
-                                              listen: false)
-                                          .add(AddToCart(
-                                              item: state
-                                                  .cartSetData[index].product));
-                                    } else if (cartList.length > 1 &&
-                                        count < cartList.length) {
-                                      BlocProvider.of<CartBloc>(context,
-                                              listen: false)
-                                          .add(RemoveFromCart(
-                                              item: state
-                                                  .cartSetData[index].product));
-                                    }
-                                  }),
+                                            .add(AddToCart(
+                                                item: currentProduct));
+                                      } else if (cartList.length > 1 &&
+                                          count < cartList.length) {
+                                        showSnackBar(
+                                            context,
+                                            "${currentProduct.title} has been deleted from the cart",
+                                            SnackbarType.delete);
+
+                                        BlocProvider.of<CartBloc>(context,
+                                                listen: false)
+                                            .add(RemoveFromCart(
+                                                item: currentProduct));
+                                      }
+                                    }),
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       });
                 },
               ),

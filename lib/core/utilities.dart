@@ -67,7 +67,9 @@ showSnackBar(BuildContext context, String message, SnackbarType type) {
             return Colors.black;
         }
       }(),
-      content: Text(message, style: AppConst.normalDescriptionStyle)));
+      content: Text(message,
+          style:
+              AppConst.normalDescriptionStyle.copyWith(color: Colors.white))));
 }
 
 enum SnackbarType { add, delete }

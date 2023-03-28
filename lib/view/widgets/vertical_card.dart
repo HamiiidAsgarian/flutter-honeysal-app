@@ -55,7 +55,7 @@ class VerticalCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("${data.left}",
+                        Text("${data.left} Left",
                             style: AppConst.productSubtitleStyle),
                         const Text("  |  ",
                             style: AppConst.productSubtitleStyle),

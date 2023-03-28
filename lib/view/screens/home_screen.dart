@@ -31,33 +31,35 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-      child: BlocBuilder<AllProductsBloc, AllProductsState>(
-        builder: (context, state) {
-          List<Widget> items = itemsMaker(state.homePageElementsData.items);
-          double animationBeginValue =
-              state.isFirstTime ? MediaQuery.of(context).size.width : 0;
+        body: SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+        child: BlocBuilder<AllProductsBloc, AllProductsState>(
+          builder: (context, state) {
+            List<Widget> items = itemsMaker(state.homePageElementsData.items);
+            double animationBeginValue =
+                state.isFirstTime ? MediaQuery.of(context).size.width : 0;
 
-          return Column(
-            children: [
-              Statusbar(
-                  allProducts: state.allProducts, userData: state.userData!),
-              Expanded(
-                child: ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (context, index) => TweenAnimationBuilder(
-                        tween:
-                            Tween<double>(begin: animationBeginValue, end: 0.0),
-                        duration: AppConst.cartsAppearDurationMaker(index),
-                        builder: ((context, value, child) =>
-                            Transform.translate(
-                                offset: Offset(value, 0),
-                                child: items[index])))),
-              ),
-            ],
-          );
-        },
+            return Column(
+              children: [
+                Statusbar(
+                    allProducts: state.allProducts, userData: state.userData!),
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) => TweenAnimationBuilder(
+                          tween: Tween<double>(
+                              begin: animationBeginValue, end: 0.0),
+                          duration: AppConst.cartsAppearDurationMaker(index),
+                          builder: ((context, value, child) =>
+                              Transform.translate(
+                                  offset: Offset(value, 0),
+                                  child: items[index])))),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     ));
   }
@@ -91,7 +93,7 @@ class HomeScreen extends StatelessWidget {
       }
     }
     // if (favorites.isNotEmpty) {
-    Widget facoriteBoardList = BlocBuilder<FavoriteBloc, FavoriteState>(
+    Widget favoriteBoardList = BlocBuilder<FavoriteBloc, FavoriteState>(
       builder: (context, state) {
         return state.favoriteData.isNotEmpty
             ? AnimatedContainer(
@@ -112,7 +114,7 @@ class HomeScreen extends StatelessWidget {
               );
       },
     );
-    items.insert(1, facoriteBoardList);
+    items.insert(1, favoriteBoardList);
     // }
 
     return items;
@@ -303,7 +305,7 @@ class CarouselSection extends StatelessWidget {
   const CarouselSection({
     Key? key,
     required this.data,
-    this.height = 220,
+    this.height = 200,
   }) : super(key: key);
 
   @override
@@ -334,6 +336,7 @@ class CarouselSection extends StatelessWidget {
                   itemBuilder: ((context, index) {
                     //For separating cards and also to display top and bottom shadows
                     return Container(
+                        // color: Colors.blue,
                         padding:
                             const EdgeInsets.only(right: 10, top: 7, bottom: 7),
                         child: GestureDetector(onTap: () {
@@ -347,55 +350,77 @@ class CarouselSection extends StatelessWidget {
                             return BlocBuilder<CartBloc, CartState>(
                               builder: (context, cartState) {
                                 return HorizontalCard(
-                                    data: data.items[index],
-                                    onTapFavorite: (isSelected) {
-                                      FavoriteBloc favoriteStateTemp =
-                                          BlocProvider.of<FavoriteBloc>(
-                                              context);
+                                  key: Key(data.items[index].title),
+                                  data: data.items[index],
+                                  onTapFavorite:
+                                      (isSelected, AnimationController anim) {
+                                    Product currentProduct = data.items[index];
 
-                                      if (isSelected == true) {
-                                        favoriteStateTemp.add(AddToFavoriteData(
-                                            item: data.items[index]));
+                                    FavoriteBloc favoriteStateTemp =
+                                        BlocProvider.of<FavoriteBloc>(context);
 
-                                        showSnackBar(
-                                            context,
-                                            "${data.title} has been added to the favorites list",
-                                            SnackbarType.add);
-                                      } else {
-                                        favoriteStateTemp.add(
-                                            RemoveFromFavoriteData(
-                                                item: data.items[index]));
-                                        showSnackBar(
-                                            context,
-                                            "${data.title} has been removed from the favorites list",
-                                            SnackbarType.delete);
-                                      }
-                                    },
-                                    isFavoriteSelected: favoriteState
-                                                .favoriteData
-                                                .firstWhereOrNull((e) =>
-                                                    e == data.items[index]) ==
-                                            null
-                                        ? false
-                                        : true,
-                                    isAddToCartSelected: cartState.cartSetData
-                                                .firstWhereOrNull((e) =>
-                                                    e.product ==
-                                                    data.items[index]) ==
-                                            null
-                                        ? false
-                                        : true,
-                                    onTapAddToCart: ((isSelected) {
-                                      CartBloc cartStateTemp =
-                                          BlocProvider.of<CartBloc>(context);
+                                    if (isSelected == true) {
+                                      favoriteStateTemp.add(AddToFavoriteData(
+                                          item: data.items[index]));
 
-                                      isSelected == true
-                                          ? cartStateTemp.add(AddToCart(
-                                              item: data.items[index]))
-                                          : cartStateTemp.add(
-                                              RemoveAllofAnItemFromCart(
+                                      showSnackBar(
+                                          context,
+                                          "${currentProduct.title} has been added to the favorites list",
+                                          SnackbarType.add);
+                                    } else {
+                                      if (data.title == "Favorites") {
+                                        //NOTE this must be an enum
+                                        anim.reverse().then((value) {
+                                          favoriteStateTemp.add(
+                                              RemoveFromFavoriteData(
                                                   item: data.items[index]));
-                                    }));
+                                          showSnackBar(
+                                              context,
+                                              "${currentProduct.title} has been removed from the favorites list",
+                                              SnackbarType.delete);
+                                        });
+                                      }
+                                    }
+                                  },
+                                  onTapAddToCart: ((isSelected) {
+                                    Product currentProduct = data.items[index];
+
+                                    CartBloc cartStateTemp =
+                                        BlocProvider.of<CartBloc>(context);
+
+                                    if (isSelected == true) {
+                                      showSnackBar(
+                                          context,
+                                          "${currentProduct.title} has been added to the cart",
+                                          SnackbarType.add);
+
+                                      cartStateTemp.add(
+                                          AddToCart(item: data.items[index]));
+                                    } else {
+                                      showSnackBar(
+                                          context,
+                                          "${currentProduct.title} has been deleted from the cart",
+                                          SnackbarType.delete);
+
+                                      cartStateTemp.add(
+                                          RemoveAllofAnItemFromCart(
+                                              item: data.items[index]));
+                                    }
+                                  }),
+                                  isFavoriteSelected: favoriteState.favoriteData
+                                              .firstWhereOrNull((e) =>
+                                                  e == data.items[index]) ==
+                                          null
+                                      ? false
+                                      : true,
+                                  isAddToCartSelected: cartState.cartSetData
+                                              .firstWhereOrNull((e) =>
+                                                  e.product ==
+                                                  data.items[index]) ==
+                                          null
+                                      ? false
+                                      : true,
+                                );
                               },
                             );
                           },
@@ -506,14 +531,27 @@ class _CategoryListSectionState extends State<CategoryListSection> {
                               FavoriteBloc favoriteStateTemp =
                                   BlocProvider.of<FavoriteBloc>(context);
 
-                              isSelected == true
-                                  ? favoriteStateTemp.add(
-                                      AddToFavoriteData(item: currentProduct))
-                                  : favoriteStateTemp.add(
-                                      RemoveFromFavoriteData(
-                                          item: currentProduct));
+                              if (isSelected == true) {
+                                showSnackBar(
+                                    context,
+                                    "${currentProduct.title} has been added to the cart",
+                                    SnackbarType.add);
+                                favoriteStateTemp.add(
+                                    AddToFavoriteData(item: currentProduct));
+                              } else {
+                                showSnackBar(
+                                    context,
+                                    "${currentProduct.title} has been removed from the cart",
+                                    SnackbarType.delete);
+                                favoriteStateTemp.add(RemoveFromFavoriteData(
+                                    item: currentProduct));
+                              }
                             },
                             onTapButton: () {
+                              showSnackBar(
+                                  context,
+                                  "${currentProduct.title} has been added to the cart",
+                                  SnackbarType.add);
                               BlocProvider.of<CartBloc>(context)
                                   .add(AddToCart(item: currentProduct));
                             })),

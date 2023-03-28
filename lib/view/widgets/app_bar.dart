@@ -55,10 +55,12 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
           : null,
       actions: [
         Container(
+            padding:
+                EdgeInsets.only(left: bottomsPaddings, top: bottomsPaddings),
             margin: const EdgeInsets.only(
-                top: 10, right: AppConst.appHorizontalPadding),
-            width: 40,
-            height: 20,
+                top: 5, right: AppConst.appHorizontalPadding),
+            width: bottomsWithHeight,
+            height: 40,
             child: action)
       ],
     );

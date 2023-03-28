@@ -294,6 +294,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     builder: ((context) => PickupScreen(
                                           data: res,
                                           backButton: false,
+                                          closeButton: true,
                                         ))));
                             // }
                             return value;

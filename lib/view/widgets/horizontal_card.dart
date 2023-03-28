@@ -6,14 +6,14 @@ import '../../consts.dart';
 import '../../model/core_models/product_model.dart';
 import 'my_rounded_button.dart';
 
-class HorizontalCard extends StatelessWidget {
+class HorizontalCard extends StatefulWidget {
   final Function(int index)? onChangeCounter;
   final Function? onTapDelete;
 
   final bool isFavoriteSelected;
   final bool isAddToCartSelected;
 
-  final Function(bool isSelected)? onTapFavorite;
+  final Function(bool isSelected, AnimationController animCnt)? onTapFavorite;
   final Function(bool isSelected)? onTapAddToCart;
 
   final Product data;
@@ -34,20 +34,46 @@ class HorizontalCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<HorizontalCard> createState() => _HorizontalCardState();
+}
+
+class _HorizontalCardState extends State<HorizontalCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animCntrl;
+  late Animation _frameAnimation;
+  @override
+  void initState() {
+    _animCntrl = AnimationController(
+        duration: const Duration(milliseconds: 300), vsync: this);
+    _frameAnimation = Tween<double>(begin: 0.0, end: 1.0)
+        .animate(CurvedAnimation(parent: _animCntrl, curve: Curves.easeInOut));
+    _animCntrl.forward();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animCntrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder(
-        duration: const Duration(milliseconds: 400),
-        tween: Tween(begin: .0, end: 1.0),
-        curve: Curves.easeInOut,
-        builder: (context, value, child) => Transform.scale(
-              scale: value,
+    return AnimatedBuilder(
+        animation: _frameAnimation,
+
+        // duration: const Duration(milliseconds: 400),
+        // tween: Tween(begin: .0, end: 1.0),
+        // curve: Curves.easeInOut,
+        builder: (context, child) => Transform.scale(
+              scale: _frameAnimation.value,
               child: Opacity(
-                opacity: value,
+                opacity: _frameAnimation.value,
                 child: Container(
                   height: 150, // NOTE may cause problem
                   // margin: const EdgeInsets.only(
                   //     right: 15, bottom: 5, top: 5), //Margin to show shadow
-                  width: style == HorizontalCardStyle.show
+                  width: widget.style == HorizontalCardStyle.show
                       ? MediaQuery.of(context).size.width - 50
                       : double.infinity,
                   padding:
@@ -74,16 +100,16 @@ class HorizontalCard extends StatelessWidget {
                               aspectRatio: 1,
                               child: Container(
                                   color: Colors.white,
-                                  child: Image.network(data.imageUrl)),
+                                  child: Image.network(widget.data.imageUrl)),
                             ),
                           ),
-                          style == HorizontalCardStyle.counter
+                          widget.style == HorizontalCardStyle.counter
                               ? SizedBox(
                                   height: 40,
                                   child: RoundConter(
-                                    initValue: counterInitValue ?? 0,
+                                    initValue: widget.counterInitValue ?? 0,
                                     onChangeCounter:
-                                        onChangeCounter ?? (unsed) {},
+                                        widget.onChangeCounter ?? (unsed) {},
                                   ))
                               : const SizedBox()
                         ],
@@ -95,11 +121,12 @@ class HorizontalCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           //data title
-                          Text(data.title, style: AppConst.productTitleStyle),
+                          Text(widget.data.title,
+                              style: AppConst.productTitleStyle),
                           Row(
                             children: [
                               //data left
-                              Text(data.left.toString(),
+                              Text("${widget.data.left} Left",
                                   style: AppConst.productSubtitleStyle),
                               const Text("  |  ",
                                   style: AppConst.productSubtitleStyle),
@@ -111,7 +138,7 @@ class HorizontalCard extends StatelessWidget {
                                     size: 20,
                                   ),
                                   //data rate
-                                  Text(data.rate.toString(),
+                                  Text(widget.data.rate.toString(),
                                       style: AppConst.productSubtitleStyle)
                                 ],
                               )
@@ -119,7 +146,7 @@ class HorizontalCard extends StatelessWidget {
                           ),
                           RichText(
                             text: TextSpan(
-                              text: '${data.price} ',
+                              text: '${widget.data.price} ',
                               style: AppConst.productTitleStyle,
                               children: const <TextSpan>[
                                 TextSpan(
@@ -134,34 +161,38 @@ class HorizontalCard extends StatelessWidget {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          style == HorizontalCardStyle.show
+                          widget.style == HorizontalCardStyle.show
                               ? HeartButton(
-                                  isActive: isFavoriteSelected,
+                                  isActive: widget.isFavoriteSelected,
                                   onTap: (isSelected) {
-                                    onTapFavorite != null
-                                        ? onTapFavorite!(isSelected)
+                                    widget.onTapFavorite != null
+                                        ? widget.onTapFavorite!(
+                                            isSelected, _animCntrl) //NOte
+
                                         : null;
                                   },
                                 )
                               : MyRoundButton(
                                   // isActive: isAddToCartSelected,
                                   onTap: (e) {
-                                    onTapDelete != null ? onTapDelete!() : null;
+                                    widget.onTapDelete != null
+                                        ? widget.onTapDelete!()
+                                        : null;
                                   },
                                   type: CutomRoundedButtonType.pusher,
                                   icon: Icons.delete_outline,
                                 ),
-                          style == HorizontalCardStyle.show
+                          widget.style == HorizontalCardStyle.show
                               ? SizedBox(
                                   width: 40,
                                   height: 40,
                                   child: MyRoundButton(
-                                    isActive: isAddToCartSelected,
+                                    isActive: widget.isAddToCartSelected,
                                     icon: Icons.shopping_bag_outlined,
                                     iconSize: 20,
                                     onTap: (isSelected) {
-                                      onTapAddToCart != null
-                                          ? onTapAddToCart!(isSelected)
+                                      widget.onTapAddToCart != null
+                                          ? widget.onTapAddToCart!(isSelected)
                                           : null;
                                     },
                                   ))
