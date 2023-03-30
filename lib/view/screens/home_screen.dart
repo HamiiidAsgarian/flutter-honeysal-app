@@ -9,6 +9,7 @@ import 'package:bakery/view/widgets/my_rounded_chip.dart';
 import 'package:bakery/view/widgets/promotion_card.dart';
 import 'package:bakery/view/widgets/title_and_all.dart';
 import 'package:bakery/view_model/cart_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -200,6 +201,7 @@ class Statusbar extends StatelessWidget {
 //-------------
 
   Widget titleGenerator(bool searchOn) {
+    FocusNode searchFocusNode = FocusNode();
     if (searchOn == true) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -221,51 +223,72 @@ class Statusbar extends StatelessWidget {
             }
           }),
           fieldViewBuilder:
-              (context, textEditingController, focusNode, onFieldSubmitted) =>
-                  TextField(
-            autofocus: true,
-            controller: textEditingController,
-            focusNode: focusNode,
-            onEditingComplete: onFieldSubmitted,
-            cursorColor: AppConst.mainOrange,
-            style: const TextStyle(fontSize: 20),
-            decoration: const InputDecoration(
-                hintStyle: TextStyle(color: AppConst.mainWhite),
-                hintText: "Search products",
-                focusedBorder: InputBorder.none,
-                border: InputBorder.none),
-          ),
+              (context, textEditingController, focusNode, onFieldSubmitted) {
+            searchFocusNode = focusNode;
+            return TextField(
+              autofocus: true,
+              controller: textEditingController,
+              focusNode: focusNode,
+              onEditingComplete: onFieldSubmitted,
+              cursorColor: AppConst.mainOrange,
+              style: const TextStyle(fontSize: 20),
+              decoration: const InputDecoration(
+                  hintStyle: TextStyle(color: AppConst.mainWhite),
+                  hintText: "Search products",
+                  focusedBorder: InputBorder.none,
+                  border: InputBorder.none),
+            );
+          },
           optionsViewBuilder: (context, onSelected, options) {
             return ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 500),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 35),
+              child: Container(
+                padding: const EdgeInsets.only(right: 60),
                 child: SingleChildScrollView(
                   child: Material(
-                    child: Column(
-                      children: List.generate(
-                          options.length,
-                          (index) => GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: ((context) => DetailsScreen(
-                                              item:
-                                                  options.elementAt(index)))));
-                                },
-                                child: Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 10),
-                                    // height: 50,
-                                    color: index.isEven
-                                        ? AppConst.lightOrange
-                                        : AppConst.whiteOrange,
-                                    child: Text(options.elementAt(index).title,
-                                        style:
-                                            AppConst.normalDescriptionStyle)),
-                              )),
+                    elevation: 0,
+                    color: Colors.white.withOpacity(0),
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: const BoxDecoration(
+                          color: AppConst.mainOrange,
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10))),
+                      child: Column(
+                        children: List.generate(
+                            options.length,
+                            (index) => GestureDetector(
+                                  onTap: () {
+                                    searchFocusNode.unfocus();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: ((context) =>
+                                                DetailsScreen(
+                                                    item: options
+                                                        .elementAt(index)))));
+                                  },
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          color: index.isEven
+                                              ? AppConst.whiteOrange
+                                              : AppConst.lightOrange,
+                                          borderRadius:
+                                              BorderRadius.circular(7.5)),
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 10),
+                                      // height: 50,
+
+                                      child: Center(
+                                        child: Text(
+                                            options.elementAt(index).title,
+                                            style: AppConst
+                                                .normalDescriptionStyle),
+                                      )),
+                                )),
+                      ),
                     ),
                   ),
                 ),
@@ -323,8 +346,8 @@ class CarouselSection extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: ((context) =>
-                              AllProductsScreen(items: data.items)),
+                          builder: ((context) => AllProductsScreen(
+                              items: data.items, header: data.title)),
                         ));
                   })),
           Expanded(
@@ -458,10 +481,12 @@ class _CategoryListSectionState extends State<CategoryListSection> {
                   context,
                   MaterialPageRoute(
                     builder: ((context) => AllProductsScreen(
+                        header: widget.data.categories[_selected].title,
                         items: widget.data.categories[_selected].items)),
                   ),
                 );
               })),
+      const SizedBox(height: 10),
       SizedBox(
         height: 40,
         child: ListView.builder(
@@ -485,8 +510,9 @@ class _CategoryListSectionState extends State<CategoryListSection> {
                         SizedBox(
                             width: 25,
                             height: 25,
-                            child: Image.network(
-                                widget.data.categories[index].iconUrl)),
+                            child: CachedNetworkImage(
+                                imageUrl:
+                                    widget.data.categories[index].iconUrl)),
                         const SizedBox(width: 7),
                         Text(widget.data.categories[index].title,
                             style: AppConst.chipTextStyle),
@@ -495,67 +521,78 @@ class _CategoryListSectionState extends State<CategoryListSection> {
               );
             }),
       ),
-      const SizedBox(height: 15),
+      const SizedBox(height: 10),
       SizedBox(
         height: 330,
         child: BlocBuilder<FavoriteBloc, FavoriteState>(
           builder: (context, state) {
-            return ListView.builder(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppConst.appHorizontalPadding),
-                itemCount: widget.data.categories[_selected].items.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  Product currentProduct =
-                      widget.data.categories[_selected].items[index];
-                  return Padding(
-                    padding:
-                        const EdgeInsets.only(right: 10, top: 7, bottom: 7),
-                    child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      DetailsScreen(item: currentProduct)));
-                        },
-                        child: VerticalCard(
-                            data: currentProduct,
-                            isFavoriteSelected: state.favoriteData
-                                        .firstWhereOrNull(
-                                            (e) => e == currentProduct) ==
-                                    null
-                                ? false
-                                : true,
-                            onTapFavorite: (isSelected) {
-                              FavoriteBloc favoriteStateTemp =
-                                  BlocProvider.of<FavoriteBloc>(context);
+            return TweenAnimationBuilder(
+                key: Key(widget.data.categories[_selected].title),
+                duration: const Duration(milliseconds: 300),
+                tween: Tween<double>(begin: 100.0, end: 0.0),
+                builder: (context, value, child) {
+                  return ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppConst.appHorizontalPadding),
+                      itemCount: widget.data.categories[_selected].items.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        Product currentProduct =
+                            widget.data.categories[_selected].items[index];
+                        return Transform.translate(
+                          offset: Offset(value * index, 0),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                right: 10, top: 7, bottom: 7),
+                            child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => DetailsScreen(
+                                              item: currentProduct)));
+                                },
+                                child: VerticalCard(
+                                    data: currentProduct,
+                                    isFavoriteSelected: state.favoriteData
+                                                .firstWhereOrNull((e) =>
+                                                    e == currentProduct) ==
+                                            null
+                                        ? false
+                                        : true,
+                                    onTapFavorite: (isSelected) {
+                                      FavoriteBloc favoriteStateTemp =
+                                          BlocProvider.of<FavoriteBloc>(
+                                              context);
 
-                              if (isSelected == true) {
-                                showSnackBar(
-                                    context,
-                                    "${currentProduct.title} has been added to the cart",
-                                    SnackbarType.add);
-                                favoriteStateTemp.add(
-                                    AddToFavoriteData(item: currentProduct));
-                              } else {
-                                showSnackBar(
-                                    context,
-                                    "${currentProduct.title} has been removed from the cart",
-                                    SnackbarType.delete);
-                                favoriteStateTemp.add(RemoveFromFavoriteData(
-                                    item: currentProduct));
-                              }
-                            },
-                            onTapButton: () {
-                              showSnackBar(
-                                  context,
-                                  "${currentProduct.title} has been added to the cart",
-                                  SnackbarType.add);
-                              BlocProvider.of<CartBloc>(context)
-                                  .add(AddToCart(item: currentProduct));
-                            })),
-                  );
+                                      if (isSelected == true) {
+                                        showSnackBar(
+                                            context,
+                                            "${currentProduct.title} has been added to the cart",
+                                            SnackbarType.add);
+                                        favoriteStateTemp.add(AddToFavoriteData(
+                                            item: currentProduct));
+                                      } else {
+                                        showSnackBar(
+                                            context,
+                                            "${currentProduct.title} has been removed from the cart",
+                                            SnackbarType.delete);
+                                        favoriteStateTemp.add(
+                                            RemoveFromFavoriteData(
+                                                item: currentProduct));
+                                      }
+                                    },
+                                    onTapButton: () {
+                                      showSnackBar(
+                                          context,
+                                          "${currentProduct.title} has been added to the cart",
+                                          SnackbarType.add);
+                                      BlocProvider.of<CartBloc>(context)
+                                          .add(AddToCart(item: currentProduct));
+                                    })),
+                          ),
+                        );
+                      });
                 });
           },
         ),

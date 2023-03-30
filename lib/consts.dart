@@ -38,7 +38,7 @@ class AppConst {
       fontWeight: FontWeight.w500);
 
   static const TextStyle detailTitleStyle = TextStyle(
-      height: 1, //For no space to the top of the box
+      height: 1.2, //For no space to the top of the box
       fontFamily: "Poppins",
       fontSize: 35,
       color: Colors.black,

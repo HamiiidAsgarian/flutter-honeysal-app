@@ -1,4 +1,5 @@
 import 'package:bakery/model/home_elements_models/promotion_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../consts.dart';
@@ -36,9 +37,9 @@ class PromotionCard extends StatelessWidget {
           AspectRatio(
             // widthFactor: 1,
             aspectRatio: 1,
-            child: Container(
-              color: Colors.white,
-              child: Image.network(data.imageUrl),
+            child: SizedBox(
+              // color: Colors.white,
+              child: CachedNetworkImage(imageUrl: data.imageUrl),
             ),
           ),
           const SizedBox(width: 5),
@@ -49,13 +50,21 @@ class PromotionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //data title
-                Text("---${data.title}", style: AppConst.productTitleStyle),
-                Text(data.message.toString(),
-                    style: AppConst.normalDescriptionStyle
-                        .copyWith(fontWeight: FontWeight.bold)
-                        .copyWith(color: AppConst.mainRed)),
-                Text("Enter the code ${data.code} at checkout",
-                    style: AppConst.productSubtitleStyle),
+                Text("---${data.title}",
+                    style: AppConst.productSubtitleStyle
+                        .copyWith(color: AppConst.mainBlack)),
+                Expanded(
+                  child: Center(
+                    child: Text(data.message.toString(),
+                        style: AppConst.smallTextStyle
+                            .copyWith(fontWeight: FontWeight.bold)
+                            .copyWith(color: AppConst.mainRed)),
+                  ),
+                ),
+                if (data.code != "")
+                  Text("Enter the code ${data.code} at checkout",
+                      style: AppConst.smallTextStyle
+                          .copyWith(color: AppConst.mainBlack)),
               ],
             ),
           )),

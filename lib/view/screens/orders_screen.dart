@@ -2,6 +2,7 @@ import 'package:bakery/consts.dart';
 import 'package:bakery/view/screens/pickup_screen.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:bakery/view_model/cart_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -176,11 +177,11 @@ class OrderFactorItem extends StatelessWidget {
       children: [
         Row(
           children: [
-            Container(
+            SizedBox(
               width: 75,
               height: 75,
-              color: Colors.green,
-              child: Image.network(product.product.imageUrl),
+              // color: Colors.green,
+              child: CachedNetworkImage(imageUrl: product.product.imageUrl),
             ),
             const SizedBox(
               width: 10,

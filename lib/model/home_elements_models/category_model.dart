@@ -5,7 +5,6 @@ import '../core_models/product_model.dart';
 class CategoryList {
   String title;
   List<Category> categories;
-  // List<Product> items;
   CategoryList({
     required this.title,
     required this.categories,
@@ -28,11 +27,6 @@ class CategoryList {
           (x) => Category.fromMap(x),
         ),
       ),
-      // items: List<Product>.from(
-      //   (map['items'] as List<int>).map<Product>(
-      //     (x) => Product.fromMap(x as Map<String, dynamic>),
-      //   ),
-      // ),
     );
   }
 

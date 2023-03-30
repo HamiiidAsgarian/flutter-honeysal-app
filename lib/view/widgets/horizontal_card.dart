@@ -1,5 +1,6 @@
 import 'package:bakery/view/screens/details_screen.dart';
 import 'package:bakery/view/widgets/heart_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../consts.dart';
@@ -100,7 +101,8 @@ class _HorizontalCardState extends State<HorizontalCard>
                               aspectRatio: 1,
                               child: Container(
                                   color: Colors.white,
-                                  child: Image.network(widget.data.imageUrl)),
+                                  child: CachedNetworkImage(
+                                      imageUrl: widget.data.imageUrl)),
                             ),
                           ),
                           widget.style == HorizontalCardStyle.counter

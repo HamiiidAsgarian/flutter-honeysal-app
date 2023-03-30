@@ -1,3 +1,4 @@
+import 'package:bakery/consts.dart';
 import 'package:bakery/core/app_initializer.dart';
 import 'package:bakery/view/screens/login_screen.dart';
 import 'package:bakery/view/screens/navigation_container_screen.dart';
@@ -60,9 +61,17 @@ class Orbiter extends StatelessWidget {
         });
       }
     });
-    return const Scaffold(
+    return Scaffold(
+        backgroundColor: AppConst.whiteOrange,
         body: Center(
-      child: CupertinoActivityIndicator(),
-    ));
+          child: Container(
+            width: 150,
+            height: 150,
+            child: Stack(children: [
+              Center(child: Image.asset('asset/images/logo.png')),
+              const Center(child: CupertinoActivityIndicator())
+            ]),
+          ),
+        ));
   }
 }

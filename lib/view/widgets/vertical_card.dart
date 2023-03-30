@@ -1,4 +1,5 @@
 import 'package:bakery/view/widgets/heart_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../consts.dart';
@@ -44,7 +45,8 @@ class VerticalCard extends StatelessWidget {
                 // widthFactor: 1,
                 aspectRatio: 1,
                 child: Container(
-                    color: Colors.white, child: Image.network(data.imageUrl)),
+                    color: Colors.white,
+                    child: CachedNetworkImage(imageUrl: data.imageUrl)),
               ),
               Expanded(
                 child: Column(

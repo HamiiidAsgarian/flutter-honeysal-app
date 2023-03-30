@@ -6,6 +6,7 @@ import 'package:bakery/services/send_order_form.dart';
 import 'package:bakery/view/screens/pickup_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view_model/orders_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -310,13 +311,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   showAlertDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
-        content: Row(
-      children: [
-        const CircularProgressIndicator(),
-        Container(
-            margin: const EdgeInsets.only(left: 5),
-            child: const Text("Loading")),
-      ],
+        content: Container(
+      width: 150,
+      height: 150,
+      child: Stack(children: [
+        Center(child: Image.asset('asset/images/logo.png')),
+        const Center(child: CupertinoActivityIndicator())
+      ]),
     )
         // FutureBuilder(
         // future: sendOrderData(),
@@ -415,6 +416,7 @@ class CustomTextInput extends StatelessWidget {
   final TextInputType? keyboardType;
   final Function(String? value)? validator;
   final Function(String? value)? onChange;
+  final bool? obscureText;
 
   final TextEditingController? textEditingController;
 
@@ -430,7 +432,8 @@ class CustomTextInput extends StatelessWidget {
       this.textEditingController,
       this.keyboardType,
       this.validator,
-      this.onChange});
+      this.onChange,
+      this.obscureText});
 
   @override
   Widget build(BuildContext context) {
@@ -440,6 +443,7 @@ class CustomTextInput extends StatelessWidget {
         Text(title, style: AppConst.normalDescriptionStyle),
         const SizedBox(height: 5),
         TextFormField(
+          obscureText: obscureText ?? false,
           onChanged: (value) {
             onChange != null ? onChange!(value) : () {};
           },

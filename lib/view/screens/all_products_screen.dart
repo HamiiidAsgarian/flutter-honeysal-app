@@ -14,15 +14,17 @@ import '../../view_model/favorite_bloc.dart';
 class AllProductsScreen extends StatelessWidget {
   // static String route = '/AllProducts';
   final List<Product> items;
-  const AllProductsScreen({super.key, required this.items});
+  final String header;
+  const AllProductsScreen(
+      {this.header = "All Procusts", super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
     // final List<Product> items =
     //     ModalRoute.of(context)!.settings.arguments as List<Product>;
     return Scaffold(
-        appBar: const CustomAppbar(
-          title: "All Procusts",
+        appBar: CustomAppbar(
+          title: header,
           backButton: true,
         ),
         body: Padding(

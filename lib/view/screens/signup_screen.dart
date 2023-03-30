@@ -61,6 +61,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 20),
                     CustomTextInput(
+                        obscureText: true,
                         title: 'Password',
                         hint: "Enter your password",
                         keyboardType: TextInputType.visiblePassword,

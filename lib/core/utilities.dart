@@ -44,8 +44,12 @@ showLoadingDialogPanel(BuildContext context, String text) {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  const CupertinoActivityIndicator(),
-                  Material(child: Text(text, style: AppConst.smallTextStyle)),
+                  Center(
+                    child: Stack(children: [
+                      Center(child: Image.asset('asset/images/logo.png')),
+                      const Center(child: CupertinoActivityIndicator())
+                    ]),
+                  )
                 ],
               ),
             ),

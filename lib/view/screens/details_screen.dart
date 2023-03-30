@@ -6,6 +6,7 @@ import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';
 import 'package:bakery/view_model/cart_bloc.dart';
 import 'package:bakery/view_model/favorite_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,14 +30,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
             const BouncingScrollPhysics(), //This sliver just provides appbar navigation and product image and background
         slivers: [
           ProductDetailAppbarSliver(product: widget.item),
-          ProductDetailDataSliver(item: widget.item
-              // onChangeCounter: (int index) {
-              //   ValueNotifier(index);
-              //   print(index);
-              //   indexNotifier.value = index;
-              //   // setState(() {});
-              // },
-              )
+          ProductDetailDataSliver(item: widget.item)
         ],
       ),
     );
@@ -219,7 +213,7 @@ class ProductDetailAppbarSliver extends StatelessWidget {
                     SizedBox(
                         width: 500,
                         height: 500,
-                        child: Image.network(product.imageUrl))
+                        child: CachedNetworkImage(imageUrl: product.imageUrl))
                   ])),
             ),
           ),
@@ -329,7 +323,10 @@ class IngredientBox extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(width: 50, height: 50, child: Image.network(imageUrl)),
+            SizedBox(
+                width: 50,
+                height: 50,
+                child: CachedNetworkImage(imageUrl: imageUrl)),
             Text(title, style: AppConst.normalDescriptionStyle)
           ],
         ));

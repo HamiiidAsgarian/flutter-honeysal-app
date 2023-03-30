@@ -51,6 +51,7 @@ class LoginScreen extends StatelessWidget {
                         validator: (value) => Validators.emailValidator(value)),
                     const SizedBox(height: 20),
                     CustomTextInput(
+                        obscureText: true,
                         title: 'Password',
                         hint: "Enter your password",
                         keyboardType: TextInputType.visiblePassword,
@@ -186,22 +187,4 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
-
-  // raw(BuildContext context) {
-  //   showDialog(
-  //       context: context,
-  //       builder: (context) => Center(
-  //             child: Container(
-  //               decoration: BoxDecoration(
-  //                 borderRadius: BorderRadius.circular(5),
-  //                 color: Colors.white,
-  //               ),
-  //               width: 50,
-  //               height: 50,
-  //               child: const Center(
-  //                 child: CupertinoActivityIndicator(),
-  //               ),
-  //             ),
-  //           ));
-  // }
 }
