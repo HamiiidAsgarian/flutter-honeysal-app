@@ -125,7 +125,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             MainButton(
                 onPress: () {
                   if (_formKey.currentState!.validate()) {
-                    showLoadingDialogPanel(context, "Sending data");
+                    showLoadingDialogPanel(context);
                     signUpDataPost(true).then((value) {
                       if (value["status"] == 200) {
                         Navigator.pop(context);

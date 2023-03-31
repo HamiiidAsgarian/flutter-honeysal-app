@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
+import '../../core/utilities.dart';
 import '../../view_model/cart_bloc.dart';
 import '../widgets/mobile_text_input.dart';
 import '../widgets/vertical_card.dart';
@@ -278,7 +279,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               products: widget.order,
                               totalCost: double.parse(widget.costs[2]));
 
-                          showAlertDialog(context);
+                          showLoadingDialogPanel(
+                              context); // showAlertDialog(BuildContext context) {
 
                           await sendOrderData(newOrder).then((value) {
                             Order res = Order.fromMap(value);
@@ -309,55 +311,31 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ));
   }
 
-  showAlertDialog(BuildContext context) {
-    AlertDialog alert = AlertDialog(
-        elevation: 0,
-        backgroundColor: Colors.white.withAlpha(0),
-        content: SizedBox(
-          width: 150,
-          height: 150,
-          child: Stack(children: [
-            Center(
-                child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      color: Colors.white,
-                    ),
-                    child: Image.asset('asset/images/logo.png'))),
-            const Center(child: CupertinoActivityIndicator())
-          ]),
-        )
-        // FutureBuilder(
-        // future: sendOrderData(),
-        // builder: (context, snapshot) {
-        //   if (snapshot.hasData) {
-        //     return Row(
-        //       children: [
-        //         // const CircularProgressIndicator(),
-        //         Container(
-        //             margin: const EdgeInsets.only(left: 5),
-        //             child: const Text("OK")),
-        //       ],
-        //     );
-        //   }
-        //   return Row(
-        //     children: [
-        //       const CircularProgressIndicator(),
-        //       Container(
-        //           margin: const EdgeInsets.only(left: 5),
-        //           child: const Text("Loading")),
-        //     ],
-        //   );
-        // }),
-        );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+  //   AlertDialog alert = AlertDialog(
+  //       elevation: 0,
+  //       backgroundColor: Colors.white.withAlpha(0),
+  //       content: SizedBox(
+  //         width: 150,
+  //         height: 150,
+  //         child: Stack(children: [
+  //           Center(
+  //               child: Container(
+  //                   decoration: BoxDecoration(
+  //                     borderRadius: BorderRadius.circular(25),
+  //                     color: Colors.white,
+  //                   ),
+  //                   child: Image.asset('asset/images/logo.png'))),
+  //           const Center(child: CupertinoActivityIndicator())
+  //         ]),
+  //       ));
+  //   showDialog(
+  //     barrierDismissible: false,
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 }
 
 class CostsSection extends StatelessWidget {

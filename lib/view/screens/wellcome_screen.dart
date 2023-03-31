@@ -24,17 +24,19 @@ class WellcomeScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(top: 75),
             child: Align(
               alignment: Alignment.center,
-              child: Text("Hamiiid Bakery", style: AppConst.barandTextStyle),
+              child: Text("Honeysal sweets",
+                  style: AppConst.barandTextStyle
+                      .copyWith(color: AppConst.mainOrange)),
             ),
           ),
           Column(
             children: [
               Text(
-                  "When it comes to sweets, you can sence the feeling of a good product from your screen",
+                  "When it comes to Honey, you can sence the feeling of a good product from your screen",
                   style: AppConst.detailTitleStyle
                       .copyWith(color: AppConst.mainWhite)),
               const SizedBox(height: 20),

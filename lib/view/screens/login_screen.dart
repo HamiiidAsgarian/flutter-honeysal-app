@@ -123,7 +123,7 @@ class LoginScreen extends StatelessWidget {
                 onPress: () {
                   if (_formKey.currentState!.validate()) {
                     AppInitializer appInit = AppInitializer();
-                    showLoadingDialogPanel(context, "Sending data");
+                    showLoadingDialogPanel(context);
                     // logInDataPost(false)
 
                     appInit.getApiData(context).then((value) {

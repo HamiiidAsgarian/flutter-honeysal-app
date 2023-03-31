@@ -29,31 +29,31 @@ List<CountedProductItem> productsListToCartItemSet(List<Product> products) {
 }
 //----
 
-showLoadingDialogPanel(BuildContext context, String text) {
+showLoadingDialogPanel(BuildContext context) {
+  AlertDialog alert = AlertDialog(
+      elevation: 0,
+      backgroundColor: Colors.white.withAlpha(0),
+      content: SizedBox(
+        width: 150,
+        height: 150,
+        child: Stack(children: [
+          Center(
+              child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: Colors.white,
+                  ),
+                  child: Image.asset('asset/images/logo.png'))),
+          const Center(child: CupertinoActivityIndicator())
+        ]),
+      ));
   showDialog(
-      context: context,
-      builder: (context) => Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                // color: Colors.white,
-              ),
-              width: 140,
-              height: 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Center(
-                    child: Stack(children: [
-                      Center(child: Image.asset('asset/images/logo.png')),
-                      const Center(child: CupertinoActivityIndicator())
-                    ]),
-                  )
-                ],
-              ),
-            ),
-          ));
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }
 
 showSnackBar(BuildContext context, String message, SnackbarType type) {
