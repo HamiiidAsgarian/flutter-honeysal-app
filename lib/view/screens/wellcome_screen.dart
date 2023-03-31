@@ -1,11 +1,13 @@
 import 'package:bakery/consts.dart';
+import 'package:bakery/view/screens/login_screen.dart';
+import 'package:bakery/view/screens/signup_screen.dart';
 import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:flutter/material.dart';
 
-class StartScreen extends StatelessWidget {
+class WellcomeScreen extends StatelessWidget {
   static String route = "/StartScreen";
 
-  const StartScreen({super.key});
+  const WellcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,27 +24,39 @@ class StartScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(top: 75),
             child: Align(
               alignment: Alignment.center,
-              child: Text("Hamiiid Bakery", style: AppConst.barandTextStyle),
+              child: Text("Honeysal sweets",
+                  style: AppConst.barandTextStyle
+                      .copyWith(color: AppConst.mainOrange)),
             ),
           ),
           Column(
             children: [
               Text(
-                  "When it comes to sweets, you can sence the feeling of a good product from your screen",
+                  "When it comes to Honey, you can sence the feeling of a good product from your screen",
                   style: AppConst.detailTitleStyle
                       .copyWith(color: AppConst.mainWhite)),
               const SizedBox(height: 20),
               MainButton(
-                onPress: () {},
+                onPress: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => const LoginScreen())));
+                },
                 title: "log in",
               ),
               const SizedBox(height: 20),
               MainButton(
-                onPress: () {},
+                onPress: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => const SignUpScreen())));
+                },
                 title: "Create account",
                 fillColor: AppConst.mainWhite,
                 titleColor: AppConst.burnedOrange,

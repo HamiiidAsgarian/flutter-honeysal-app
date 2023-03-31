@@ -1,10 +1,14 @@
 import 'package:bakery/consts.dart';
 import 'package:bakery/view/screens/checkout_screen.dart';
+import 'package:bakery/view/screens/login_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/utilities.dart';
+import '../../core/validator.dart';
+import '../../services/app_start_data.dart';
 import '../widgets/mobile_text_input.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -19,6 +23,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   String selectedPhoneCode = "+98";
   final TextEditingController _phoneInputController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -33,28 +38,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
             const Text("Sign up to continue",
                 style: AppConst.productSubtitleStyle),
             const SizedBox(height: 10),
-            const CustomTextInput(
-              title: 'Email',
-              hint: "Enter your email",
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 20),
-            MobileTextInput(
-              selectedPhoneCode: selectedPhoneCode,
-              onSelected: (String selected) {
-                setState(() {
-                  selectedPhoneCode = selected;
-                });
-              },
-              phoneInputController: _phoneInputController,
-            ),
-            const SizedBox(height: 20),
+            Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    CustomTextInput(
+                        title: 'Email',
+                        hint: "Enter your email",
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) => Validators.emailValidator(value)),
+                    const SizedBox(height: 20),
+                    MobileTextInput(
+                      selectedPhoneCode: selectedPhoneCode,
+                      onSelected: (String selected) {
+                        setState(() {
+                          selectedPhoneCode = selected;
+                        });
+                      },
+                      phoneInputController: _phoneInputController,
+                      validator: (String? value) =>
+                          Validators.phoneNumberValidator(value),
+                    ),
+                    const SizedBox(height: 20),
+                    CustomTextInput(
+                        obscureText: true,
+                        title: 'Password',
+                        hint: "Enter your password",
+                        keyboardType: TextInputType.visiblePassword,
+                        validator: (value) =>
+                            Validators.passwordValidator(value)),
+                  ],
+                )),
 
-            const CustomTextInput(
-              title: 'Password',
-              hint: "Enter your password",
-              keyboardType: TextInputType.visiblePassword,
-            ),
             const SizedBox(height: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,6 +81,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 Text(
                   "• Include special characters",
+                  style: AppConst.smallTextStyle
+                      .copyWith(color: AppConst.mainGreen),
+                ),
+                Text(
+                  "• Include upper and lower cases",
+                  style: AppConst.smallTextStyle
+                      .copyWith(color: AppConst.mainGreen),
+                ),
+                Text(
+                  "• Include numbers",
                   style: AppConst.smallTextStyle
                       .copyWith(color: AppConst.mainGreen),
                 ),
@@ -97,7 +122,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ])),
 
             const SizedBox(height: 20),
-            MainButton(onPress: () {}, title: "Create account"),
+            MainButton(
+                onPress: () {
+                  if (_formKey.currentState!.validate()) {
+                    showLoadingDialogPanel(context);
+                    signUpDataPost(true).then((value) {
+                      if (value["status"] == 200) {
+                        Navigator.pop(context);
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => const LoginScreen())));
+                      } else {
+                        Navigator.pop(context);
+                        // showLoadingDialogPanel(context, "Login failed");
+                      }
+                    });
+                  }
+                },
+                title: "Create account"),
             const SizedBox(height: 20),
 
             Center(
@@ -111,7 +154,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         .copyWith(color: AppConst.burnedOrange),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () async {
-                        //on tap code here, you can navigate to other page or URL
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => const LoginScreen())));
                       }),
               ])),
             ),

@@ -1,12 +1,22 @@
 import 'package:bakery/view/widgets/heart_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../consts.dart';
+import '../../model/core_models/product_model.dart';
 
-class VertivalCard extends StatelessWidget {
-  const VertivalCard({
-    Key? key,
-  }) : super(key: key);
+class VerticalCard extends StatelessWidget {
+  final Product data;
+  final Function onTapButton;
+  final Function onTapFavorite;
+  final bool isFavoriteSelected;
+  const VerticalCard(
+      {Key? key,
+      required this.data,
+      required this.onTapButton,
+      required this.onTapFavorite,
+      required this.isFavoriteSelected})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,40 +44,42 @@ class VertivalCard extends StatelessWidget {
               AspectRatio(
                 // widthFactor: 1,
                 aspectRatio: 1,
-                child: Container(color: Colors.green),
+                child: Container(
+                    color: Colors.white,
+                    child: CachedNetworkImage(imageUrl: data.imageUrl)),
               ),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Toast Bread",
-                        style: AppConst.productTitleStyle),
+                    Text(data.title, style: AppConst.productTitleStyle),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("45 left",
+                        Text("${data.left} Left",
                             style: AppConst.productSubtitleStyle),
                         const Text("  |  ",
                             style: AppConst.productSubtitleStyle),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Icon(
+                          children: [
+                            const Icon(
                               Icons.star_rounded,
                               color: AppConst.mainOrange,
                               size: 20,
                             ),
-                            Text("5.0", style: AppConst.productSubtitleStyle)
+                            Text("${data.rate}",
+                                style: AppConst.productSubtitleStyle)
                           ],
                         )
                       ],
                     ),
                     RichText(
-                      text: const TextSpan(
-                        text: '\$${0.99} ',
+                      text: TextSpan(
+                        text: '\$${data.price} ',
                         style: AppConst.productTitleStyle,
-                        children: <TextSpan>[
+                        children: const <TextSpan>[
                           TextSpan(
                             text: '/a piece',
                             style: AppConst.productSubtitleStyle,
@@ -75,7 +87,8 @@ class VertivalCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: 35, child: MainButton(onPress: () {}))
+                    SizedBox(
+                        height: 35, child: MainButton(onPress: onTapButton))
                   ],
                 ),
               )
@@ -85,7 +98,10 @@ class VertivalCard extends StatelessWidget {
           Align(
             alignment: Alignment.topRight,
             child: HeartButton(
-              onTap: (isActive) {},
+              isActive: isFavoriteSelected,
+              onTap: (isActive) {
+                onTapFavorite(isActive);
+              },
             ),
           ),
         ],
@@ -130,7 +146,7 @@ class MainButton extends StatelessWidget {
             child: Text(title,
                 style: TextStyle(
                     fontFamily: "Poppins",
-                    fontSize: 17,
+                    fontSize: 14,
                     color: titleColor,
                     fontWeight: FontWeight.w500))));
   }

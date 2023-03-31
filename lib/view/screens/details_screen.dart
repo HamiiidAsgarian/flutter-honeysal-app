@@ -1,15 +1,21 @@
 import 'package:bakery/consts.dart';
+import 'package:bakery/model/core_models/icon_info_model.dart';
+import 'package:bakery/model/core_models/product_model.dart';
 import 'package:bakery/view/widgets/vertical_card.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:bakery/view/widgets/my_rounded_chip.dart';
+import 'package:bakery/view_model/cart_bloc.dart';
+import 'package:bakery/view_model/favorite_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cart_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
   static String route = "/DetailsScreen";
-
-  const DetailsScreen({super.key});
+  final Product item;
+  const DetailsScreen({super.key, required this.item});
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
@@ -18,52 +24,69 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: CustomScrollView(
         physics:
-            BouncingScrollPhysics(), //This sliver just provides appbar navigation and product image and background
-        slivers: [ProductDetailAppbarSliver(), ProductDetailDataSliver()],
+            const BouncingScrollPhysics(), //This sliver just provides appbar navigation and product image and background
+        slivers: [
+          ProductDetailAppbarSliver(product: widget.item),
+          ProductDetailDataSliver(item: widget.item)
+        ],
       ),
     );
   }
 }
 
 class ProductDetailDataSliver extends StatelessWidget {
+  final Product item;
+  // final Function onPressAddToCart;
+
   const ProductDetailDataSliver({
     Key? key,
+    required this.item,
+    // required this.onPressAddToCart,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    int selectedItemsCount = 1;
+
     return SliverToBoxAdapter(
       child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
           color: AppConst.mainWhite,
           child: Column(
             children: [
-              const DetailsTitle(),
+              DetailsTitle(title: item.title, rate: item.rate),
               const SizedBox(height: 20),
-              const DetailsInfo(),
+              DetailsInfo(
+                  category: item.category, left: item.left, point: item.point),
               const SizedBox(height: 20),
-              const DetailsCounter(),
+              DetailsCounter(
+                price: item.price,
+                onChangeCounter: (int index) {
+                  selectedItemsCount = index;
+                },
+              ),
               const SizedBox(height: 20),
               MainButton(onPress: () async {
-                await onpressAddtoCart(context);
+                for (int i = 0; i < selectedItemsCount; i++) {
+                  BlocProvider.of<CartBloc>(context).add(AddToCart(item: item));
+                }
+                await onpressAddtoCart(context, selectedItemsCount);
               }),
               const SizedBox(height: 20),
-              const Text(desc, style: AppConst.normalDescriptionStyle),
+              Text(item.description, style: AppConst.normalDescriptionStyle),
               const SizedBox(height: 20),
-              const CustomExpansionTile(title: 'Ingredients'),
-              const CustomExpansionTile(title: 'Allergens'),
+              CustomExpansionTile(
+                  title: 'Ingredients', items: item.ingredients),
+              CustomExpansionTile(title: 'Allergens', items: item.allergens),
             ],
           )),
     );
   }
 
-  static const String desc =
-      'read, baked food product made of flour or meal that is moistened, kneaded, and sometimes fermented. A major food since prehistoric times, it has been made in various forms using a variety of ingredients and methods throughout the world.';
-
-  onpressAddtoCart(context) {
+  onpressAddtoCart(context, int count) {
     showDialog(
       context: context,
       builder: ((dialogContext) => AlertDialog(
@@ -81,8 +104,8 @@ class ProductDetailDataSliver extends StatelessWidget {
                         Navigator.pop(context);
                       }))
             ]),
-            content: const Text(
-              "You successfully added the item to cart!",
+            content: Text(
+              "You successfully added $count item to cart!",
               style: AppConst.normalDescriptionStyle,
               textAlign: TextAlign.center,
             ),
@@ -90,8 +113,13 @@ class ProductDetailDataSliver extends StatelessWidget {
               MainButton(
                   title: "Go to cart",
                   onPress: () {
-                    Navigator.pushReplacementNamed(
-                        dialogContext, CartScreen.route);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) =>
+                                const CartScreen(backButton: true))));
+                    // Navigator.pushReplacementNamed(
+                    //     dialogContext, CartScreen.route);
                   }),
               Center(
                 child: TextButton(
@@ -109,8 +137,12 @@ class ProductDetailDataSliver extends StatelessWidget {
 }
 
 class ProductDetailAppbarSliver extends StatelessWidget {
+  // final String imageUrl;
+  final Product product;
   const ProductDetailAppbarSliver({
     Key? key,
+    required this.product,
+    // required this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -145,7 +177,7 @@ class ProductDetailAppbarSliver extends StatelessWidget {
             onTap: (bool isSelected) {
               Navigator.pop(context);
             },
-            selectionStatus: false,
+            isActive: false,
           ),
         ),
       ),
@@ -165,7 +197,8 @@ class ProductDetailAppbarSliver extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 25),
                   // color: Colors.red,
                   width: double.infinity,
-                  height: 110,
+                  height: 150,
+                  // height: 110,
                   child: Stack(clipBehavior: Clip.none, children: [
                     Align(
                         alignment: Alignment.bottomCenter,
@@ -177,9 +210,10 @@ class ProductDetailAppbarSliver extends StatelessWidget {
                                   topStart: Radius.circular(35))),
                           height: 50,
                         )),
-                    const FlutterLogo(
-                      size: 500,
-                    ),
+                    SizedBox(
+                        width: 500,
+                        height: 500,
+                        child: CachedNetworkImage(imageUrl: product.imageUrl))
                   ])),
             ),
           ),
@@ -200,12 +234,29 @@ class ProductDetailAppbarSliver extends StatelessWidget {
           padding: const EdgeInsets.only(
               right: bottomsPaddings, top: bottomsPaddings),
           // color: Colors.red,
-          child: MyRoundButton(
-            icon: Icons.favorite_border_outlined,
-            fillColor: AppConst.mainWhite,
-            onTap: (bool isSelected) {},
-            selectionStatus: false,
-          ),
+          child: BlocBuilder<FavoriteBloc, FavoriteState>(
+              builder: (context, state) {
+            bool isAlreadyInFavorites = false;
+            if (state.favoriteData.contains(product)) {
+              isAlreadyInFavorites = true;
+            }
+
+            return MyRoundButton(
+              icon: Icons.favorite_border_outlined,
+              fillColor: AppConst.mainWhite,
+              selectedColor: AppConst.mainRed,
+              onTap: (bool isSelected) {
+                if (isAlreadyInFavorites == false) {
+                  BlocProvider.of<FavoriteBloc>(context)
+                      .add(AddToFavoriteData(item: product));
+                } else {
+                  BlocProvider.of<FavoriteBloc>(context)
+                      .add(RemoveFromFavoriteData(item: product));
+                }
+              },
+              isActive: isAlreadyInFavorites,
+            );
+          }),
         ),
         // Container(
         //     padding: const EdgeInsets.only(right: 10),
@@ -217,9 +268,12 @@ class ProductDetailAppbarSliver extends StatelessWidget {
 
 class CustomExpansionTile extends StatelessWidget {
   final String? title;
+  final List<IconInfo> items;
+
   const CustomExpansionTile({
     Key? key,
     this.title = "",
+    required this.items,
   }) : super(key: key);
 
   @override
@@ -232,20 +286,15 @@ class CustomExpansionTile extends StatelessWidget {
         collapsedIconColor: AppConst.iconGrey,
         tilePadding: EdgeInsets.zero,
         childrenPadding: EdgeInsets.zero,
-        title: Text(title!, style: AppConst.sectionTitleStyle),
+        title: Text("$title", style: AppConst.sectionTitleStyle),
         children: [
           Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: const [
-              IngredientBox(),
-              IngredientBox(),
-              IngredientBox(),
-              IngredientBox(),
-              IngredientBox(),
-              IngredientBox(),
-            ],
-          )
+              spacing: 10,
+              runSpacing: 10,
+              children: items
+                  .map((e) =>
+                      IngredientBox(title: e.title, imageUrl: e.imageUrl))
+                  .toList())
         ],
       ),
     );
@@ -253,8 +302,13 @@ class CustomExpansionTile extends StatelessWidget {
 }
 
 class IngredientBox extends StatelessWidget {
+  final String title;
+  final String imageUrl;
+
   const IngredientBox({
     Key? key,
+    required this.title,
+    required this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -268,17 +322,25 @@ class IngredientBox extends StatelessWidget {
             color: AppConst.lightOrange),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.egg_outlined, size: 50),
-            Text("Egg", style: AppConst.normalDescriptionStyle)
+          children: [
+            SizedBox(
+                width: 50,
+                height: 50,
+                child: CachedNetworkImage(imageUrl: imageUrl)),
+            Text(title, style: AppConst.normalDescriptionStyle)
           ],
         ));
   }
 }
 
 class DetailsCounter extends StatelessWidget {
+  final double price;
+  final Function(int index) onChangeCounter;
+
   const DetailsCounter({
     Key? key,
+    required this.price,
+    required this.onChangeCounter,
   }) : super(key: key);
 
   @override
@@ -287,12 +349,12 @@ class DetailsCounter extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const RoundConter(),
+        RoundConter(onChangeCounter: onChangeCounter),
         RichText(
-          text: const TextSpan(
-            text: '\$${0.99} ',
+          text: TextSpan(
+            text: '\$$price ',
             style: AppConst.detailPriceStyle,
-            children: <TextSpan>[
+            children: const <TextSpan>[
               TextSpan(
                 text: '/a piece',
                 style: AppConst.productSubtitleStyle,
@@ -306,16 +368,25 @@ class DetailsCounter extends StatelessWidget {
 }
 
 class RoundConter extends StatefulWidget {
-  const RoundConter({
-    Key? key,
-  }) : super(key: key);
+  final int initValue;
+  final Function(int index) onChangeCounter;
+  const RoundConter(
+      {Key? key, required this.onChangeCounter, this.initValue = 1})
+      : super(key: key);
 
   @override
   State<RoundConter> createState() => _RoundConterState();
 }
 
 class _RoundConterState extends State<RoundConter> {
-  int _counter = 0;
+  late int _counter;
+
+  @override
+  void initState() {
+    _counter = widget.initValue;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -332,8 +403,10 @@ class _RoundConterState extends State<RoundConter> {
           GestureDetector(
             onTap: () {
               setState(() {
-                _counter--;
+                _counter > 1 ? _counter-- : () {};
               });
+
+              widget.onChangeCounter(_counter);
             },
             child: const Icon(Icons.remove),
           ),
@@ -341,8 +414,9 @@ class _RoundConterState extends State<RoundConter> {
           GestureDetector(
             onTap: () {
               setState(() {
-                _counter++;
+                _counter > 0 ? _counter++ : () {};
               });
+              widget.onChangeCounter(_counter);
             },
             child: const Icon(Icons.add),
           )
@@ -353,8 +427,12 @@ class _RoundConterState extends State<RoundConter> {
 }
 
 class DetailsTitle extends StatelessWidget {
+  final String title;
+  final double rate;
   const DetailsTitle({
     Key? key,
+    required this.title,
+    required this.rate,
   }) : super(key: key);
 
   @override
@@ -363,19 +441,18 @@ class DetailsTitle extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Expanded(
-          child:
-              Text("Unicorn Birthday Cake", style: AppConst.detailTitleStyle),
+        Expanded(
+          child: Text(title, style: AppConst.detailTitleStyle),
         ),
         Row(
-          children: const [
-            Icon(
+          children: [
+            const Icon(
               Icons.star,
               size: 20,
               color: AppConst.mainOrange,
             ),
-            Text("4.5", style: AppConst.productSubtitleStyle),
-            Text("(49)", style: AppConst.productSubtitleStyle)
+            Text("$rate", style: AppConst.productSubtitleStyle),
+            const Text("(49)", style: AppConst.productSubtitleStyle)
           ],
         )
       ],
@@ -384,8 +461,15 @@ class DetailsTitle extends StatelessWidget {
 }
 
 class DetailsInfo extends StatelessWidget {
+  final String category;
+  final int left;
+  final int point;
+
   const DetailsInfo({
     Key? key,
+    required this.category,
+    required this.left,
+    required this.point,
   }) : super(key: key);
 
   @override
@@ -404,14 +488,14 @@ class DetailsInfo extends StatelessWidget {
                 child: FittedBox(
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Icon(
+                      children: [
+                        const Icon(
                           Icons.cookie,
                           size: 20,
                         ),
-                        SizedBox(width: 7),
+                        const SizedBox(width: 7),
                         Text(
-                          "Sweets",
+                          category,
                           style: AppConst.productSubtitleStyle,
                         ),
                       ]),
@@ -427,10 +511,10 @@ class DetailsInfo extends StatelessWidget {
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.signal_cellular_alt, color: AppConst.iconGrey),
-                SizedBox(width: 5),
-                Text("25 left", style: AppConst.productSubtitleStyle)
+              children: [
+                const Icon(Icons.signal_cellular_alt, color: AppConst.iconGrey),
+                const SizedBox(width: 5),
+                Text("$left left", style: AppConst.productSubtitleStyle)
               ],
             ),
           ),
@@ -443,10 +527,10 @@ class DetailsInfo extends StatelessWidget {
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
-                Icon(Icons.badge_outlined, color: AppConst.iconGrey),
-                SizedBox(width: 5),
-                Text("25 left", style: AppConst.productSubtitleStyle)
+              children: [
+                const Icon(Icons.badge_outlined, color: AppConst.iconGrey),
+                const SizedBox(width: 5),
+                Text("$point points", style: AppConst.productSubtitleStyle)
               ],
             ),
           ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../consts.dart';
 
 class TitleAndAll extends StatelessWidget {
@@ -13,21 +12,19 @@ class TitleAndAll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // color: Colors.red,
-      padding: const EdgeInsets.only(top: 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(child: Text(title, style: AppConst.sectionTitleStyle)),
-          TextButton(
-              onPressed: () => onPressAll(),
-              child: Text("View All",
-                  style: AppConst.chipTextStyle.copyWith(
-                    color: AppConst.burnedOrange,
-                  )))
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title, style: AppConst.sectionTitleStyle),
+        TextButton(
+            onPressed: () {
+              onPressAll();
+            },
+            child: Text("View All",
+                style: AppConst.chipTextStyle.copyWith(
+                  color: AppConst.burnedOrange,
+                )))
+      ],
     );
   }
 }

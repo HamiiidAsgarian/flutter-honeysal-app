@@ -1,52 +1,76 @@
 import 'package:bakery/consts.dart';
+import 'package:bakery/core/validator.dart';
+import 'package:bakery/model/core_models/order_model.dart';
+import 'package:bakery/model/core_models/product_model.dart';
+import 'package:bakery/services/send_order_form.dart';
 import 'package:bakery/view/screens/pickup_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
+import 'package:bakery/view_model/orders_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-import '../widgets/vertical_card.dart';
+import '../../core/utilities.dart';
+import '../../view_model/cart_bloc.dart';
 import '../widgets/mobile_text_input.dart';
+import '../widgets/vertical_card.dart';
 import 'cart_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
   static String route = "/CheckoutScreen";
 
-  const CheckoutScreen({super.key});
+  final bool backButton;
+  final List<String> costs;
+  final List<Product> order;
+
+  const CheckoutScreen(
+      {super.key,
+      this.backButton = false,
+      required this.costs,
+      required this.order});
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  final TextEditingController dateinput = TextEditingController();
+  final TextEditingController _dateinput = TextEditingController();
   final TextEditingController _timeInputController = TextEditingController();
   final TextEditingController _phoneInputController = TextEditingController();
   final TextEditingController _creditInputController = TextEditingController();
 
   String selectedPhoneCode = "+97";
+  final _formKey = GlobalKey<FormState>();
+  // bool _isPayemntValid = false;
+  final ValueNotifier<bool> _isPayemntValid = ValueNotifier(false);
+  final ValueNotifier<bool> _isPhoneValid = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const CustomAppbar(),
+        appBar: CustomAppbar(title: 'Checkout', backButton: widget.backButton),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: AppConst.appHorizontalPadding),
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                CustomTextInput(
-                  keyboardType: TextInputType.datetime,
-                  textEditingController: dateinput,
-                  title: "pickup date",
-                  hint: '2033/12/12',
-                  mask: '####/##/##',
-                  suffix: IconButton(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  CustomTextInput(
+                    keyboardType: TextInputType.datetime,
+                    textEditingController: _dateinput,
+                    title: "pickup date",
+                    hint: '2033/12/12',
+                    mask: '####/##/##',
+                    suffix: IconButton(
+                      splashRadius: 1,
                       icon: const Icon(
                         Icons.calendar_month,
-                        color: AppConst.iconGrey,
+                        color: AppConst.mainBlack,
                         size: 30,
                       ),
                       onPressed: () async {
@@ -67,101 +91,263 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                         if (pickedDate != null) {
                           String formattedDate =
-                              DateFormat('yyyy/MM/dd').format(pickedDate);
+                              DateFormat('y/M/d').format(pickedDate);
                           setState(() {
-                            dateinput.text =
+                            _dateinput.text =
                                 formattedDate; //set output date to TextField value.
                           });
                         } else {
                           // print("Date is not selected");
                         }
-                      }),
-                ),
-                const SizedBox(height: 10),
-                CustomTextInput(
-                  keyboardType: TextInputType.visiblePassword,
-                  textEditingController: _timeInputController,
-                  title: "pickup time",
-                  hint: '05:00 AM',
-                  mask: '##:## AA',
-                  suffix: IconButton(
-                      icon: const Icon(
-                        Icons.timer_outlined,
-                        color: AppConst.iconGrey,
-                        size: 30,
-                      ),
-                      onPressed: () async {
-                        TimeOfDay? selectedTime = await showTimePicker(
-                          builder: (context, child) {
-                            return Theme(
-                              data: ThemeData.light().copyWith(
-                                colorScheme: const ColorScheme.light(
-                                  // change the border color
-                                  primary: AppConst.mainOrange,
-                                  // change the text color
-                                  onSurface: AppConst.iconGrey,
-                                ),
-                                // button colors
-                                buttonTheme: const ButtonThemeData(
-                                  colorScheme: ColorScheme.light(
-                                    primary: Colors.green,
+                      },
+                    ),
+                    validator: (value) {
+                      if (value != null &&
+                          value.isNotEmpty &&
+                          value.length >= 8) {
+                        List<String> hourMinute = value.split("/");
+                        int year = int.parse(hourMinute[0]);
+                        int month = int.parse(hourMinute[1]);
+                        int days = int.parse(hourMinute[2]);
+
+                        if (DateTime(year, month, days)
+                                .isAfter(DateTime.now()) &&
+                            month <= 12 &&
+                            days <= 30) {
+                          return null;
+                        }
+                      }
+                      return "Please Enter in currect format(yyyy/mm/dd)";
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextInput(
+                    validator: (value) {
+                      if (value != null &&
+                          value.isNotEmpty &&
+                          value.length >= 5) {
+                        List<String> hourMinute = value.split(":");
+                        int hour = int.parse(hourMinute[0]);
+                        late int minute;
+                        if (hourMinute[1].length > 2) {
+                          minute = int.parse(hourMinute[1].substring(0, 2));
+                        } else {
+                          minute = int.parse(hourMinute[1]);
+                        }
+                        if (hour < 24 && minute < 60) {
+                          return null;
+                        }
+                      }
+                      return "Please Enter in currect format(23:59)";
+                    },
+                    keyboardType: TextInputType.visiblePassword,
+                    textEditingController: _timeInputController,
+                    title: "pickup time",
+                    hint: '19:00',
+                    mask: '##:##',
+                    suffix: IconButton(
+                        splashRadius: 1,
+                        icon: const Icon(
+                          Icons.timer_outlined,
+                          color: AppConst.mainBlack,
+                          size: 30,
+                        ),
+                        onPressed: () async {
+                          TimeOfDay? selectedTime = await showTimePicker(
+                            builder: (context, child) {
+                              return Theme(
+                                data: ThemeData.light().copyWith(
+                                  colorScheme: const ColorScheme.light(
+                                    // change the border color
+                                    primary: AppConst.mainOrange,
+                                    // change the text color
+                                    onSurface: AppConst.iconGrey,
+                                  ),
+                                  // button colors
+                                  buttonTheme: const ButtonThemeData(
+                                    colorScheme: ColorScheme.light(
+                                      primary: Colors.green,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              child: child!,
-                            );
-                          },
-                          initialTime: TimeOfDay.now(),
-                          context: context,
+                                child: child!,
+                              );
+                            },
+                            initialTime: TimeOfDay.now(),
+                            context: context,
+                          );
+                          if (selectedTime != null) {
+                            setState(() {
+                              _timeInputController.text =
+                                  selectedTime.format(context);
+                              //set output date to TextField value.
+                            });
+                          } else {
+                            // print("Date is not selected");
+                          }
+                        }),
+                  ),
+                  const SizedBox(height: 10),
+                  MobileTextInput(
+                    onChange: (value) {
+                      if (value != null && value.length == 10) {
+                        _isPhoneValid.value = true;
+                      } else {
+                        _isPhoneValid.value = false;
+                      }
+                    },
+                    suffix: ValueListenableBuilder(
+                      valueListenable: _isPhoneValid,
+                      builder: (context, value, child) {
+                        return Icon(
+                          Icons.check_circle,
+                          color: value == true
+                              ? AppConst.mainOrange
+                              : AppConst.iconGrey,
+                          size: 30,
                         );
-                        if (selectedTime != null) {
-                          setState(() {
-                            _timeInputController.text =
-                                selectedTime.format(context);
-                            //set output date to TextField value.
+                      },
+                    ),
+                    validator: (value) =>
+                        Validators.phoneNumberValidator(value),
+                    selectedPhoneCode: selectedPhoneCode,
+                    onSelected: (String selected) {
+                      setState(() {
+                        selectedPhoneCode = selected;
+                      });
+                    },
+                    phoneInputController: _phoneInputController,
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextInput(
+                    onChange: (value) {
+                      if (value!.length == 19) {
+                        _isPayemntValid.value = true;
+                      } else {
+                        _isPayemntValid.value = false;
+                      }
+                    },
+                    suffix: ValueListenableBuilder(
+                        valueListenable: _isPayemntValid,
+                        builder: (context, value, child) => Icon(
+                              Icons.check_circle,
+                              color: value
+                                  ? AppConst.mainOrange
+                                  : AppConst.iconGrey,
+                              size: 30,
+                            )),
+                    validator: (value) {
+                      if (value != null &&
+                          value.isNotEmpty &&
+                          value.length == 19) {
+                        return null;
+                      }
+                      return "Please Enter in valid card number";
+                    },
+                    keyboardType: TextInputType.number,
+                    textEditingController: _creditInputController,
+                    title: "Payment Method",
+                    hint: '****-****-****-****',
+                    mask: '####-####-####-####',
+                  ),
+                  const SizedBox(height: 25),
+                  CostsSection(
+                      costs: widget.costs,
+                      onPressCheckout: () async {
+                        // print(_formKey.currentState!.validate());
+                        if (_formKey.currentState!.validate()) {
+                          // print("aa");
+                          _formKey.currentState!.save();
+                          // CheckoutForm checkoutForm = CheckoutForm(
+                          //     date: _dateinput.text,
+                          //     pickupTime: _timeInputController.text,
+                          //     telephone: _phoneInputController.text,
+                          //     payment: _creditInputController.text,
+                          //     totalPrice: double.parse(widget.costs[3]));
+
+                          Order newOrder = Order(
+                              id: 8789877, //NOTE id should not be sent
+                              date: _dateinput.text,
+                              time: _timeInputController.text,
+                              stage: Stage(
+                                  status: OrderStageStatus.confirm,
+                                  confirm: StageTimeDate(
+                                      date: DateFormat('y/M/d')
+                                          .format(DateTime.now()),
+                                      time: DateFormat.Hm()
+                                          .format(DateTime.now()))),
+                              products: widget.order,
+                              totalCost: double.parse(widget.costs[2]));
+
+                          showLoadingDialogPanel(
+                              context); // showAlertDialog(BuildContext context) {
+
+                          await sendOrderData(newOrder).then((value) {
+                            Order res = Order.fromMap(value);
+                            Navigator.pop(context);
+                            BlocProvider.of<OrderBloc>(context)
+                                .add(AddOrder(data: res));
+
+                            BlocProvider.of<CartBloc>(context)
+                                .add(EmptyTheCart());
+                            // if (value != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: ((context) => PickupScreen(
+                                          data: res,
+                                          backButton: false,
+                                          closeButton: true,
+                                        ))));
+                            // }
+                            return value;
                           });
-                        } else {
-                          // print("Date is not selected");
                         }
-                      }),
-                ),
-                const SizedBox(height: 10),
-                MobileTextInput(
-                  selectedPhoneCode: selectedPhoneCode,
-                  onSelected: (String selected) {
-                    setState(() {
-                      selectedPhoneCode = selected;
-                    });
-                  },
-                  phoneInputController: _phoneInputController,
-                ),
-                const SizedBox(height: 10),
-                CustomTextInput(
-                  keyboardType: TextInputType.number,
-                  textEditingController: _creditInputController,
-                  title: "Payment Method",
-                  hint: '****-****-****-****',
-                  mask: '####-####-####-####',
-                  suffix: IconButton(
-                      icon: const Icon(
-                        Icons.check_circle,
-                        color: AppConst.iconGrey,
-                        size: 30,
-                      ),
-                      onPressed: () async {}),
-                ),
-                const SizedBox(height: 25),
-                const CostsSection()
-              ],
+                      })
+                ],
+              ),
             ),
           ),
         ));
   }
+
+  //   AlertDialog alert = AlertDialog(
+  //       elevation: 0,
+  //       backgroundColor: Colors.white.withAlpha(0),
+  //       content: SizedBox(
+  //         width: 150,
+  //         height: 150,
+  //         child: Stack(children: [
+  //           Center(
+  //               child: Container(
+  //                   decoration: BoxDecoration(
+  //                     borderRadius: BorderRadius.circular(25),
+  //                     color: Colors.white,
+  //                   ),
+  //                   child: Image.asset('asset/images/logo.png'))),
+  //           const Center(child: CupertinoActivityIndicator())
+  //         ]),
+  //       ));
+  //   showDialog(
+  //     barrierDismissible: false,
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 }
 
 class CostsSection extends StatelessWidget {
+  // final GlobalKey<FormState> formValidator;
+  final Function onPressCheckout;
+  final List costs;
+
   const CostsSection({
     Key? key,
+    required this.onPressCheckout,
+    required this.costs,
+    // required this.formValidator,
   }) : super(key: key);
 
   @override
@@ -173,29 +359,34 @@ class CostsSection extends StatelessWidget {
             // color: Colors.red,
             border: Border(top: BorderSide(color: AppConst.borderGrey))),
         padding: const EdgeInsets.symmetric(vertical: 15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const RecieptRow(
-              title: "Subtotal",
-              price: "\$${29.8}",
-            ),
-            const RecieptRow(
-              title: "Discount",
-              price: "\$${29.8}",
-            ),
-            const RecieptRow(
-              title: "Total",
-              price: "\$${29.8}",
-              style: RecieptRowStyle.bold,
-            ),
-            MainButton(
-                onPress: () {
-                  Navigator.pushNamed(context, PickupScreen.route);
-                },
-                title: "Checkout")
-          ],
+        child: BlocBuilder<CartBloc, CartState>(
+          builder: (context, state) {
+            // List<String> costsColculation = costColculation(state.cartData);
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                RecieptRow(
+                  title: "Subtotal",
+                  price: "\$${costs[0]}",
+                ),
+                RecieptRow(
+                  title: "Discount",
+                  price: "\$${costs[1]}",
+                ),
+                RecieptRow(
+                  title: "Total",
+                  price: "\$${costs[2]}",
+                  style: RecieptRowStyle.bold,
+                ),
+                MainButton(
+                    onPress: () {
+                      onPressCheckout();
+                    },
+                    title: "Checkout")
+              ],
+            );
+          },
         ));
   }
 }
@@ -209,6 +400,9 @@ class CustomTextInput extends StatelessWidget {
   // final Function onPressIcon;
   final Color? fillColor;
   final TextInputType? keyboardType;
+  final Function(String? value)? validator;
+  final Function(String? value)? onChange;
+  final bool? obscureText;
 
   final TextEditingController? textEditingController;
 
@@ -222,7 +416,10 @@ class CustomTextInput extends StatelessWidget {
       this.fillColor,
       this.prefix,
       this.textEditingController,
-      this.keyboardType});
+      this.keyboardType,
+      this.validator,
+      this.onChange,
+      this.obscureText});
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +428,14 @@ class CustomTextInput extends StatelessWidget {
       children: [
         Text(title, style: AppConst.normalDescriptionStyle),
         const SizedBox(height: 5),
-        TextField(
+        TextFormField(
+          obscureText: obscureText ?? false,
+          onChanged: (value) {
+            onChange != null ? onChange!(value) : () {};
+          },
+          validator: (v) {
+            return validator!(v);
+          },
           cursorColor: AppConst.mainOrange,
           keyboardType: keyboardType,
           inputFormatters: [

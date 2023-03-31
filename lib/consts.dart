@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppConst {
   static const double appHorizontalPadding = 20;
+  static const Color mainRed = Color(0xFFac3e20);
 
   static const Color burnedOrange = Color(0xFF977e3b);
 
@@ -27,7 +28,7 @@ class AppConst {
 
   static const TextStyle normalDescriptionStyle = TextStyle(
       fontFamily: "Poppins",
-      fontSize: 16,
+      fontSize: 15,
       color: Colors.black,
       fontWeight: FontWeight.w500);
   static const TextStyle chipTextStyle = TextStyle(
@@ -37,9 +38,9 @@ class AppConst {
       fontWeight: FontWeight.w500);
 
   static const TextStyle detailTitleStyle = TextStyle(
-      height: 1, //For no space to the top of the box
+      height: 1.2, //For no space to the top of the box
       fontFamily: "Poppins",
-      fontSize: 35,
+      fontSize: 30,
       color: Colors.black,
       fontWeight: FontWeight.w800);
   static const TextStyle detailPriceStyle = TextStyle(
@@ -56,9 +57,9 @@ class AppConst {
       fontWeight: FontWeight.w700);
   static const TextStyle productTitleStyle = TextStyle(
       fontFamily: "Poppins",
-      fontSize: 18,
+      fontSize: 15,
       color: Colors.black,
-      fontWeight: FontWeight.w800);
+      fontWeight: FontWeight.w600);
   static const TextStyle productSubtitleStyle = TextStyle(
       fontFamily: "Poppins",
       fontSize: 15,
@@ -69,4 +70,8 @@ class AppConst {
       fontSize: 13,
       color: Colors.grey,
       fontWeight: FontWeight.w500);
+
+  static cartsAppearDurationMaker(int index) {
+    return Duration(milliseconds: 300 + (index * 50));
+  }
 }

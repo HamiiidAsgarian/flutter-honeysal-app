@@ -1,4 +1,6 @@
 import 'package:bakery/consts.dart';
+import 'package:bakery/model/core_models/order_model.dart';
+import 'package:bakery/view/screens/navigation_container_screen.dart';
 import 'package:bakery/view/widgets/app_bar.dart';
 import 'package:bakery/view/widgets/my_rounded_button.dart';
 import 'package:flutter/material.dart';
@@ -7,14 +9,34 @@ import '../widgets/time_and_date.dart';
 
 class PickupScreen extends StatelessWidget {
   static String route = "/PickupScreen";
+  final bool backButton;
+  final Order data;
+  final bool closeButton;
 
-  const PickupScreen({super.key});
+  const PickupScreen(
+      {super.key,
+      this.backButton = false,
+      required this.data,
+      required this.closeButton});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppbar(),
-      // bottomNavigationBar: const MyNav(),
+      appBar: CustomAppbar(
+        backButton: backButton,
+        action: closeButton == true
+            ? MyRoundButton(
+                icon: Icons.close,
+                onTap: (e) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: ((context) => const NavScreen()),
+                    ),
+                  );
+                },
+              )
+            : null,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
             horizontal: AppConst.appHorizontalPadding),
@@ -23,9 +45,11 @@ class PickupScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
-              const DeliveryTimeSection(),
+              DeliveryTimeSection(time: data.time, date: data.date),
               const SizedBox(height: 35),
-              const DeliveryStage(),
+              DeliveryStage(
+                  data: data,
+                  stage: "${data.stage.status}"), //NOTE: nullable id
               const SizedBox(height: 25),
               Container(
                 padding: const EdgeInsets.all(15),
@@ -35,7 +59,7 @@ class PickupScreen extends StatelessWidget {
                 width: double.infinity,
                 child: const Center(
                   child: Text(
-                      "plaesegive the track order to your employee to collect your order,thank you!",
+                      "plaese give the track order to your employee to collect your order,thank you!",
                       textAlign: TextAlign.center,
                       style: AppConst.smallTextStyle),
                 ),
@@ -49,8 +73,12 @@ class PickupScreen extends StatelessWidget {
 }
 
 class DeliveryStage extends StatelessWidget {
+  final Order data;
+  final String stage;
   const DeliveryStage({
     Key? key,
+    required this.data,
+    required this.stage,
   }) : super(key: key);
 
   @override
@@ -81,7 +109,7 @@ class DeliveryStage extends StatelessWidget {
                   style: AppConst.normalDescriptionStyle,
                 ),
                 Text(
-                  "1866552",
+                  "${data.id}",
                   style: AppConst.normalDescriptionStyle.copyWith(
                       decoration: TextDecoration.underline,
                       fontWeight: FontWeight.bold),
@@ -95,34 +123,38 @@ class DeliveryStage extends StatelessWidget {
                 // fillColor: AppConst.mainGreen,
                 onTap: (e) {},
                 icon: Icons.check_circle,
-                selectionStatus: true),
+                isActive: data.stage.confirm != null),
             title: "Order placed and confirmed",
-            time: "06:14 PM",
-            date: "31 Dec 2023",
+            time:
+                data.stage.confirm != null ? data.stage.confirm!.time! : "Soon",
+            date:
+                data.stage.confirm != null ? data.stage.confirm!.date! : "Soon",
           ),
           OrderStage(
             leading: MyRoundButton(
-              selectionStatus: true,
+              isActive: data.stage.process != null,
               selectedColor: AppConst.mainOrange,
               // fillColor: AppConst.mainOrange,
               onTap: (e) {},
               icon: Icons.delivery_dining,
             ),
             title: "Order processed",
-            time: "08:17 PM",
-            date: "31 Dec 2023",
+            time:
+                data.stage.process != null ? data.stage.process!.time! : "Soon",
+            date:
+                data.stage.process != null ? data.stage.process!.date! : "Soon",
           ),
           OrderStage(
             leading: MyRoundButton(
-              selectionStatus: false,
+              isActive: data.stage.ready != null,
               selectedColor: AppConst.mainBlue,
               // fillColor: AppConst.mainBlue,
               onTap: (e) {},
               icon: Icons.check,
             ),
             title: "Order ready to collect",
-            time: "Soon",
-            date: "soon",
+            time: data.stage.ready != null ? data.stage.ready!.time! : "Soon",
+            date: data.stage.ready != null ? data.stage.ready!.date! : "Soon",
           ),
         ],
       ),
@@ -167,8 +199,12 @@ class OrderStage extends StatelessWidget {
 }
 
 class DeliveryTimeSection extends StatelessWidget {
+  final String time;
+  final String date;
   const DeliveryTimeSection({
     Key? key,
+    required this.time,
+    required this.date,
   }) : super(key: key);
 
   @override
@@ -176,16 +212,16 @@ class DeliveryTimeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text("Estimated DElivery",
+        const Text("Estimated Delivery info",
             style: AppConst.normalDescriptionStyle),
         const SizedBox(height: 15),
         SizedBox(
           height: 40,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text("1 jan 2022", style: AppConst.detailPriceStyle),
-              Padding(
+            children: [
+              Text(date, style: AppConst.detailPriceStyle),
+              const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25),
                 child: VerticalDivider(
                   width: 3,
@@ -193,7 +229,7 @@ class DeliveryTimeSection extends StatelessWidget {
                   color: AppConst.borderGrey,
                 ),
               ),
-              Text("05:00 Am", style: AppConst.detailPriceStyle)
+              Text(time, style: AppConst.detailPriceStyle)
             ],
           ),
         )

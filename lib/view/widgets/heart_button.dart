@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../consts.dart';
 
-class HeartButton extends StatefulWidget {
+class HeartButton extends StatelessWidget {
   final bool isActive;
   final Function(bool isActive) onTap;
 
@@ -12,46 +12,46 @@ class HeartButton extends StatefulWidget {
     required this.onTap,
   }) : super(key: key);
 
-  @override
-  State<HeartButton> createState() => _HeartButtonState();
-}
+//   @override
+//   State<HeartButton> createState() => _HeartButtonState();
+// }
 
-class _HeartButtonState extends State<HeartButton> {
-  late bool _isActive;
+// class _HeartButtonState extends State<HeartButton> {
+//   late bool _isActive;
 
-  @override
-  void initState() {
-    _isActive = widget.isActive;
+//   @override
+//   void initState() {
+//     _isActive = widget.isActive;
 
-    super.initState();
-  }
+//     super.initState();
+//   }
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder(
-      key: UniqueKey(),
-      duration: const Duration(milliseconds: 400),
-      tween: Tween(begin: 5.0, end: 30.0),
-      curve: Curves.easeInOutBack,
-      builder: (context, value, child) => GestureDetector(
-        onTap: () {
-          widget.onTap(!_isActive);
-          setState(() {
-            _isActive = !_isActive;
-          });
-        },
-        child: SizedBox(
-          width: 30,
-          height: 30,
-          child: Center(
-            child: Icon(
-              Icons.favorite_border,
-              color: _isActive ? Colors.red : AppConst.borderGrey,
-              size: value,
-            ),
+    return
+        // TweenAnimationBuilder(
+        //   key: GlobalKey(),
+        //   duration: const Duration(milliseconds: 400),
+        //   tween: Tween(begin: 5.0, end: 30.0),
+        //   curve: Curves.easeInOutBack,
+        //   builder: (context, value, child) =>
+
+        GestureDetector(
+      onTap: () {
+        onTap(!isActive);
+      },
+      child: SizedBox(
+        width: 30,
+        height: 30,
+        child: Center(
+          child: Icon(
+            Icons.favorite_border,
+            color: isActive ? Colors.red : AppConst.borderGrey,
+            size: 30,
           ),
         ),
       ),
     );
+    // );
   }
 }
