@@ -64,7 +64,7 @@ class Orbiter extends StatelessWidget {
     return Scaffold(
         backgroundColor: AppConst.whiteOrange,
         body: Center(
-          child: Container(
+          child: SizedBox(
             width: 150,
             height: 150,
             child: Stack(children: [

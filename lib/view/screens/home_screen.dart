@@ -402,6 +402,14 @@ class CarouselSection extends StatelessWidget {
                                               "${currentProduct.title} has been removed from the favorites list",
                                               SnackbarType.delete);
                                         });
+                                      } else {
+                                        favoriteStateTemp.add(
+                                            RemoveFromFavoriteData(
+                                                item: data.items[index]));
+                                        showSnackBar(
+                                            context,
+                                            "${currentProduct.title} has been removed from the favorites list",
+                                            SnackbarType.delete);
                                       }
                                     }
                                   },

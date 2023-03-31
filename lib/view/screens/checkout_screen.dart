@@ -311,14 +311,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   showAlertDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
-        content: Container(
-      width: 150,
-      height: 150,
-      child: Stack(children: [
-        Center(child: Image.asset('asset/images/logo.png')),
-        const Center(child: CupertinoActivityIndicator())
-      ]),
-    )
+        elevation: 0,
+        backgroundColor: Colors.white.withAlpha(0),
+        content: SizedBox(
+          width: 150,
+          height: 150,
+          child: Stack(children: [
+            Center(
+                child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      color: Colors.white,
+                    ),
+                    child: Image.asset('asset/images/logo.png'))),
+            const Center(child: CupertinoActivityIndicator())
+          ]),
+        )
         // FutureBuilder(
         // future: sendOrderData(),
         // builder: (context, snapshot) {

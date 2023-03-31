@@ -91,10 +91,10 @@ class CartScreen extends StatelessWidget {
                                       Product currentProduct =
                                           state.cartSetData[index].product;
                                       if (count > cartList.length) {
-                                        showSnackBar(
-                                            context,
-                                            "${currentProduct.title} has been added to the cart",
-                                            SnackbarType.add);
+                                        // showSnackBar(
+                                        //     context,
+                                        //     "${currentProduct.title} has been added to the cart",
+                                        //     SnackbarType.add);
 
                                         BlocProvider.of<CartBloc>(context,
                                                 listen: false)
@@ -102,10 +102,10 @@ class CartScreen extends StatelessWidget {
                                                 item: currentProduct));
                                       } else if (cartList.length > 1 &&
                                           count < cartList.length) {
-                                        showSnackBar(
-                                            context,
-                                            "${currentProduct.title} has been deleted from the cart",
-                                            SnackbarType.delete);
+                                        // showSnackBar(
+                                        //     context,
+                                        //     "${currentProduct.title} has been deleted from the cart",
+                                        //     SnackbarType.delete);
 
                                         BlocProvider.of<CartBloc>(context,
                                                 listen: false)
@@ -135,38 +135,53 @@ class CartScreen extends StatelessWidget {
                         List<String> costsColculation =
                             costColculation(state.cartData);
 
-                        return Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              RecieptRow(
-                                title: "Subtotal",
-                                price: "\$${costsColculation[0]}",
-                              ),
-                              RecieptRow(
-                                title: "Discount",
-                                price: "\$${costsColculation[1]}",
-                              ),
-                              RecieptRow(
-                                title: "Total",
-                                price: "\$${costsColculation[2]}",
-                                style: RecieptRowStyle.bold,
-                              ),
-                              MainButton(
-                                  onPress: () {
-                                    // Navigator.pushNamed(
-                                    //     context, CheckoutScreen.route);
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: ((context) =>
-                                                CheckoutScreen(
-                                                  costs: costsColculation,
-                                                  backButton: true,
-                                                  order: state.cartData,
-                                                ))));
-                                  },
-                                  title: "Checkout")
-                            ]);
+                        return TweenAnimationBuilder(
+                            duration: const Duration(milliseconds: 300),
+                            tween: Tween(begin: 19.9, end: 0.1),
+                            builder: (context, value, child) {
+                              return Transform.translate(
+                                offset: Offset(0, value),
+                                child: Opacity(
+                                  //formula for using the same tween for opacity
+                                  opacity: (((value - 19.9).abs() * 5) / 100),
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        RecieptRow(
+                                          title: "Subtotal",
+                                          price: "\$${costsColculation[0]}",
+                                        ),
+                                        RecieptRow(
+                                          title: "Discount",
+                                          price: "\$${costsColculation[1]}",
+                                        ),
+                                        RecieptRow(
+                                          title: "Total",
+                                          price: "\$${costsColculation[2]}",
+                                          style: RecieptRowStyle.bold,
+                                        ),
+                                        MainButton(
+                                            onPress: () {
+                                              // Navigator.pushNamed(
+                                              //     context, CheckoutScreen.route);
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: ((context) =>
+                                                          CheckoutScreen(
+                                                            costs:
+                                                                costsColculation,
+                                                            backButton: true,
+                                                            order:
+                                                                state.cartData,
+                                                          ))));
+                                            },
+                                            title: "Checkout")
+                                      ]),
+                                ),
+                              );
+                            });
                       },
                     )))
           ],

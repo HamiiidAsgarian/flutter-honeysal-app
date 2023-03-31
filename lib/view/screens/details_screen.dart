@@ -80,7 +80,7 @@ class ProductDetailDataSliver extends StatelessWidget {
               const SizedBox(height: 20),
               CustomExpansionTile(
                   title: 'Ingredients', items: item.ingredients),
-              CustomExpansionTile(title: 'Allergens', items: item.ingredients),
+              CustomExpansionTile(title: 'Allergens', items: item.allergens),
             ],
           )),
     );

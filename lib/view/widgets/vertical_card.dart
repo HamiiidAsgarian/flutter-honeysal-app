@@ -146,7 +146,7 @@ class MainButton extends StatelessWidget {
             child: Text(title,
                 style: TextStyle(
                     fontFamily: "Poppins",
-                    fontSize: 17,
+                    fontSize: 14,
                     color: titleColor,
                     fontWeight: FontWeight.w500))));
   }

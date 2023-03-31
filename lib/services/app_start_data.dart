@@ -32,16 +32,16 @@ Future<Map<String, dynamic>> getAllData() async {
     ],
     "favorites": [
       {
-        'id': 2,
-        'title': "i2",
-        'price': 3200.2,
-        'off': 32,
-        'category': "category",
-        'imageUrl': "https://i.ibb.co/S5RDVsj/org-2.jpg",
+        'id': 6,
+        'title': "Mountain Honey 2 500g",
+        'price': 45.2,
+        'off': 1,
+        'category': "Mountain Honey",
+        'imageUrl': "https://i.ibb.co/g33tq8L/org-5.jpg",
         'description':
-            "Jacob’s biscuits are a household name in Ireland, and choosing just one from their wide choice of biscuits is nearly impossible. They have everything from Coconut Creams to Fig Rolls to Kimberley biscuits, but their show-stopper and true bakery magic has to be the Mikado.It consists of a biscuit base with mallow in two lines atop it, strawberry jam scooped into the middle, and coconut sprinkled all over the top. We’re drooling just thinking about it.",
+            "Need we even say anything because the name speaks for itself? Tayto is maybe Ireland’s most well-known snack. It has stood the test of time and even inspired its very own theme park in County Meath.While it boasts a wide range of flavours including Prawn Cocktail (one of our top picks), Salt and Vinegar, Curry Chip and Spring Onion, the classic Cheese and Onion flavour is what you need to try. Ask anybody from the island about Tayto and see for yourself how passionate we are about it.",
         'rate': 4.5,
-        'left': 2,
+        'left': 4,
         'point': 8,
         'ingredients': [
           {
@@ -49,17 +49,12 @@ Future<Map<String, dynamic>> getAllData() async {
             "title": "Butter"
           },
           {'imageUrl': "https://i.ibb.co/Kst9zwJ/salt.png", "title": "Salt"},
-          {'imageUrl': "https://i.ibb.co/CVJdcSZ/sugar.png", "title": "Sugar"},
           {'imageUrl': "https://i.ibb.co/XZGBsBr/egg.png", "title": "Egg"}
         ],
         'allergens': [
-          {
-            'imageUrl': "https://i.ibb.co/qkMsS2S/butter.png",
-            "title": "Butter"
-          },
           {'imageUrl': "https://i.ibb.co/XZGBsBr/egg.png", "title": "Egg"}
         ]
-      },
+      }
     ],
     "orders": [
       {

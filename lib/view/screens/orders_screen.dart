@@ -172,26 +172,34 @@ class OrderFactorItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            SizedBox(
-              width: 75,
-              height: 75,
-              // color: Colors.green,
-              child: CachedNetworkImage(imageUrl: product.product.imageUrl),
+    return SizedBox(
+      width: double.infinity,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            //NOTE might need a little fix how to handle title overflow
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 75,
+                  height: 75,
+                  // color: Colors.green,
+                  child: CachedNetworkImage(imageUrl: product.product.imageUrl),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Text("${product.product.title} (x${product.count})",
+                      style: AppConst.normalDescriptionStyle),
+                )
+              ],
             ),
-            const SizedBox(
-              width: 10,
-            ),
-            Text("${product.product.title} (x${product.count})",
-                style: AppConst.normalDescriptionStyle)
-          ],
-        ),
-        Text("\$${product.product.price}", style: AppConst.sectionTitleStyle)
-      ],
+          ),
+          Text("\$${product.product.price}", style: AppConst.sectionTitleStyle)
+        ],
+      ),
     );
   }
 }
